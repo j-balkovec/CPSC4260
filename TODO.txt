@@ -1,0 +1,13 @@
+OVERALL:
+- Implement REFACTOR methods
+- Logging if necessary
+- Loading bars
+- Threading
+- Print in color
+- info messages in color @ see analyze.py (generate_readable_report)
+- TXT report to HTML somewhere down the road
+
+BUG:
+- The Application is very slow and unresponsive
+
+TODAY:
