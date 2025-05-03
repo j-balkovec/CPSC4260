@@ -1,0 +1,18 @@
+===== SOFTWARE ANALYSIS REPORT =====
+
+>> Long Parameter List Detections:
+
+>> Long Method Detections:
+
+  - Function '_extract_operators_and_operands' from line 25 to 98
+    * Length: 74 lines (Threshold: 15)
+
+  - Function '_calculate_halstead_metrics' from line 99 to 165
+    * Length: 67 lines (Threshold: 15)
+
+  - Function 'fetch_halstead_metrics' from line 166 to 182
+    * Length: 17 lines (Threshold: 15)
+
+>> Duplicated Code Detections:
+
+===== END OF REPORT =====

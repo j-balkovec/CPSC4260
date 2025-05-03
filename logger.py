@@ -12,7 +12,7 @@ import os
 from datetime import datetime
 from constants import (LOG_COLORS)
 
-def setup_logger(name: str, log_file: str = None, level: int = logging.DEBUG) -> logging.Logger:
+def setup_logger(name: str, log_file: str = None, level: int = logging.DEBUG, enable_console = False) -> logging.Logger:
     """_summary_
 
     Args:
@@ -38,11 +38,16 @@ def setup_logger(name: str, log_file: str = None, level: int = logging.DEBUG) ->
         log_colors=LOG_COLORS
     )
 
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(level)
-    console_handler.setFormatter(formatter)
-    logger.addHandler(console_handler)
-
+    if enable_console:
+        formatter = colorlog.ColoredFormatter(
+            log_format,
+            datefmt=date_format,
+            log_colors=LOG_COLORS
+        )
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(level)
+        console_handler.setFormatter(formatter)
+        logger.addHandler(console_handler)
     
     if log_file:
         log_file = "logs/log_" + log_file  # to avoid accidental overwriting

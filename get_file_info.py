@@ -20,8 +20,15 @@ from exceptions import (FileReadError,
                         FileOpenError)
 
 from constants import (SIZE_LIMIT)
+from logger import setup_logger
 
+# ==========
+get_file_info_logger = setup_logger(name="get_file_info.py_logger", log_file="get_file_info.log")
+# ==========
 
+get_file_info_logger.info("get_file_info")
+
+# Add try catch in GUI
 def extract_file_info(file_obj) -> dict:
     """_summary_
 
@@ -40,16 +47,22 @@ def extract_file_info(file_obj) -> dict:
     """
     try:
         file_path = file_obj.name
+        get_file_info_logger.info(f"Starting metadata extraction for: {file_path}")
 
         valid = _validate_file(file_path)
         
         if not valid:
             raise FileReadError("Validation failed", filename=file_path, function="extract_file_info")
+        else:
+            get_file_info_logger.info(f"Validation successful for: {file_path}")
 
         metadata = _gather_metadata(file_path, file_obj)
+        
         if metadata is None:
             raise CorruptFileError("Failed to gather metadata", filename=file_path, function="extract_file_info")
-
+        else:
+            get_file_info_logger.info(f"Metadata gathered successfully for: {file_path}")
+            
         return metadata
 
     except PermissionError as e:
@@ -60,6 +73,12 @@ def extract_file_info(file_obj) -> dict:
 
     except OSError as e:
         raise FileOpenError("OS error while opening the file", filename=file_path, function="extract_file_info") from e
+    
+    except FileReadError as e:
+        raise FileReadError("File read error", filename=file_path, function="extract_file_info") from e
+    
+    except CorruptFileError as e:
+        raise CorruptFileError("Corrupt file error", filename=file_path, function="extract_file_info") from e
       
       
 def _validate_file(file_path: str) -> bool:
@@ -141,6 +160,7 @@ def _gather_metadata(file_path: str, file_obj) -> dict:
         "Data": data
     }
     
+    get_file_info_logger.info(f"Metadata assembled for: {file_path}")
     return metadata
       
 def save_to_json(metadata: dict):
@@ -163,4 +183,6 @@ def save_to_json(metadata: dict):
     with open(file_path, "w") as json_file:
         json.dump(metadata, json_file, indent=4)
 
+    get_file_info_logger.info(f"Saved metadata to JSON: {file_path}")
+    
     return file_path

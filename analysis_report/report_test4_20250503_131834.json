@@ -1,0 +1,108 @@
+{
+    "long_parameter_list": [
+        {
+            "function": "multi_param_func1",
+            "position": 38,
+            "params_count": 8,
+            "threshold": 3
+        },
+        {
+            "function": "multi_param_func2",
+            "position": 73,
+            "params_count": 9,
+            "threshold": 3
+        }
+    ],
+    "long_method": [
+        {
+            "function": "long_function_one",
+            "start_line": 31,
+            "end_line": 64,
+            "length": 34,
+            "threshold": 15
+        },
+        {
+            "function": "long_function_two",
+            "start_line": 65,
+            "end_line": 99,
+            "length": 35,
+            "threshold": 15
+        }
+    ],
+    "duplicated_code": [
+        {
+            "block1": {
+                "index": 5,
+                "text": "for item in sorted_data:\n        cum_sum += item.get('value', 0)\n        item['cumulative'] = cum_sum",
+                "type": "code",
+                "tokens": [
+                    "(",
+                    "VAR",
+                    "]",
+                    ".",
+                    "=",
+                    "0",
+                    "+=",
+                    ")",
+                    "[",
+                    ",",
+                    ":"
+                ],
+                "line_number": 34
+            },
+            "block2": {
+                "index": 6,
+                "text": "for item in sorted_data:\n        item['above_avg'] = (item.get('value', 0) > avg)\n    report = []",
+                "type": "code",
+                "tokens": [
+                    "(",
+                    "VAR",
+                    "]",
+                    ".",
+                    "=",
+                    "0",
+                    ")",
+                    "[",
+                    ",",
+                    ":",
+                    ">"
+                ],
+                "line_number": 41
+            },
+            "similarity": 0.8333333333333334,
+            "threshold": 0.76
+        },
+        {
+            "block1": {
+                "index": 8,
+                "text": "else:\n        status = 'small'\n    message = f\"Result is {result}, status: {status}\"\n    return message",
+                "type": "code",
+                "tokens": [
+                    "}",
+                    "VAR",
+                    "=",
+                    "{",
+                    ",",
+                    ":"
+                ],
+                "line_number": 51
+            },
+            "block2": {
+                "index": 9,
+                "text": "else:\n        status = 'small'\n    message = f\"Result is {result}, status: {status}\"\n    return message",
+                "type": "code",
+                "tokens": [
+                    "}",
+                    "VAR",
+                    "=",
+                    "{",
+                    ",",
+                    ":"
+                ],
+                "line_number": 59
+            },
+            "similarity": 1.0,
+            "threshold": 0.76
+        }
+    ]
+}

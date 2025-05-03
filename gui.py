@@ -23,8 +23,8 @@ from get_file_info import (extract_file_info,
 
 from save_refactored import (save_refactored_file)
 
-from analyze import (code_metrics,
-                    halstead_metrics)
+from code_metrics import (fetch_code_metrics)
+from halstead_metrics import (fetch_halstead_metrics)
 
 from exceptions import (FileReadError,
                         CorruptFileError,
@@ -181,8 +181,8 @@ class CodeSmellGUI(ctk.CTkFrame):
                 
     def run_analysis(self):
 
-        code_m = code_metrics(self.filename)
-        halstead_m = halstead_metrics(self.filename)
+        code_m = fetch_code_metrics(self.filename)
+        halstead_m = fetch_halstead_metrics(self.filename)
 
         loc_sloc_metr = {
             "LOC": {"value": code_m["LOC"], "description": "Lines of Code"},

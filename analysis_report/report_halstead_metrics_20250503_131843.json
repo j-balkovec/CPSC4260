@@ -1,0 +1,27 @@
+{
+    "long_parameter_list": [],
+    "long_method": [
+        {
+            "function": "_extract_operators_and_operands",
+            "start_line": 25,
+            "end_line": 98,
+            "length": 74,
+            "threshold": 15
+        },
+        {
+            "function": "_calculate_halstead_metrics",
+            "start_line": 99,
+            "end_line": 165,
+            "length": 67,
+            "threshold": 15
+        },
+        {
+            "function": "fetch_halstead_metrics",
+            "start_line": 166,
+            "end_line": 182,
+            "length": 17,
+            "threshold": 15
+        }
+    ],
+    "duplicated_code": []
+}

@@ -1,0 +1,139 @@
+===== SOFTWARE ANALYSIS REPORT =====
+
+>> Long Parameter List Detections:
+
+>> Long Method Detections:
+
+  - Function 'extract_file_info' from line 31 to 70
+    * Length: 40 lines (Threshold: 15)
+
+  - Function '_validate_file' from line 71 to 104
+    * Length: 34 lines (Threshold: 15)
+
+  - Function '_gather_metadata' from line 105 to 151
+    * Length: 47 lines (Threshold: 15)
+
+  - Function 'save_to_json' from line 152 to 173
+    * Length: 22 lines (Threshold: 15)
+
+>> Duplicated Code Detections:
+
+  - Duplicate 1: (Similarity: 0.86)
+    * Block 1 (Line 1):
+        import os
+        import time
+        import json
+        from exceptions import (FileReadError,
+                                CorruptFileError,
+                                FileNotFoundError,
+                                FileEmptyError,
+                                FileTypeUnsupportedError,
+                                FileDecodeError,
+                                FileLockedError,
+                                FileTooLargeError,
+                                FileOpenError)
+        from constants import (SIZE_LIMIT)
+        from logger import setup_logger
+        get_file_info_logger = setup_logger(name="get_file_info.py_logger", log_file="get_file_info.log")
+        get_file_info_logger.info("get_file_info")
+    * Block 2 (Line 34):
+        if not os.path.exists(file_path):
+                raise FileNotFoundError("File not found", filename=file_path, function="_validate_file")
+            size = os.path.getsize(file_path)
+
+  - Duplicate 2: (Similarity: 0.86)
+    * Block 1 (Line 18):
+        try:
+                file_path = file_obj.name
+                valid = _validate_file(file_path)
+    * Block 2 (Line 34):
+        if not os.path.exists(file_path):
+                raise FileNotFoundError("File not found", filename=file_path, function="_validate_file")
+            size = os.path.getsize(file_path)
+
+  - Duplicate 3: (Similarity: 1.00)
+    * Block 1 (Line 21):
+        if not valid:
+                    raise FileReadError("Validation failed", filename=file_path, function="extract_file_info")
+                metadata = _gather_metadata(file_path, file_obj)
+    * Block 2 (Line 24):
+        if metadata is None:
+                    raise CorruptFileError("Failed to gather metadata", filename=file_path, function="extract_file_info")
+                return metadata
+
+  - Duplicate 4: (Similarity: 0.86)
+    * Block 1 (Line 21):
+        if not valid:
+                    raise FileReadError("Validation failed", filename=file_path, function="extract_file_info")
+                metadata = _gather_metadata(file_path, file_obj)
+    * Block 2 (Line 34):
+        if not os.path.exists(file_path):
+                raise FileNotFoundError("File not found", filename=file_path, function="_validate_file")
+            size = os.path.getsize(file_path)
+
+  - Duplicate 5: (Similarity: 0.75)
+    * Block 1 (Line 21):
+        if not valid:
+                    raise FileReadError("Validation failed", filename=file_path, function="extract_file_info")
+                metadata = _gather_metadata(file_path, file_obj)
+    * Block 2 (Line 42):
+        if file_type not in ["py", "txt"]:
+                raise FileTypeUnsupportedError("File type is unsupported", filename=file_path, function="_validate_file")
+            return True
+
+  - Duplicate 6: (Similarity: 0.86)
+    * Block 1 (Line 24):
+        if metadata is None:
+                    raise CorruptFileError("Failed to gather metadata", filename=file_path, function="extract_file_info")
+                return metadata
+    * Block 2 (Line 34):
+        if not os.path.exists(file_path):
+                raise FileNotFoundError("File not found", filename=file_path, function="_validate_file")
+            size = os.path.getsize(file_path)
+
+  - Duplicate 7: (Similarity: 0.75)
+    * Block 1 (Line 24):
+        if metadata is None:
+                    raise CorruptFileError("Failed to gather metadata", filename=file_path, function="extract_file_info")
+                return metadata
+    * Block 2 (Line 42):
+        if file_type not in ["py", "txt"]:
+                raise FileTypeUnsupportedError("File type is unsupported", filename=file_path, function="_validate_file")
+            return True
+
+  - Duplicate 8: (Similarity: 0.78)
+    * Block 1 (Line 34):
+        if not os.path.exists(file_path):
+                raise FileNotFoundError("File not found", filename=file_path, function="_validate_file")
+            size = os.path.getsize(file_path)
+    * Block 2 (Line 57):
+        except Exception as e:
+                raise FileReadError("Failed to read file", filename=file_path, function="_gather_metadata") from e
+            file_obj.close()
+            metadata = {
+                "Name": name,
+                "Size": f"{size} bytes",
+                "Type": file_type,
+                "Date Created": date_created,
+                "Date Modified": date_modified,
+                "Date Accessed": date_accessed,
+                "Data": data
+            }
+            return metadata
+
+  - Duplicate 9: (Similarity: 0.77)
+    * Block 1 (Line 39):
+        if size > SIZE_LIMIT:
+                raise FileTooLargeError("File is too large", filename=file_path, function="_validate_file")
+            file_type = os.path.splitext(file_path)[1].lstrip('.')
+    * Block 2 (Line 45):
+        def _gather_metadata(file_path: str, file_obj) -> dict:
+            name = os.path.basename(file_path)
+            size = os.path.getsize(file_path)
+            file_type = os.path.splitext(file_path)[1].lstrip('.')
+            date_created = time.ctime(os.path.getctime(file_path))
+            date_modified = time.ctime(os.path.getmtime(file_path))
+            date_accessed = time.ctime(os.path.getatime(file_path))
+            file_obj.seek(0)
+
+===== END OF REPORT =====

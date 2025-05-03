@@ -10,7 +10,13 @@ import os
 import time
 
 from exceptions import (FileEmptyError)
+from logger import setup_logger
 
+# ==========
+save_refactored_logger = setup_logger(name="save_refactored.py_logger", log_file="save_refactored.log")
+# ==========
+
+save_refactored_logger.info("save_refactored_logger")
 
 def save_refactored_file(file_content: str, original_filename: str) -> str:
     """_summary_
@@ -40,5 +46,6 @@ def save_refactored_file(file_content: str, original_filename: str) -> str:
     # Save the file
     with open(out_path, "w") as f:
         f.write(file_content)
-        
+
+    save_refactored_logger.info(f"Refactored file saved as: {out_path}")
     return out_path

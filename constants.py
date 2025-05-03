@@ -66,7 +66,7 @@ ALLOWED_OPERATORS = {
 
 PARAMS_THRESHOLD: int = 3
 LENGTH_THRESHOLD: int = 15
-DUPS_THRESHOLD: float = 0.76
+DUPS_THRESHOLD: float = 0.75 # 0.75
 
 LOG_COLORS = {
         'DEBUG':    'cyan',

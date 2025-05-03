@@ -13,7 +13,11 @@ import json
 
 from get_file_info import extract_file_info, save_to_json
 from save_refactored import save_refactored_file
-from analyze import code_metrics, halstead_metrics, find_code_smells
+
+from code_metrics import (fetch_code_metrics)
+from halstead_metrics import (fetch_halstead_metrics)
+from code_smells import (find_code_smells)
+
 from exceptions import (FileReadError, CorruptFileError, FileNotFoundError,
                         FileEmptyError, FileTypeUnsupportedError, FileDecodeError,
                         FileLockedError, FileTooLargeError, FileOpenError)
@@ -56,8 +60,8 @@ def analyze_file(filepath):
         return
 
     print("\n🔍 Analyzing file...")
-    code_m = code_metrics(filepath)
-    halstead_m = halstead_metrics(filepath)
+    code_m = fetch_code_metrics(filepath)
+    halstead_m = fetch_halstead_metrics(filepath)
     
     code_smells = find_code_smells(filepath)
 

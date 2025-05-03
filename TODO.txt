@@ -11,3 +11,20 @@ BUG:
 - The Application is very slow and unresponsive
 
 TODAY:
+- Split up analyze.py
+- Fix find duplicated code problem
+- Refactor method
+- [maybe] fix gui problem...shift to terminal only or use the terminal GUI only...ideally would have 2 options
+
+
+- Do the backend part first, figure out the frontend later
+
+ISSUES:
+ - Finding duplicated code...
+ - GUI
+ - NO refactor method yet
+
+
+NOTE:
+
+ - Note all the try-catch blocks in main to exit gracefully
