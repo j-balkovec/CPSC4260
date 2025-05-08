@@ -26,7 +26,7 @@ from utils.exceptions import CodeProcessingError
 refactor_logger = setup_logger(name="refactor_duplicates.py_logger", log_file="refactor_duplicates.log")
 
 def _generate_function_name(block: str) -> str:
-    """Generate a unique function name based on the block content using hashlib.
+    """_summary_
 
     Args:
         block (str): The code block text.
@@ -38,7 +38,7 @@ def _generate_function_name(block: str) -> str:
     return f"refactored_{hash_object.hexdigest()[:8]}"
 
 def _extract_variables(block: str) -> Set[str]:
-    """Extract unique variable names from a code block, excluding keywords and literals.
+    """_summary_
 
     Args:
         block (str): The code block text.
@@ -56,7 +56,7 @@ def _extract_variables(block: str) -> Set[str]:
     return variables
 
 def _create_function(block: str, variables: Set[str], func_name: str) -> str:
-    """Create a function definition from a code block, parameterizing variables.
+    """_summary_
 
     Args:
         block (str): The code block to convert into a function.
@@ -73,7 +73,7 @@ def _create_function(block: str, variables: Set[str], func_name: str) -> str:
     return func_def
 
 def _replace_block_with_call(block: str, func_name: str, variables: Set[str], line_number: int, source_lines: List[str]) -> Tuple[List[str], int]:
-    """Replace a duplicated block in the source code with a function call.
+    """_summary_
 
     Args:
         block (str): The original block text.
@@ -89,13 +89,11 @@ def _replace_block_with_call(block: str, func_name: str, variables: Set[str], li
     block_line_count = len(block_lines)
     indent = len(block_lines[0]) - len(block_lines[0].lstrip()) if block_lines else 0
     
-    # Identify input variables (e.g., x, y or a, b) vs. internal variables (e.g., result, status, message)
     input_vars = [v for v in variables if v in {'x', 'y', 'a', 'b'}]
     internal_vars = [v for v in variables if v not in {'x', 'y', 'a', 'b'}]
     args = ", ".join(input_vars + [f"{v}=None" for v in internal_vars]) if variables else ""
     func_call = " " * indent + f"return {func_name}({args})" if block.strip().endswith("return") else " " * indent + f"{func_name}({args})"
     
-    # Validate line number and block content
     if line_number - 1 + block_line_count > len(source_lines):
         refactor_logger.warning(f"[skip] Invalid line number {line_number} for block replacement, skipping.")
         return source_lines, 0
@@ -105,12 +103,11 @@ def _replace_block_with_call(block: str, func_name: str, variables: Set[str], li
         refactor_logger.warning(f"[skip] Token mismatch at line {line_number}, skipping.")
         return source_lines, 0
     
-    # Replace the block
     source_lines[line_number - 1:line_number - 1 + block_line_count] = [func_call]
     return source_lines, block_line_count
 
 def _find_function_scope(line_number: int, source_lines: List[str]) -> Tuple[int, int]:
-    """Determine if the line is within a function and find its scope.
+    """_summary_
 
     Args:
         line_number (int): Starting line number of the block (1-based).
@@ -125,7 +122,7 @@ def _find_function_scope(line_number: int, source_lines: List[str]) -> Tuple[int
         if not stripped:
             continue
         indent = len(line) - len(line.lstrip())
-        if stripped.startswith('def ') and indent == 0:  # Only module-level functions
+        if stripped.startswith('def ') and indent == 0:  # Only module-level funcs
             return i + 1, indent + 4
     return 0, 0  # Module-level
 
@@ -187,7 +184,7 @@ def refactor_duplicates(source_code: str, duplicates: List[Dict]) -> str:
         line1 = dup['block1']['line_number']
         line2 = dup['block2']['line_number']
 
-        # Validate blocks
+        # ====== validate ======
         if block1 != block2:
             refactor_logger.warning(f"[skip] Blocks at lines {line1} and {line2} are not identical, skipping.")
             continue
@@ -195,15 +192,15 @@ def refactor_duplicates(source_code: str, duplicates: List[Dict]) -> str:
             refactor_logger.warning(f"[skip] Block at lines {line1} and {line2} is not a valid logical block:\n{block1}\nskipping.")
             continue
 
-        # Extract variables
+        # ====== extract vars ======
         variables = _extract_variables(block1)
         refactor_logger.debug(f"[variables] Found variables: {variables}")
 
-        # Generate function
+        # ====== gen func ======
         func_name = _generate_function_name(block1)
         func_def = _create_function(block1, variables, func_name)
         
-        # Determine scope
+        # ====== find scope ======
         scope_line1, indent1 = _find_function_scope(line1, source_lines)
         scope_line2, indent2 = _find_function_scope(line2, source_lines)
         
@@ -219,7 +216,7 @@ def refactor_duplicates(source_code: str, duplicates: List[Dict]) -> str:
         new_functions.append((func_def, insert_line, indent))
         refactor_logger.info(f"[generated] Function {func_name} for duplicate at lines {line1} and {line2}, placed at {placement}")
 
-        # Replace blocks
+        # ====== replace blocks ======
         adjusted_line1 = line1 - sum(adj for ln, adj in line_adjustments.items() if ln < line1)
         source_lines, lines_replaced1 = _replace_block_with_call(block1, func_name, variables, adjusted_line1, source_lines)
         if lines_replaced1 == 0:
@@ -232,7 +229,7 @@ def refactor_duplicates(source_code: str, duplicates: List[Dict]) -> str:
             continue
         line_adjustments[line2] = lines_replaced2 - 1
 
-    # Insert new functions
+    # ====== insert new func ======
     new_functions.sort(key=lambda x: (x[1], x[2]))
     refactored_lines = source_lines[:]
     offset = 0
@@ -246,25 +243,3 @@ def refactor_duplicates(source_code: str, duplicates: List[Dict]) -> str:
     refactored_code = "\n".join(refactored_lines).rstrip() + "\n"
     refactor_logger.info(f"[done] Refactored {len([d for d in duplicates if d['block1']['text'] == d['block2']['text']])} duplicate pairs.")
     return refactored_code
-
-# ========================================== WORKBENCH ===================================================
-
-import json
-
-from utils.utility import _read_file_contents
-from core.duplicated_finder import _find_duplicated_code
-from core.constants import TEST_PATHS
-
-# Read source code and find duplicates
-source = _read_file_contents(TEST_PATHS['5'])
-duplicates = _find_duplicated_code(source)
-
-# Refactor the code
-refactored_code = refactor_duplicates(source, duplicates)
-
-# Print results
-print("\n\n=====================================================")
-print("Original Duplicates:\n", json.dumps(duplicates, indent=4))
-print("\nRefactored Code:\n", refactored_code)
-
-# ========================================================================================================

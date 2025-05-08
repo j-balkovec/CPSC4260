@@ -23,7 +23,6 @@ import re
 import keyword
 import hashlib
 
-# Reuse functions from duplicated_code.py
 from core.duplicated_finder import (
     _normalize_block,
     _split_into_blocks,
@@ -33,8 +32,7 @@ from core.duplicated_finder import (
 )
 
 def generate_unique_func_name(block_text):
-    """
-    Generate a unique function name based on the block's content.
+    """_summary_
     
     Args:
         block_text (str): Text of the duplicated block.
@@ -46,8 +44,7 @@ def generate_unique_func_name(block_text):
     return f"compute_block_{hash_val}"
 
 def identify_variables(block_text):
-    """
-    Identify input and output variables in the block.
+    """_summary_
     
     Args:
         block_text (str): Text of the duplicated block.
@@ -61,27 +58,22 @@ def identify_variables(block_text):
     used_vars = set()
     
     for line in lines:
-        # Skip control flow lines
         if line.strip().startswith(("if ", "else:", "elif ", "for ", "while ", "return ")):
             continue
         
-        # Find assignments (e.g., var = ...)
         match = re.match(r'^\s*([a-zA-Z_]\w*)\s*=', line.strip())
         if match:
             var = match.group(1)
             if not keyword.iskeyword(var):
                 defined_vars.add(var)
         
-        # Find all variables used in the line
         tokens = re.findall(r'\b([a-zA-Z_]\w*)\b', line)
         for token in tokens:
             if not keyword.iskeyword(token) and token not in ("True", "False", "None"):
                 used_vars.add(token)
     
-    # Input variables: used but not defined
     input_vars = list(used_vars - defined_vars)
     
-    # Output variables: defined in the block (simplified to assume last assigned or returned)
     output_vars = []
     last_line = lines[-1].strip()
     if last_line.startswith("return "):
@@ -93,8 +85,7 @@ def identify_variables(block_text):
     return input_vars, output_vars
 
 def generate_function(block_text, input_vars, output_vars, func_name):
-    """
-    Generate a function definition for the duplicated block.
+    """_summary_
     
     Args:
         block_text (str): Text of the duplicated block.
@@ -107,16 +98,13 @@ def generate_function(block_text, input_vars, output_vars, func_name):
     """
     param_str = ", ".join(input_vars) if input_vars else ""
     
-    # Normalize indentation to 4 spaces
     lines = block_text.split("\n")
     if not lines:
         return ""
     
-    # Calculate base indentation of the block
     first_line = next((line for line in lines if line.strip()), "")
     base_indent = len(first_line) - len(first_line.lstrip()) if first_line else 0
     
-    # Re-indent to 4 spaces for function body
     body_lines = []
     for line in lines:
         if line.strip():
@@ -126,7 +114,6 @@ def generate_function(block_text, input_vars, output_vars, func_name):
     
     body = "\n".join(body_lines)
     
-    # Add return statement if needed
     return_stmt = ""
     if output_vars:
         if len(output_vars) == 1:
@@ -134,7 +121,6 @@ def generate_function(block_text, input_vars, output_vars, func_name):
         else:
             return_stmt = f"    return {', '.join(output_vars)}"
     elif not body_lines[-1].strip().startswith("return "):
-        # Add return for the last assigned variable if no return exists
         for line in reversed(body_lines):
             match = re.match(r'^\s*([a-zA-Z_]\w*)\s*=', line.strip())
             if match:
@@ -145,8 +131,7 @@ def generate_function(block_text, input_vars, output_vars, func_name):
     return func_def
 
 def get_block_context(source_code, line_number, block_text):
-    """
-    Get the context of a duplicated block.
+    """_summary_
     
     Args:
         source_code (str): Full source code.
@@ -160,19 +145,16 @@ def get_block_context(source_code, line_number, block_text):
     norm_block_text = _normalize_block(block_text)
     block_lines = norm_block_text.split("\n")
     
-    # Verify block exists at line_number
     start_idx = line_number - 1
     if start_idx + len(block_lines) > len(lines):
         duplicated_code_logger.error(f"Block at line {line_number} exceeds source code length")
         raise ValueError(f"Invalid block at line {line_number}")
     
-    # Check if the block matches
     source_block = "\n".join(lines[start_idx:start_idx + len(block_lines)])
     if _normalize_block(source_block) != norm_block_text:
         duplicated_code_logger.error(f"Block at line {line_number} does not match expected text")
         raise ValueError(f"Block mismatch at line {line_number}")
     
-    # Get indentation
     block_indent = len(lines[start_idx]) - len(lines[start_idx].lstrip()) if lines[start_idx].strip() else 0
     
     return {
@@ -181,8 +163,7 @@ def get_block_context(source_code, line_number, block_text):
     }
 
 def replace_duplicate(source_code, line_number, block_text, func_name, input_vars, output_vars):
-    """
-    Replace the duplicated block with a function call.
+    """_summary_
     
     Args:
         source_code (str): Full source code.
@@ -200,11 +181,9 @@ def replace_duplicate(source_code, line_number, block_text, func_name, input_var
     block_indent = context["block_indent"]
     block_lines = context["block_lines"]
     
-    # Generate function call
     func_call = f"{func_name}({', '.join(input_vars)})" if input_vars else f"{func_name}()"
     indent = " " * block_indent
     
-    # Handle output variables and control flow
     replacement = ""
     if output_vars:
         if len(output_vars) == 1:
@@ -215,12 +194,10 @@ def replace_duplicate(source_code, line_number, block_text, func_name, input_var
     else:
         replacement = f"{indent}{func_call}"
     
-    # If the block ends with a return, use return in the replacement
     norm_block = _normalize_block(block_text)
     if norm_block.split("\n")[-1].strip().startswith("return"):
         replacement = f"{indent}return {func_call}"
     
-    # Replace the block
     start_idx = line_number - 1
     end_idx = start_idx + len(block_lines)
     lines[start_idx:end_idx] = [replacement]
@@ -228,8 +205,7 @@ def replace_duplicate(source_code, line_number, block_text, func_name, input_var
     return "\n".join(lines)
 
 def refactor_duplicates(source_code, duplicates_json):
-    """
-    Main function to refactor duplicated code.
+    """_summary_
     
     Args:
         source_code (str): Full source code.
@@ -247,27 +223,21 @@ def refactor_duplicates(source_code, duplicates_json):
             block2 = dup["block2"]
             block_text = block1["text"]
             
-            # Identify variables
             input_vars, output_vars = identify_variables(block_text)
             duplicated_code_logger.info(f"[identified] input_vars: {input_vars}, output_vars: {output_vars}")
             
-            # Generate unique function name
             func_name = generate_unique_func_name(block_text)
             duplicated_code_logger.info(f"[generated] function name: {func_name}")
             
-            # Generate function
             func_def = generate_function(block_text, input_vars, output_vars, func_name)
             duplicated_code_logger.info(f"[generated] function:\n{func_def}")
             
-            # Validate function syntax
             if not func_def.strip():
                 duplicated_code_logger.error("Generated function is empty")
                 continue
             
-            # Insert function at the top
             modified_code = func_def + "\n" + modified_code
             
-            # Replace block1
             modified_code = replace_duplicate(
                 modified_code,
                 block1["line_number"],
@@ -278,7 +248,6 @@ def refactor_duplicates(source_code, duplicates_json):
             )
             duplicated_code_logger.info(f"[replaced] block at line {block1['line_number']}")
             
-            # Replace block2
             modified_code = replace_duplicate(
                 modified_code,
                 block2["line_number"],
@@ -304,13 +273,11 @@ from utils.utility import _read_file_contents
 from core.duplicated_finder import _find_duplicated_code
 from core.constants import TEST_PATHS
 
-# Read source code and find duplicates
 source_code = _read_file_contents(TEST_PATHS['8'])
 duplicates = _find_duplicated_code(source_code)
 
 refactored_code = refactor_duplicates(source_code, duplicates)
 
-# Print results
 print("\n\n=====================================================")
 print("Original Duplicates:\n", json.dumps(duplicates, indent=4))
 print("\nRefactored Code:\n", refactored_code)
