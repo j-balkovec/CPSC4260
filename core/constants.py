@@ -6,7 +6,15 @@
 #
 # __brief__: TODO
 
+# =========
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# =========
+
 from typing import Set
+
 """__constants__"""
 WINDOW_SIZE: str = "1800x960"
 WINDOW_TITLE: str = "Code Smell Detector"
@@ -77,9 +85,25 @@ LOG_COLORS = {
     }
 
 CLEANUP_PATHS = {
-    "log_analyze": "/Users/jbalkovec/Desktop/CPSC4260/Project/logs/log_analyze.log",
-    "file_info": "/Users/jbalkovec/Desktop/CPSC4260/Project/file_info",
-    "analysis_report": "/Users/jbalkovec/Desktop/CPSC4260/Project/analysis_report",
-    "output": "/Users/jbalkovec/Desktop/CPSC4260/Project/output",
-    "readable_report": "/Users/jbalkovec/Desktop/CPSC4260/Project/readable_report"
+    "log_analyze": r"/Users/jbalkovec/Desktop/CPSC4260/project_root/data/logs/log_analyze.log",
+    "file_info": r"/Users/jbalkovec/Desktop/CPSC4260/project_root/data/info",
+    "analysis_report": r"/Users/jbalkovec/Desktop/CPSC4260/project_root/data/report",
+    "output": r"/Users/jbalkovec/Desktop/CPSC4260/project_root/data/output",
+    "readable_report": r"/Users/jbalkovec/Desktop/CPSC4260/project_root/data/readable"
 }
+
+import os
+import sys
+
+TEST_PATHS = {
+              '1' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test1.py')),
+              '2' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test2.py')),
+              '3' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test3.py')),
+              '4' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test4.py')),
+              '5' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test5.py')),
+              '6' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test6.py')),
+              '7' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test7.py')),
+              '8' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test8.py')),
+              '9' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test9.py')),
+              '10' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test10.py')),
+              }

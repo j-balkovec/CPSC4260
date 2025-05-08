@@ -6,11 +6,18 @@
 #
 # __brief__: TODO
 
+# =========
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# =========
+
 import logging
 import colorlog
-import os
 from datetime import datetime
-from constants import (LOG_COLORS)
+
+from core.constants import (LOG_COLORS)
 
 def setup_logger(name: str, log_file: str = None, level: int = logging.DEBUG, enable_console = False) -> logging.Logger:
     """_summary_
@@ -50,10 +57,10 @@ def setup_logger(name: str, log_file: str = None, level: int = logging.DEBUG, en
         logger.addHandler(console_handler)
     
     if log_file:
-        log_file = "logs/log_" + log_file  # to avoid accidental overwriting
-        log_dir = os.path.dirname(log_file)
-        if log_dir:
-            os.makedirs(log_dir, exist_ok=True)
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        log_file = os.path.join(project_root, 'data', 'logs', f'log_{log_file}')
+        
+        os.makedirs(os.path.dirname(log_file), exist_ok=True)
 
         file_handler = logging.FileHandler(log_file)
         file_handler.setLevel(level)

@@ -1,0 +1,272 @@
+{
+    "long_parameter_list": [
+        {
+            "function": "multi_param_func1",
+            "position": 38,
+            "params_count": 8,
+            "threshold": 3
+        },
+        {
+            "function": "multi_param_func2",
+            "position": 73,
+            "params_count": 9,
+            "threshold": 3
+        }
+    ],
+    "long_method": [
+        {
+            "function": "long_function_one",
+            "start_line": 31,
+            "end_line": 64,
+            "length": 34,
+            "threshold": 15
+        },
+        {
+            "function": "long_function_two",
+            "start_line": 65,
+            "end_line": 99,
+            "length": 35,
+            "threshold": 15
+        }
+    ],
+    "duplicated_code": [
+        {
+            "block1": {
+                "index": 1,
+                "text": "def multi_param_func2(p1, p2, p3, p4, p5, p6, p7, p8, p9):\n    total = 0",
+                "type": "code",
+                "tokens": [
+                    "def",
+                    "VAR",
+                    "(",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ")",
+                    ":",
+                    "VAR",
+                    "=",
+                    "VAR"
+                ],
+                "line_number": 3
+            },
+            "block2": {
+                "index": 16,
+                "text": "def dup_func1(x, y):\n    result = x * y",
+                "type": "code",
+                "tokens": [
+                    "def",
+                    "VAR",
+                    "(",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ")",
+                    ":",
+                    "VAR",
+                    "=",
+                    "VAR",
+                    "*",
+                    "VAR"
+                ],
+                "line_number": 47
+            },
+            "similarity": 0.75,
+            "threshold": 0.75
+        },
+        {
+            "block1": {
+                "index": 1,
+                "text": "def multi_param_func2(p1, p2, p3, p4, p5, p6, p7, p8, p9):\n    total = 0",
+                "type": "code",
+                "tokens": [
+                    "def",
+                    "VAR",
+                    "(",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ")",
+                    ":",
+                    "VAR",
+                    "=",
+                    "VAR"
+                ],
+                "line_number": 3
+            },
+            "block2": {
+                "index": 19,
+                "text": "def dup_func2(a, b):\n    result = a * b",
+                "type": "code",
+                "tokens": [
+                    "def",
+                    "VAR",
+                    "(",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ")",
+                    ":",
+                    "VAR",
+                    "=",
+                    "VAR",
+                    "*",
+                    "VAR"
+                ],
+                "line_number": 55
+            },
+            "similarity": 0.75,
+            "threshold": 0.75
+        },
+        {
+            "block1": {
+                "index": 16,
+                "text": "def dup_func1(x, y):\n    result = x * y",
+                "type": "code",
+                "tokens": [
+                    "def",
+                    "VAR",
+                    "(",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ")",
+                    ":",
+                    "VAR",
+                    "=",
+                    "VAR",
+                    "*",
+                    "VAR"
+                ],
+                "line_number": 47
+            },
+            "block2": {
+                "index": 19,
+                "text": "def dup_func2(a, b):\n    result = a * b",
+                "type": "code",
+                "tokens": [
+                    "def",
+                    "VAR",
+                    "(",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ")",
+                    ":",
+                    "VAR",
+                    "=",
+                    "VAR",
+                    "*",
+                    "VAR"
+                ],
+                "line_number": 55
+            },
+            "similarity": 1.0,
+            "threshold": 0.75
+        },
+        {
+            "block1": {
+                "index": 17,
+                "text": "if result > 100:\n        status = 'large'",
+                "type": "code",
+                "tokens": [
+                    "if",
+                    "VAR",
+                    ">",
+                    "VAR",
+                    ":",
+                    "VAR",
+                    "=",
+                    "VAR"
+                ],
+                "line_number": 49
+            },
+            "block2": {
+                "index": 20,
+                "text": "if result > 100:\n        status = 'large'",
+                "type": "code",
+                "tokens": [
+                    "if",
+                    "VAR",
+                    ">",
+                    "VAR",
+                    ":",
+                    "VAR",
+                    "=",
+                    "VAR"
+                ],
+                "line_number": 57
+            },
+            "similarity": 1.0,
+            "threshold": 0.75
+        },
+        {
+            "block1": {
+                "index": 18,
+                "text": "else:\n        status = 'small'\n    message = f\"Result is {result}, status: {status}\"\n    return message",
+                "type": "code",
+                "tokens": [
+                    "else",
+                    ":",
+                    "VAR",
+                    "=",
+                    "VAR",
+                    "VAR",
+                    "=",
+                    "VAR",
+                    "return",
+                    "VAR"
+                ],
+                "line_number": 51
+            },
+            "block2": {
+                "index": 21,
+                "text": "else:\n        status = 'small'\n    message = f\"Result is {result}, status: {status}\"\n    return message",
+                "type": "code",
+                "tokens": [
+                    "else",
+                    ":",
+                    "VAR",
+                    "=",
+                    "VAR",
+                    "VAR",
+                    "=",
+                    "VAR",
+                    "return",
+                    "VAR"
+                ],
+                "line_number": 59
+            },
+            "similarity": 1.0,
+            "threshold": 0.75
+        }
+    ]
+}

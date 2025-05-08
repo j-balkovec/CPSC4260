@@ -6,7 +6,14 @@
 #
 # __brief__: TODO
 
-from constants import (ERROR_CODES, 
+# =========
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# =========
+
+from core.constants import (ERROR_CODES, 
                        YELLOW_TEXT, 
                        RESET_TEXT, 
                        RED_TEXT)

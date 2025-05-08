@@ -7,12 +7,20 @@
 # __brief__: Script to refactor duplicated code by extracting common blocks into functions
 #            and replacing duplicates with function calls.
 
+# =========
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# =========
+
 import re
 import keyword
-from typing import List, Dict, Set, Tuple
-from logger import setup_logger
-from exceptions import CodeProcessingError
 import hashlib
+from typing import List, Dict, Set, Tuple
+
+from utils.logger import setup_logger
+from utils.exceptions import CodeProcessingError
 
 # Logger setup
 refactor_logger = setup_logger(name="refactor_duplicates.py_logger", log_file="refactor_duplicates.log")
@@ -93,8 +101,8 @@ def _replace_block_with_call(block: str, func_name: str, variables: Set[str], li
         return source_lines, 0
     
     source_block = "\n".join(source_lines[line_number - 1:line_number - 1 + block_line_count]).strip()
-    if source_block != block.strip():
-        refactor_logger.warning(f"[skip] Block at line {line_number} does not match expected content:\nExpected:\n{block}\nFound:\n{source_block}\nskipping.")
+    if '\n'.join(line.strip() for line in source_block.splitlines()) != '\n'.join(line.strip() for line in block.strip().splitlines()):
+        refactor_logger.warning(f"[skip] Token mismatch at line {line_number}, skipping.")
         return source_lines, 0
     
     # Replace the block
@@ -122,23 +130,36 @@ def _find_function_scope(line_number: int, source_lines: List[str]) -> Tuple[int
     return 0, 0  # Module-level
 
 def _is_valid_block(block: str) -> bool:
-    """Validate that a block is syntactically complete (e.g., no standalone else or except).
+    """_summary_
 
     Args:
-        block (str): The code block text.
+        block (str): block of code
 
     Returns:
-        bool: True if the block is valid for refactoring, False otherwise.
+        bool: True if VALID, False if INVALID
     """
     lines = [line.strip() for line in block.splitlines() if line.strip()]
     if not lines:
         return False
+
     first_line = lines[0]
-    # Check for standalone else or except
-    if first_line.startswith(('else:', 'except ', 'finally:')):
+
+    if first_line.startswith(('else:', 'except', 'finally:')):
         return False
-    # Ensure block contains expected structure for test4.py
-    return any(line.startswith('result = ') for line in lines) and block.strip().endswith("return message")
+
+    has_if = any(line.startswith('if ') for line in lines)
+    has_else = any(line.startswith('else:') for line in lines)
+    has_return = any(line.startswith('return') for line in lines)
+
+    if has_if and has_return and not (lines[0].startswith('return') and all(not l.startswith('if ') for l in lines[1:])):
+        return False
+
+    if any(line in {'return', 'pass', 'break', 'continue'} for line in lines):
+        return False
+
+    has_statement = any('=' in line or line.startswith(('return ', 'raise ', 'yield ')) for line in lines)
+    return has_statement
+
 
 def refactor_duplicates(source_code: str, duplicates: List[Dict]) -> str:
     """Refactor duplicated code by extracting common blocks into functions and replacing duplicates.
@@ -228,15 +249,14 @@ def refactor_duplicates(source_code: str, duplicates: List[Dict]) -> str:
 
 # ========================================== WORKBENCH ===================================================
 
-from utility import _read_file_contents
-from duplicated_code import _find_duplicated_code
 import json
 
-# Input path
-INPUT_PATH = r"/Users/jbalkovec/Desktop/CPSC4260/Project/tests/test4.py"
+from utils.utility import _read_file_contents
+from core.duplicated_finder import _find_duplicated_code
+from core.constants import TEST_PATHS
 
 # Read source code and find duplicates
-source = _read_file_contents(INPUT_PATH)
+source = _read_file_contents(TEST_PATHS['5'])
 duplicates = _find_duplicated_code(source)
 
 # Refactor the code

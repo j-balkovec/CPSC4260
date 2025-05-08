@@ -6,10 +6,17 @@
 #
 # __brief__: TODO -> log
 
+# =========
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# =========
+
 import re
 
-from constants import (PARAMS_THRESHOLD)
-from logger import setup_logger
+from core.constants import (PARAMS_THRESHOLD)
+from utils.logger import setup_logger
 
 
 # ==========

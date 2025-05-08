@@ -6,10 +6,17 @@
 #
 # __brief__: TODO -> log
 
+# =========
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# =========
+
 import re
 
-from logger import setup_logger
-from utility import (_read_file_contents)
+from utils.logger import setup_logger
+from utils.utility import (_read_file_contents)
 
 
 # ==========
@@ -122,6 +129,7 @@ def _calculate_code_metrics(info_dict: dict) -> dict:
 
   code_metrics_logger.info(f"Metrics calculated: {metrics}")
   return metrics
+
 
 def fetch_code_metrics(file_name: str) -> dict:
   """_summary_

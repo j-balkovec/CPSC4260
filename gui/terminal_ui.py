@@ -11,14 +11,14 @@
 import os
 import json
 
-from get_file_info import extract_file_info, save_to_json
-from save_refactored import save_refactored_file
+from CPSC4260.project_root.core.file_info_extractor import extract_file_info, save_to_json
+from CPSC4260.project_root.core.file_saver import save_refactored_file
 
-from code_metrics import (fetch_code_metrics)
-from halstead_metrics import (fetch_halstead_metrics)
-from code_smells import (find_code_smells)
+from core.code_metrics import (fetch_code_metrics)
+from CPSC4260.project_root.core.halstead import (fetch_halstead_metrics)
+from core.code_smells import (find_code_smells)
 
-from exceptions import (FileReadError, CorruptFileError, FileNotFoundError,
+from CPSC4260.project_root.utils.exceptions import (FileReadError, CorruptFileError, FileNotFoundError,
                         FileEmptyError, FileTypeUnsupportedError, FileDecodeError,
                         FileLockedError, FileTooLargeError, FileOpenError)
 

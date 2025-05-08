@@ -20,11 +20,21 @@ TODAY:
 - Do the backend part first, figure out the frontend later
 
 ISSUES:
- - Finding duplicated code...
  - GUI
  - NO refactor method yet
-
 
 NOTE:
 
  - Note all the try-catch blocks in main to exit gracefully
+ - Jaccard similarity is JANK!!! 
+     - The implementation is behaving as expected for strict trigram-based Jaccard, 
+       but the metric is too brittle for small code snippets.
+
+
+
+Fix Strategy (Summary)
+	•	Validate entire logical blocks (e.g., three lines inside an if block or full loops) only if they are context-free and can be safely refactored.
+	•	When replacing blocks:
+	•	Don’t call the extracted function globally.
+	•	Preserve indentation.
+	•	Replace the duplicated block in-place, not just extract and call.

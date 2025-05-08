@@ -6,15 +6,21 @@
 #
 # __brief__: TODO
 
-# Abstract from client
-from logger import setup_logger
-from utility import (_read_file_contents, 
+# =========
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# =========
+
+from utils.logger import setup_logger
+from utils.utility import (_read_file_contents, 
                       _save_to_json, 
                       _generate_readable_report)
 
-from duplicated_code import _find_duplicated_code
-from long_method import _find_long_method
-from long_param_list import _find_long_parameter_list
+from core.duplicated_finder import _find_duplicated_code
+from core.method_length import _find_long_method
+from core.param_length import _find_long_parameter_list
 
 
 # ==========
@@ -59,10 +65,3 @@ def find_code_smells(file_name: str) -> dict:
     code_smells_logger.info(f"json ready: {raw_json}")
     
     return code_smells
-  
-  
-  
-# ================================ TO BE REMOVED ================================ 
-FILE = "/Users/jbalkovec/Desktop/CPSC4260/Project/tests/test4.py"
-find_code_smells(FILE)
-# ================================ TO BE REMOVED ================================ 

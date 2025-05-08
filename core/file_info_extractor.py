@@ -5,22 +5,29 @@
 # __file__: get_file_info.py
 # __brief__: TODO
 
+# =========
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# =========
+
 import os
 import time
 import json
 
-from exceptions import (FileReadError,
-                        CorruptFileError,
-                        FileNotFoundError,
-                        FileEmptyError,
-                        FileTypeUnsupportedError,
-                        FileDecodeError,
-                        FileLockedError,
-                        FileTooLargeError,
-                        FileOpenError)
+from utils.exceptions import (FileReadError,
+                              CorruptFileError,
+                              FileNotFoundError,
+                              FileEmptyError,
+                              FileTypeUnsupportedError,
+                              FileDecodeError,
+                              FileLockedError,
+                              FileTooLargeError,
+                              FileOpenError)
 
-from constants import (SIZE_LIMIT)
-from logger import setup_logger
+from core.constants import (SIZE_LIMIT)
+from utils.logger import setup_logger
 
 # ==========
 get_file_info_logger = setup_logger(name="get_file_info.py_logger", log_file="get_file_info.log")

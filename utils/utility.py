@@ -6,11 +6,19 @@
 #
 # __brief__: TODO
 
+# =========
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# =========
+
 import json
 import os
 import time
 import textwrap
-from logger import setup_logger
+
+from utils.logger import setup_logger
 
 # ==========
 utility_logger = setup_logger(name="utility.py_logger", log_file="utility.log")
@@ -50,13 +58,12 @@ def _save_to_json(analysis_dict: dict, filename: str) -> str:
     Returns:
         _type_: path of the output file (<path>/json/info_<file_name>_<timestamp>.json)
     """
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     
-    json_dir = os.path.join(os.getcwd(), "analysis_report")
+    json_dir = os.path.join(project_root, "data", "report")
     os.makedirs(json_dir, exist_ok=True)
 
-    base_name = os.path.basename(filename) 
-    base_name = os.path.splitext(base_name)[0]
-    
+    base_name = os.path.splitext(os.path.basename(filename))[0]
     timestamp = time.strftime("%Y%m%d_%H%M%S")
     file_name = f"report_{base_name}_{timestamp}.json"
     file_path = os.path.join(json_dir, file_name)
@@ -68,20 +75,21 @@ def _save_to_json(analysis_dict: dict, filename: str) -> str:
     return file_path
 
 
-def _generate_readable_report(file_name: str):
+def _generate_readable_report(filename: str):
     """_summary_
 
     Args:
         file_name (str): Name of the JSON report file, @see save_to_json() in 'analyze.py'.
     """
-    with open(file_name, 'r') as f:
+    with open(filename, 'r') as f:
         data = json.load(f)
     
-    report_dir = os.path.join(os.getcwd(), "readable_report")
-    base_name = os.path.basename(file_name)
-    base_name = os.path.splitext(base_name)[0]
-    output_file_name = f"report_{base_name}_readable.txt"
-    file_path = os.path.join(report_dir, output_file_name)
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+    report_dir = os.path.join(project_root, "data", "readable")
+    base_name = os.path.splitext(os.path.basename(filename))[0]
+    output_filename = f"report_{base_name}_readable.txt"
+    file_path = os.path.join(report_dir, output_filename)
 
     os.makedirs(report_dir, exist_ok=True)
     

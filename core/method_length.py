@@ -6,10 +6,17 @@
 #
 # __brief__: TODO -> log
 
+# =========
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# =========
+
 import re
 
-from constants import (LENGTH_THRESHOLD)
-from logger import setup_logger
+from core.constants import (LENGTH_THRESHOLD)
+from utils.logger import setup_logger
 
 # ==========
 long_method_logger = setup_logger(name="long_method.py_logger", log_file="long_method.log")

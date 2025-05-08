@@ -6,12 +6,23 @@
 #
 # __brief__: TODO
 
+# =========
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# =========
+
+
 import re
 import keyword
+import json
+from collections import defaultdict
 
-from constants import (DUPS_THRESHOLD)
-from exceptions import (CodeProcessingError)
-from logger import setup_logger
+from core.constants import (DUPS_THRESHOLD)
+from utils.exceptions import (CodeProcessingError)
+from utils.logger import setup_logger
+
 
 # ==========
 duplicated_code_logger = setup_logger(name="duplicated_code.py_logger", log_file="duplicated_code.log")
@@ -19,66 +30,97 @@ duplicated_code_logger = setup_logger(name="duplicated_code.py_logger", log_file
 
 duplicated_code_logger.info("duplicated_code_logger")
 
+def _normalize_block(text: str) -> str:
+    """_summary_
+
+    Args:
+        text (str): block of text to be normalized
+
+    Returns:
+        str: returns the normalized text
+    """
+    lines = text.splitlines()
+    norm_lines = [line.strip() for line in lines if line.strip()]
+    return "\n".join(norm_lines)
+
 def _split_into_blocks(source_code: str) -> list:
     """_summary_
 
     Args:
-        source_code (str): source code to be processed
+        source_code (str): Source code to process
 
     Returns:
-        list: list of code blocks with their starting line numbers
+        list: List of (code_block_text, starting_line_number) tuples
     """
     lines = source_code.splitlines()
     blocks = []
+    func_map = defaultdict(list)
     current_block = []
-    current_indent = 0
-    start_line = 1
-    in_control_structure = False
+    current_indent = None
+    start_line = 0
+    current_func_name = None
 
-    for i, line in enumerate(lines, 1):
-        stripped = line.strip()
-        if not stripped:
-            continue  
-        indent_level = len(line) - len(line.lstrip())
-
-        # FIXME might need more??
-        is_control_start = stripped.startswith(('if ', 
-                                                'elif ', 
-                                                'else:', 
-                                                'for ', 
-                                                'while ', 
-                                                'try:', 
-                                                'except ', 
-                                                'finally:', 
-                                                'with',
-                                                ))
-        is_control_end = indent_level < current_indent and current_block and in_control_structure
-
-        if (stripped.startswith(('def ', 'class ')) or
-            is_control_start or
-            (current_block and indent_level < current_indent and not in_control_structure)):
-            if current_block:
-                block_text = "\n".join(current_block).strip()
-                if len(current_block) >= 3 and not block_text.startswith('return '):
-                    blocks.append((block_text, start_line))
-            current_block = [line]
-            start_line = i
-            current_indent = indent_level
-            in_control_structure = is_control_start
-        else:
-            current_block.append(line)
-            if is_control_start:
-                in_control_structure = True
-            elif indent_level <= current_indent and in_control_structure:
-                in_control_structure = False
-
-    if current_block:
-        block_text = "\n".join(current_block).strip()
-        if len(current_block) >= 3 and not block_text.startswith('return '):
+    def flush_block():
+        nonlocal current_block, start_line, current_func_name
+        non_empty = [l for l in current_block if l.strip()]
+        if len(non_empty) >= 2:
+            block_text = "\n".join(current_block).strip()
             blocks.append((block_text, start_line))
 
+            if current_func_name:
+                func_map[current_func_name].append((block_text, start_line))
+        current_block = []
+        current_func_name = None
+
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if not stripped:
+            if current_block:
+                current_block.append(line)
+            continue
+
+        indent = len(line) - len(line.lstrip())
+        is_new_block = stripped.startswith(('def ',
+                                            'class ', 
+                                            'for ', 
+                                            'while ',
+                                            'if ', 
+                                            'elif ',
+                                            'else:', 
+                                            'try:',
+                                            'except',
+                                            'finally:',
+                                            'with '))
+
+        if is_new_block or (current_block and indent <= current_indent and not line.startswith(' ')):
+            flush_block()
+
+        if not current_block:
+            start_line = i + 1
+            current_indent = indent
+
+            if stripped.startswith("def "):
+                match = re.match(r"def\s+([a-zA-Z_][a-zA-Z0-9_]*)", stripped)
+                if match:
+                    current_func_name = match.group(1)
+
+        current_block.append(line)
+
+    flush_block()
+
+    # FIXME: doesn't work
+    for name, entries in func_map.items():
+        seen = set()
+        for i in range(len(entries)):
+            for j in range(i + 1, len(entries)):
+                block_i = _normalize_block(entries[i][0])
+                block_j = _normalize_block(entries[j][0])
+                if block_i == block_j:
+                    if (block_i, block_j) not in seen:
+                        seen.add((block_i, block_j))
+                        print(f"[DUPLICATE FUNC] Function '{name}' duplicated at lines {entries[i][1]} and {entries[j][1]}")
+
     return blocks
-    
 
 def _remove_comments(source_code: str) -> str:
     """_summary_
@@ -236,23 +278,3 @@ def _find_duplicated_code(source_code: str) -> list:
     duplicated_code_logger.info(f"[info]\n {json.dumps(duplicates, indent=4)}\n")
     
     return duplicates
-
-
-# ========================================== WORKBENCH ===================================================
-
-from utility import _read_file_contents
-import json
-
-PATH = r"/Users/jbalkovec/Desktop/CPSC4260/Project/tests/test4.py"
-
-source = _read_file_contents(PATH)
-
-duplicates = _find_duplicated_code(source)
-
-json_dump = json.dumps(duplicates, indent=4)
-
-
-print("\n\n=====================================================")
-print("Duplicated Code:\n", json_dump)
-
-# ========================================================================================================

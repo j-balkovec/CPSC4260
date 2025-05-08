@@ -4,13 +4,20 @@
 #
 # __file__: save_refactored.py
 #
-# # __brief__: TODO
+# __brief__: TODO
+
+# =========
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# =========
 
 import os
 import time
 
-from exceptions import (FileEmptyError)
-from logger import setup_logger
+from utils.exceptions import (FileEmptyError)
+from utils.logger import setup_logger
 
 # ==========
 save_refactored_logger = setup_logger(name="save_refactored.py_logger", log_file="save_refactored.log")
