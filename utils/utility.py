@@ -132,7 +132,74 @@ def _generate_readable_report(filename: str):
     # TODO info messages in color
 
 
+# Used only during development
+def _pretty_print(funcs_dict: dict) -> None:
+    """_summary_
+    
+    Args:
+        funcs_dict (dict): Dictionary containing function names and their details.
+        
+    Returns:
+        None
+    """
+    print("[")
+    for i, (name, data) in enumerate(funcs_dict.items()):
+        print(f'\n\n  "{name}": {{')
+        print(f'    "code": """')
+        print(data["text"])
+        print(f'    """,')
+        print(f'    "start": {data["start"]},')
+        print(f'    "end": {data["end"]}')
+        print("  }" + ("," if i < len(funcs_dict) - 1 else ""))
+    print("\n\n]")
 
 
+def _pretty_print_debug_dict(debug: dict) -> None:
+    """_summary_
 
+    Args:
+        debug (dict): Dictionary containing debug details.
+    """
+    def format_function_text(text: str) -> str:
+        lines = text.strip().splitlines()
+        return "\n" + "\n".join("                " + line for line in lines)
 
+    result = "{\n"
+
+    result += '    "functions": {\n'
+    for name, info in debug.get("functions", {}).items():
+        result += f'        "{name}": {{\n'
+        result += f'            "start": {info["start"]},\n'
+        result += f'            "end": {info["end"]},\n'
+        escaped_text = format_function_text(info["text"]).replace('"', '\\"')
+        result += f'            "text": "{escaped_text}"\n'
+        result += "        },\n"
+    if debug.get("functions"):
+        result = result.rstrip(",\n") + "\n"
+    result += "    },\n"
+
+    result += '    "tokens": {\n'
+    for name, tokens in debug.get("tokens", {}).items():
+        token_list = json.dumps(tokens, indent=12)
+        result += f'        "{name}": {token_list},\n'
+    if debug.get("tokens"):
+        result = result.rstrip(",\n") + "\n"
+    result += "    },\n"
+
+    result += '    "similarities": [\n'
+    for sim in debug.get("similarities", []):
+        pair_str = json.dumps(sim, indent=8)
+        result += f"        {pair_str},\n"
+    if debug.get("similarities"):
+        result = result.rstrip(",\n") + "\n"
+    result += "    ],\n"
+
+    result += '    "duplicates": [\n'
+    for dup in debug.get("duplicates", []):
+        result += f"        {json.dumps(dup)},\n"
+    if debug.get("duplicates"):
+        result = result.rstrip(",\n") + "\n"
+    result += "    ]\n"
+
+    result += "}\n"
+    print(result)

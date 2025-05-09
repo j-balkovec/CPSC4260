@@ -21,3 +21,7 @@ def dup2():
           matrix[2].append(l)
           
   return matrix
+
+
+dup1()
+dup2()

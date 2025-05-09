@@ -1,4 +1,4 @@
-def dup(x, y):
+def foo(x, y):
     # shared logic start
     result = x * y
     if result > 100:
@@ -9,7 +9,7 @@ def dup(x, y):
     # shared logic end
     return message
 
-def dup(a, b):
+def bar(a, b):
     # shared logic start
     result = a * b
     if result > 100:

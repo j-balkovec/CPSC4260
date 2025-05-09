@@ -22,27 +22,6 @@ def compute_average(data):
     total = compute_sum(data)
     return total / len(data)
 
-for item in sorted_data:
-    cum_sum += item.get('value', 0)
-    item['cumulative'] = cum_sum
-
-for element in sorted_data:
-    cum_sum += element.get('value', 0)
-    element['cumulative'] = cum_sum
-
-for item in sorted_data:
-    item['above_avg'] = (item.get('value', 0) > avg)
-report = []
-
-for i in range(10):
-    print(i)
-
-for i in range(0, 10):
-    print(i)
-
-x = a + b
-y = b + a
-
 def greet():
     print("Hello, world!")
 

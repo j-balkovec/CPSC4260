@@ -16,12 +16,11 @@ TODAY:
 - Refactor method
 - [maybe] fix gui problem...shift to terminal only or use the terminal GUI only...ideally would have 2 options
 
-
 - Do the backend part first, figure out the frontend later
 
 ISSUES:
  - GUI
- - NO refactor method yet
+ - Need to somehow remove residual function body + signature
 
 NOTE:
 
@@ -38,3 +37,9 @@ Fix Strategy (Summary)
 	•	Don’t call the extracted function globally.
 	•	Preserve indentation.
 	•	Replace the duplicated block in-place, not just extract and call.
+
+Problems:
+•	Matching signatures (not checking or preserving args)
+•	Assuming identical return type
+
+NEEDS PYTHON 3.8 DUE TO THE 'ast' MODULE ["end_lineno"]
