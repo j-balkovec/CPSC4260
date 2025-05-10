@@ -17,8 +17,21 @@ import pytest
 
 from core.refactor import _refactor_with_ast
 from utils.utility import _read_file_contents
+from core.constants import TEST_PATHS
 
-EXAMPLES2 = 
+# list of tuples
+def get_test_files():
+    test_cases = []
+    for num, path in list((TEST_PATHS.items()))[-10:]: 
+        raw_code = _read_file_contents(path)
+        test_cases.append((raw_code, True)) #jank
+        
+    return test_cases
+            
+    
+
+
+EXAMPLES2 = get_test_files()
 
 
 EXAMPLES = [
@@ -130,7 +143,7 @@ def outer2():
 def is_helper_generated(refactored_code: str) -> bool:
     return any("_common_logic_" in line for line in refactored_code.splitlines())
 
-@pytest.mark.parametrize("source_code, expect_helper", EXAMPLES)
+@pytest.mark.parametrize("source_code, expect_helper", EXAMPLES2)
 def test_refactor_cases(source_code, expect_helper):
     try:
         tree = ast.parse(source_code)
