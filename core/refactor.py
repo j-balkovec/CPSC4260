@@ -22,6 +22,7 @@ from typing import List, Dict, Set, Tuple
 
 from utils.logger import setup_logger
 from utils.exceptions import CodeProcessingError
+from utils.utility import (_read_file_contents)
 
 from core.duplicated_finder import (_tokenize_block, 
                                     _normalize_block, 
@@ -34,8 +35,127 @@ from core.constants import (DUPS_THRESHOLD)
 # Logger setup
 refactor_logger = setup_logger(name="refactor_duplicates.py_logger", log_file="refactor_duplicates.log")
 
-# tested -> works
+class DuplicateRefactorer(ast.NodeTransformer):
+    def __init__(self, duplicates, functions_map):
+        """_summary_
+
+        Args:
+            duplicates (_type_): list of tuples containing function names and their Jaccard similarity
+            functions_map (_type_): dictionary mapping function names to their AST nodes
+        """
+        super().__init__()
+        self.dup_funcs = {f for f1, f2, _ in duplicates for f in (f1, f2)}
+        sample = functions_map[duplicates[0][0]].body
+        self.helper = _make_helper_node(
+            func_name=duplicates[0][0],
+            args=[arg.arg for arg in functions_map[duplicates[0][0]].args.args],
+            body=sample
+        )
+
+
+    def visit_Module(self, node: ast.Module):
+        """_summary_
+                * Module Level
+        Args:
+            node (ast.Module): node to be transformed
+
+        Returns:
+            _type_: transformed node
+        """
+        node.body.insert(0, self.helper)
+        self.generic_visit(node)
+        return node
+
+
+    def visit_FunctionDef(self, node: ast.FunctionDef):
+        """_summary_
+                * Function Level
+        Args:
+            node (ast.FunctionDef): node to be transformed
+
+        Returns:
+            _type_: transformed node
+        """
+        if node.name in self.dup_funcs:
+            call = ast.Call(
+                func=ast.Name(self.helper.name, ast.Load()),
+                args=[ast.Name(arg.arg, ast.Load()) for arg in node.args.args],
+                keywords=[]
+            )
+            has_return_with_value = any(
+                isinstance(stmt, ast.Return) and stmt.value is not None
+                for stmt in node.body
+            )
+
+            if has_return_with_value:
+                new_body = [ast.Return(value=call)]
+            else:
+                new_body = [ast.Expr(value=call)]
+
+            node.body = new_body
+        return node
+
+
+def _make_helper_node(func_name: str, args: list, body: list) -> ast.FunctionDef:
+    """_summary_
+
+    Args:
+        func_name (str): name of the function
+        args (list): list of arguments
+        body (list): list of statements
+
+    Returns:
+        ast.FunctionDef: function definition node
+    """
+    h = hashlib.md5(func_name.encode()).hexdigest()
+    helper_name = f"_common_logic_{h}"
+    
+    new_args = ast.arguments(
+        posonlyargs=[],
+        args=[ast.arg(arg=arg, annotation=None) for arg in args],
+        vararg=None, kwonlyargs=[], kw_defaults=[],
+        kwarg=None, defaults=[]
+    )
+    
+    return ast.FunctionDef(
+        name=helper_name,
+        args=new_args,
+        body=body,
+        decorator_list=[],
+        returns=None
+    )
+    
+    
+def _refactor_with_ast(source_code: str, duplicates: list) -> str:
+    """_summary_
+
+    Args:
+        source_code (str): source code to be refactored
+        duplicates (list): list of tuples containing function names and their Jaccard similarity
+
+    Returns:
+        str: refactored source code
+    """
+    tree = ast.parse(source_code)
+    
+    func_map = {n.name: n for n in tree.body if isinstance(n, ast.FunctionDef)}
+    transformer = DuplicateRefactorer(duplicates, func_map)
+    
+    new_tree = transformer.visit(tree)
+    ast.fix_missing_locations(new_tree)
+    
+    return ast.unparse(new_tree)
+
+
 def _extract_functions(source_code: str) -> dict:
+    """_summary_
+
+    Args:
+        source_code (str): source code to be processed
+
+    Returns:
+        dict: dictionary mapping function names to their AST nodes
+    """
     functions = {}
     source_code = _remove_comments(source_code)
     tree = ast.parse(source_code)
@@ -52,16 +172,19 @@ def _extract_functions(source_code: str) -> dict:
                     if line.strip() and (len(line) - len(line.lstrip()) <= indent) and not line.lstrip().startswith('#'):
                         break
                     end_line += 1
+                end_line = min(end_line + 1, len(lines))
             else:
                 start_line = node.lineno - 1
                 end_line = node.end_lineno
 
-            start_offset = sum(len(l) for l in lines[:start_line])
-            
-            end_offset = sum(len(l) for l in lines[:end_line])
-            if end_line < len(lines):
-                end_offset += len(lines[end_line])
-                
+                while end_line < len(lines) and (
+                    lines[end_line].strip() == "" or lines[end_line].lstrip().startswith("#")
+                ):
+                    end_line += 1
+
+            start_offset = sum(len(line) for line in lines[:start_line])
+            end_offset = sum(len(line) for line in lines[:end_line])
+
             func_text = ''.join(lines[start_line:end_line])
             functions[node.name] = {
                 "name": node.name,
@@ -71,8 +194,17 @@ def _extract_functions(source_code: str) -> dict:
             }
 
     return functions
-# tested -> works
+
+
 def _find_duplicates(func_map: dict) -> list:
+    """_summary_
+
+    Args:
+        func_map (dict): dictionary mapping function names to their AST nodes
+
+    Returns:
+        list: list of tuples containing function names and their Jaccard similarity
+    """
     tokens = {name: _tokenize_block(data["text"]) for name, data in func_map.items()}
     duplicates = []
     
@@ -87,77 +219,32 @@ def _find_duplicates(func_map: dict) -> list:
                 seen.add((a, b))
     return duplicates
 
-# tested -> works
-def _hash_var(name: str, type: str) -> str:
-    hash = hashlib.md5(name.encode()).hexdigest()
-    
-    if type == 'var':
-        return "var_" + hash
-    
-    elif type == 'func':
-        return hash
-    
-    else:
-        raise CodeProcessingError(f"invalid type for hashing: {type}. Must be 'var' or 'func'.")
-    
+# ============================== CALLABLE ===========================
+def refactor_duplicates(filepath) -> str:
+    """_summary_
 
-def _parse_signature(header: str) -> Tuple[str, str]:
-    match = re.match(r'\s*def\s+(\w+)\s*\((.*?)\)\s*:', header)
-    if not match:
-        raise CodeProcessingError("Invalid function header")
-    return match.group(1), match.group(2)
+    Args:
+        filepath (_type_): filepath to be processed
 
+    Raises:
+        CodeProcessingError: if the file could not be read
 
-def _refactor_duplicates(source_code: str, duplicates: list, debug = False) -> str:
-    functions = _extract_functions(source_code)
-    helpers = []
-    replacements = []
-
-    for idx, (f1, f2, _) in enumerate(duplicates):
-        fn1 = functions[f1]
-        fn2 = functions[f2]
-
-        # Get header and args
-        header1 = fn1["text"].splitlines()[0]
-        _, args = _parse_signature(header1)
-
-        # Get function body (without header)
-        body_lines = fn1["text"].splitlines()[1:]
-        if not body_lines:
-            continue
-
-        # Re-indent body to 1-level inside the helper
-        body = "\n".join("  " + line for line in body_lines)
-        helper_name = f"_common_logic_{_hash_var(f1, 'func')}"
-        helpers.append(f"def {helper_name}({args}):\n{body}\n")
-
-        # Build replacements
-        new_def_1 = f"def {fn1['name']}({args}):\n    return {helper_name}({args})\n"
-        new_def_2 = f"def {fn2['name']}({args}):\n    return {helper_name}({args})\n"
-        replacements.append((fn1["start"], fn1["end"], new_def_1))
-        replacements.append((fn2["start"], fn2["end"], new_def_2))
+    Returns:
+        str: refactored source code
+    """
+    source_code = _read_file_contents(filepath)
+    if not source_code:
+        raise CodeProcessingError(f"Could't read any code from: {filepath}")
     
-    if debug == True:
-        for start, end, new_func in sorted(replacements, key=lambda x: x[0], reverse=True):
-            old_func = source_code[start:end]
-            print("=== OLD FUNC ===")
-            print(old_func)
-            print("=== NEW FUNC ===")
-            print(new_func)
-            print("---")
-            source_code = source_code[:start] + new_func + source_code[end:]
+    functions_dict = _extract_functions(source_code)
+    duplicates = _find_duplicates(functions_dict)
     
-    else:
-        for start, end, new_func in sorted(replacements, key=lambda x: x[0], reverse=True):
-            source_code = source_code[:start] + new_func + source_code[end:]
-
-    return "\n".join(helpers) + "\n\n" + source_code
-    
-    
-    
-    
+    return _refactor_with_ast(source_code, duplicates)
+# ===================================================================
+# >
+# >
+# >
 # ============================== DEBUG ==============================
-
 def _debug_dict(source_code: str, threshold: float = 0.85) -> dict:
     debug = {}
 
@@ -191,5 +278,4 @@ def _debug_dict(source_code: str, threshold: float = 0.85) -> dict:
 
     refactor_logger.debug("debug_dict", debug)
     return debug
-
 # ===================================================================

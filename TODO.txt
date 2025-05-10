@@ -6,6 +6,7 @@ OVERALL:
 - Print in color
 - info messages in color @ see analyze.py (generate_readable_report)
 - TXT report to HTML somewhere down the road
+- DOCUMENT FILES
 
 BUG:
 - The Application is very slow and unresponsive
@@ -43,3 +44,5 @@ Problems:
 •	Assuming identical return type
 
 NEEDS PYTHON 3.8 DUE TO THE 'ast' MODULE ["end_lineno"]
+
+Fails on test case 7 -> OFFICE HRS
