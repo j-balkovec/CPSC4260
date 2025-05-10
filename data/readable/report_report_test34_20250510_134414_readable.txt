@@ -1,0 +1,19 @@
+===== SOFTWARE ANALYSIS REPORT =====
+
+>> Long Parameter List Detections:
+
+>> Long Method Detections:
+
+>> Duplicated Code Detections:
+
+  - Duplicate 1: (Similarity: 1.00)
+    * Block 1 (Line 2):
+        if not isinstance(x, (int, float)) or not isinstance(y, (int, float)):
+                raise TypeError("Inputs must be numbers.")
+            return x * y
+    * Block 2 (Line 6):
+        if not isinstance(val1, (int, float)) or not isinstance(val2, (int, float)):
+                raise TypeError("Inputs must be numeric.")
+            return val1 * val2
+
+===== END OF REPORT =====
