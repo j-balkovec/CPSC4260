@@ -6,7 +6,7 @@
 - **Files 11–20**: Test cases for **Long Parameter List** detection  
 - **Files 21–30**: Test cases for **Duplicated Code** detection  
 - **Files 31–40**: Test cases for **Refactoring Long Methods**  
-- **Files 30–40**: (Overlap) Also used for **Refactoring** scenarios
+- **Files 31–40**: (Overlap) Also used for **Refactoring** scenarios
 
 ### Project Tree
 
