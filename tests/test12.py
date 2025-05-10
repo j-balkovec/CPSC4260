@@ -1,4 +1,4 @@
-def format_address(street, city, state, zip_code, country="USA", apartment=None):
+def format_address(street, city):
     """
     Formats a mailing address.
 
@@ -17,6 +17,10 @@ def format_address(street, city, state, zip_code, country="USA", apartment=None)
         - Empty street, city, state, or zip_code will result in a partially formatted address.
         - None values for optional parameters are handled gracefully.
     """
+    state = "WA"
+    zip_code = "98101"
+    country = "USA"
+    apartment = None
     address_parts = [street]
     if apartment:
         address_parts.append(f"Apt/Suite {apartment}")

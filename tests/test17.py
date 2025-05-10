@@ -1,4 +1,4 @@
-def process_sensor_data(timestamp, sensor_id, temperature=None, humidity=None, pressure=None, location=None):
+def process_sensor_data(timestamp):
     """
     Processes data from a sensor reading.
 
@@ -17,6 +17,11 @@ def process_sensor_data(timestamp, sensor_id, temperature=None, humidity=None, p
         - Missing optional parameters are represented as None in the output.
         - Invalid data types for readings are not explicitly handled here but could be added.
     """
+    sensor_id = 13989732
+    temperature = 67 
+    humidity = 5
+    pressure = 12 
+    location = "37.7749, -122.4194"  # Example coordinates for San Francisco
     sensor_data = {
         "timestamp": timestamp,
         "sensor_id": sensor_id,
