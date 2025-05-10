@@ -1,3 +1,7 @@
+# name: num_2_process_data_v1_process_info_v1
+# label: 22
+# method_tested: find_duplicated_code()
+# should_fail: False
 def process_data_v1(item_id, value, multiplier=1, offset=0):
     """Processes data by multiplying and adding an offset."""
     if not isinstance(item_id, int) or not isinstance(value, (int, float)):

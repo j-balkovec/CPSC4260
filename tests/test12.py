@@ -1,3 +1,7 @@
+# name: num_2_format_address
+# label: 12
+# method_tested: find_long_parameter_list()
+# should_fail: True
 def format_address(street, city):
     """
     Formats a mailing address.

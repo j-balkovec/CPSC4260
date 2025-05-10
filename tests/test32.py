@@ -1,3 +1,7 @@
+# name: num_2_calculate_square_v1_get_squared_value_v1
+# label: 32
+# method_tested: refactor_duplicates()
+# should_fail: False
 def calculate_square_v1(number):
     """Calculates the square of a number."""
     if not isinstance(number, (int, float)):

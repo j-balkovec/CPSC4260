@@ -1,3 +1,7 @@
+# name: num_1_process_string_with_whitespace
+# label: 1
+# method_tested: find_long_method()
+# should_fail: False
 def process_string_with_whitespace(input_string):
     """
     This function takes a string, removes leading and trailing whitespace,

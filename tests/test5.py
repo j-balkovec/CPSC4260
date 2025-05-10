@@ -1,3 +1,7 @@
+# name: num_5_filter_and_sort_dictionary
+# label: 5
+# method_tested: find_long_method()
+# should_fail: True
 def filter_and_sort_dictionary(input_dict, key_prefix="item"):
     """
     Filters a dictionary to include only items where the key starts with

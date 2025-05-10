@@ -1,3 +1,7 @@
+# name: num_8_get_euclidean_distance_v1_find_distance_between_points_v1
+# label: 28
+# method_tested: find_duplicated_code()
+# should_fail: True
 import math
 
 def get_euclidean_distance_v1(point1, point2):

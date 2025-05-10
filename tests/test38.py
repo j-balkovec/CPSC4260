@@ -1,3 +1,7 @@
+# name: num_8_add_two_integers_a_sum_of_two_whole_numbers_b
+# label: 38
+# method_tested: refactor_duplicates()
+# should_fail: False
 def add_two_integers_a(int1, int2):
     """Adds two integers."""
     if not isinstance(int1, int) or not isinstance(int2, int):

@@ -1,3 +1,7 @@
+# name: num_9_process_item_details_a_calculate_final_price_a
+# label: 29
+# method_tested: find_duplicated_code()
+# should_fail: False
 def process_item_details_a(item_id, name, price):
     """Processes basic item details."""
     return f"ID: {item_id}, Name: {name}, Price: ${price:.2f}"

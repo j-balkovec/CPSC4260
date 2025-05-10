@@ -1,3 +1,7 @@
+# name: num_5_calculate_polygon_area
+# label: 15
+# method_tested: find_long_parameter_list()
+# should_fail: False
 def calculate_polygon_area(num_sides, side_length, apothem=None, circumradius=None):
     """
     Calculates the area of a regular polygon. Requires either the apothem or the circumradius.

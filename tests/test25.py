@@ -1,3 +1,7 @@
+# name: num_5_format_user_details_short_format_account_info_extended
+# label: 25
+# method_tested: find_duplicated_code()
+# should_fail: True
 def format_user_details_short(user_id, username, role):
     """Formats basic user details."""
     if not user_id:

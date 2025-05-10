@@ -1,3 +1,7 @@
+# name: num_1_calculate_compound_interest
+# label: 11
+# method_tested: find_long_parameter_list()
+# should_fail: False
 def calculate_compound_interest(principal, rate, time, compounding_frequency, initial_deposit=0):
     """
     Calculates compound interest.

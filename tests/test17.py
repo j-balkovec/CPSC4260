@@ -1,3 +1,7 @@
+# name: num_7_process_sensor_data
+# label: 17
+# method_tested: find_long_parameter_list()
+# should_fail: True
 def process_sensor_data(timestamp):
     """
     Processes data from a sensor reading.

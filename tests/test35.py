@@ -1,3 +1,7 @@
+# name: num_5_check_if_positive_v1_is_greater_than_zero_v1
+# label: 35
+# method_tested: refactor_duplicates()
+# should_fail: False
 def check_if_positive_v1(num):
     """Checks if a number is positive."""
     if not isinstance(num, (int, float)):

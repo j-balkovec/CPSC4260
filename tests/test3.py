@@ -1,3 +1,7 @@
+# name: num_3_format_paragraph_with_indentation
+# label: 3
+# method_tested: find_long_method()
+# should_fail: True
 def format_paragraph_with_indentation(paragraph, indent_level=4):
     """
     Formats a paragraph by splitting it into lines and adding a specified

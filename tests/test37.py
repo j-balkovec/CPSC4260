@@ -1,3 +1,7 @@
+# name: num_7_get_user_greeting_v1_generate_welcome_message_v1
+# label: 37
+# method_tested: refactor_duplicates()
+# should_fail: False
 def get_user_greeting_v1(username):
     """Returns a greeting for a user."""
     if not isinstance(username, str):

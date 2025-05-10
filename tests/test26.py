@@ -1,3 +1,7 @@
+# name: num_6_display_product_summary_show_order_details_with_shipping
+# label: 26
+# method_tested: find_duplicated_code()
+# should_fail: False
 def display_product_summary(product_code, product_name, price):
     """Displays a brief product summary."""
     if not product_code:

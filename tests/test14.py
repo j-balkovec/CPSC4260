@@ -1,3 +1,7 @@
+# name: num_4_update_user_profile
+# label: 14
+# method_tested: find_long_parameter_list()
+# should_fail: False
 def update_user_profile(user_id, new_username=None, new_email=None, new_password=None, bio=None, city=None):
     """
     Updates a user profile with provided information.

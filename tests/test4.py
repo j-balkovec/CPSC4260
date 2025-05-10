@@ -1,3 +1,7 @@
+# name: num_4_check_password_complexity
+# label: 4
+# method_tested: find_long_method()
+# should_fail: False
 def check_password_complexity(password):
     """
     Checks if a password meets certain complexity requirements:

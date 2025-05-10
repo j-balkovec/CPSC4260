@@ -1,3 +1,7 @@
+# name: num_8_calculate_mortgage_payment
+# label: 18
+# method_tested: find_long_parameter_list()
+# should_fail: False
 def calculate_mortgage_payment(principal, annual_interest_rate, loan_term_years, down_payment=0, property_tax_rate=0, insurance_rate=0):
     """
     Calculates the monthly mortgage payment (principal, interest, property tax, and insurance).

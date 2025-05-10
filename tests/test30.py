@@ -1,3 +1,7 @@
+# name: num_10_log_message_simple_v1_audit_action_simple_v1
+# label: 30
+# method_tested: find_duplicated_code()
+# should_fail: True
 def log_message_simple_v1(message, level="INFO"):
     """Logs a simple message."""
     return f"[{level.upper()}]: {message}"

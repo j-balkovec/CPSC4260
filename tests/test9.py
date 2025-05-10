@@ -1,3 +1,7 @@
+# name: num_9_format_data_table
+# label: 9
+# method_tested: find_long_method()
+# should_fail: False
 def format_data_table(data, headers=None, padding=3):
     """
     Formats a list of lists into a simple text-based table with padding.

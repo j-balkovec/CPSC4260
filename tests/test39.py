@@ -1,3 +1,7 @@
+# name: num_9_convert_to_uppercase_v1_make_string_upper_v1
+# label: 39
+# method_tested: refactor_duplicates()
+# should_fail: False
 def convert_to_uppercase_v1(text):
     """Converts a string to uppercase."""
     if not isinstance(text, str):

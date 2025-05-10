@@ -1,3 +1,7 @@
+# name: num_7_calculate_geometric_mean
+# label: 7
+# method_tested: find_long_method()
+# should_fail: False
 def calculate_geometric_mean(number_list):
     """
     Calculates the geometric mean of a list of positive numbers.
