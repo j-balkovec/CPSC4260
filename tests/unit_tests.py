@@ -18,6 +18,8 @@ import pytest
 from core.refactor import _refactor_with_ast
 from utils.utility import _read_file_contents
 
+EXAMPLES2 = 
+
 
 EXAMPLES = [
     # 1. Return vs void function

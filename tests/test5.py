@@ -1,29 +1,15 @@
-sorted_data = [{'value': 10}, {'value': 20}, {'value': 30}]
+def filter_and_sort_dictionary(input_dict, key_prefix="item"):
+    """
+    Filters a dictionary to include only items where the key starts with
+    the given prefix, and then sorts the resulting items by their values.
 
-cum_sum = 0
-avg = 0.0
-a = 0
-b = 0
+    Handles empty dictionaries and dictionaries with no matching keys.
+    """
+    filtered_items = {k: v for k, v in input_dict.items() if k.startswith(key_prefix)}
 
-def compute_max(data):
-    max_value = data[0]
-    for item in data:
-        if item > max_value:
-            max_value = item
-    return max_value
+    if not filtered_items:
+        return []
 
-def compute_sum(data):
-    total = 0
-    for item in data:
-        total += item
-    return total
+    sorted_items = sorted(filtered_items.items(), key=lambda item: item[1])
 
-def compute_average(data):
-    total = compute_sum(data)
-    return total / len(data)
-
-def greet():
-    print("Hello, world!")
-
-def greet_user(name):
-    print(f"Hello, {name}!")
+    return sorted_items

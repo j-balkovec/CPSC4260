@@ -1,9 +1,17 @@
-# This is a comment
+def analyze_list_with_gaps(data_list):
+    """
+    Analyzes a list of numbers, ignoring potential None values or
+    non-numeric entries. Calculates the sum and average of the valid numbers.
 
-# This is another comment
+    Handles empty lists and lists with no valid numbers as edge cases.
+    """
+    valid_numbers = [item for item in data_list if isinstance(item, (int, float))]
 
-"""this is also a comment"""
+    if not valid_numbers:
+        return 0, 0  # Handle empty list or no valid numbers
 
-x = 12 + 1
-y = x + 2
-z = "string"
+    total = sum(valid_numbers)
+
+    average = total / len(valid_numbers)
+
+    return total, average

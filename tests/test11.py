@@ -1,27 +1,30 @@
-def dup1():
-  matrix = [[], [], []]
-  for i in range(1, 5):
-    for j in range(1, 5):
-      for k in range(1, 5):
-        if i != j and j != k and i != k:
-          matrix[0].append(i)
-          matrix[1].append(j)
-          matrix[2].append(k)
-          
-  return matrix
+def calculate_compound_interest(principal, rate, time, compounding_frequency, initial_deposit=0):
+    """
+    Calculates compound interest.
 
-def dup2():
-  matrix = [[], [], []]
-  for m in range(1, 5):
-    for n in range(1, 5):
-      for l in range(1, 5):
-        if m != n and n != l and m != l:
-          matrix[0].append(m)
-          matrix[1].append(n)
-          matrix[2].append(l)
-          
-  return matrix
+    Args:
+        principal (float): The initial principal balance.
+        rate (float): The annual interest rate (as a decimal).
+        time (float): The number of years the money is invested or borrowed for.
+        compounding_frequency (int): The number of times that interest is compounded per year.
+        initial_deposit (float, optional): An additional initial deposit. Defaults to 0.
 
+    Returns:
+        float: The final amount after the specified time.
 
-dup1()
-dup2()
+    Edge Cases:
+        - Negative principal, rate, or time will raise a ValueError.
+        - Zero compounding frequency will raise a ValueError.
+    """
+    if principal < 0 or rate < 0 or time < 0:
+        raise ValueError("Principal, rate, and time cannot be negative.")
+    if compounding_frequency <= 0:
+        raise ValueError("Compounding frequency must be positive.")
+
+    n = compounding_frequency
+    r = rate
+    t = time
+    P = principal + initial_deposit
+
+    final_amount = P * (1 + r / n)**(n * t)
+    return final_amount

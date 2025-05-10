@@ -1,22 +1,26 @@
-def func():
-  
-  print(1)
-  print(1)
+def format_address(street, city, state, zip_code, country="USA", apartment=None):
+    """
+    Formats a mailing address.
 
-  print(1)
-  print(1)
+    Args:
+        street (str): The street address.
+        city (str): The city.
+        state (str): The state or province.
+        zip_code (str): The zip or postal code.
+        country (str, optional): The country. Defaults to "USA".
+        apartment (str, optional): The apartment, suite, or unit number. Defaults to None.
 
-  print(1)
-  print(1)
-  
-  
-def func2():
-  
-  print(1)
-  print(1)
+    Returns:
+        str: The formatted address.
 
-  print(1)
-  print(1)
-
-  print(1)
-  print(1)
+    Edge Cases:
+        - Empty street, city, state, or zip_code will result in a partially formatted address.
+        - None values for optional parameters are handled gracefully.
+    """
+    address_parts = [street]
+    if apartment:
+        address_parts.append(f"Apt/Suite {apartment}")
+    address_parts.append(f"{city}, {state} {zip_code}")
+    if country != "USA":
+        address_parts.append(country)
+    return "\n".join(part for part in address_parts if part)

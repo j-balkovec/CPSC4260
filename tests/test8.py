@@ -1,21 +1,15 @@
-def dup(x, y):
-    # shared logic start
-    result = x * y
-    if result > 100:
-        status = 'large'
-    else:
-        status = 'small'
-    message = f"Result is {result}, status: {status}"
-    # shared logic end
-    return message
+def find_common_elements_with_whitespace(list1, list2):
+    """
+    Finds common elements between two lists, ignoring leading/trailing
+    whitespace in the elements. Handles empty lists.
+    """
+    if not list1 or not list2:
+        return []
 
-def dup(a, b):
-    # shared logic start
-    result = a * b
-    if result > 100:
-        status = 'large'
-    else:
-        status = 'small'
-    message = f"Result is {result}, status: {status}"
-    # shared logic end
-    return message
+    set1 = {item.strip() for item in list1}
+    set2 = {item.strip() for item in list2}
+
+
+    common_elements = list(set1.intersection(set2))
+
+    return common_elements

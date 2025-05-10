@@ -1,8 +1,16 @@
-def greet_user(user):
-    print(f"Hello, {user}!")
-    
-def greet_bob():
-    print("Hello, Bob!")
-    
-def greet_alice():
-    print("Hello, Alice!")
+def calculate_geometric_mean(number_list):
+    """
+    Calculates the geometric mean of a list of positive numbers.
+
+    Handles empty lists and lists containing non-positive numbers as edge cases.
+    """
+    if not number_list:
+        return 0
+
+    product = 1
+    for num in number_list:
+        if num <= 0:
+            raise ValueError("List must contain only positive numbers")
+        product *= num
+
+    return product ** (1 / len(number_list))
