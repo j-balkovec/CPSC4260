@@ -3,7 +3,8 @@
 # __date__: Sat Apr 19th, 2025
 #
 # __file__: get_file_info.py
-# __brief__: TODO
+#
+# __brief__: This script extracts all the necessary file info
 
 # =========
 import sys

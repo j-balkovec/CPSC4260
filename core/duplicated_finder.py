@@ -4,7 +4,7 @@
 #
 # __file__: duplicated_code.py
 #
-# __brief__: TODO
+# __brief__: This file contains the logic for finding duplicated code blocks in a given source code.
 
 # =========
 import sys

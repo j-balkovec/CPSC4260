@@ -4,7 +4,7 @@
 #
 # __file__: constants.py
 #
-# __brief__: TODO
+# __brief__: This file holds all the constants used in the project in one place, avoiding shotgun surgery
 
 # =========
 import sys

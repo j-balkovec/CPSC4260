@@ -4,7 +4,7 @@
 #
 # __file__: save_refactored.py
 #
-# __brief__: TODO
+# __brief__: This script is used for saving the refactored code to a new file
 
 # =========
 import sys
@@ -42,15 +42,16 @@ def save_refactored_file(file_content: str, original_filename: str) -> str:
     if not file_content.strip():
         raise FileEmptyError("File content is empty", filename=original_filename, function="save_refactored_file()")
 
-    out_dir = "refactored"
-    os.makedirs(out_dir, exist_ok=True)
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    
+    refactored_dir = os.path.join(project_root, "data", "refactored")
+    os.makedirs(refactored_dir, exist_ok=True)
 
     name, ext = os.path.splitext(os.path.basename(original_filename))
     timestamp = time.strftime("%Y%m%d_%H%M%S")
     new_filename = f"refactored_{name}_{timestamp}{ext}"
-    out_path = os.path.join(out_dir, new_filename)
+    out_path = os.path.join(refactored_dir, new_filename)
 
-    # Save the file
     with open(out_path, "w") as f:
         f.write(file_content)
 

@@ -4,7 +4,7 @@
 #
 # __file__: halstead_metrics.py
 #
-# __brief__: TODO
+# __brief__: This file contains the logic used to calculate the Halstead metrics
 
 # =========
 import sys

@@ -4,7 +4,7 @@
 #
 # __file__: long_method.py
 #
-# __brief__: TODO -> log
+# __brief__: This file contains all the logic used for finding long methods in a given source code file.
 
 # =========
 import sys

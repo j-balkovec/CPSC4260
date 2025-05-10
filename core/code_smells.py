@@ -4,7 +4,7 @@
 #
 # __file__: code_smells.py
 #
-# __brief__: TODO
+# __brief__: This file serves as the interface for finding code smells
 
 # =========
 import sys
@@ -32,11 +32,14 @@ code_smells_logger.info("code_smells_logger")
 def find_code_smells(file_name: str) -> dict:
     """_summary_
 
+    Args:
+        file_name (str): name of the file
+        
     Raises:
-        TypeError: _description_
+        TypeError: raised when the file could not be read
 
     Returns:
-        dict: _description_
+        dict: summary of all code smells
     """
     source_code = _read_file_contents(file_name)
     

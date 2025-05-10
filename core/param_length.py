@@ -4,7 +4,7 @@
 #
 # __file__: long_param_list.py
 #
-# __brief__: TODO -> log
+# __brief__: This file contains all the logic used for finding methods with long parameter lists in a given source file of code
 
 # =========
 import sys

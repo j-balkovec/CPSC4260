@@ -6,7 +6,7 @@
 #
 # __brief__: Script to refactor duplicated code by extracting common blocks into functions
 #            and replacing duplicates with function calls.
-
+#
 # =========
 import sys
 import os
@@ -192,7 +192,7 @@ def _extract_functions(source_code: str) -> dict:
                 "end": end_offset,
                 "text": func_text
             }
-
+            
     return functions
 
 
@@ -217,6 +217,7 @@ def _find_duplicates(func_map: dict) -> list:
             if sim >= DUPS_THRESHOLD:
                 duplicates.append((a, b, sim))
                 seen.add((a, b))
+    
     return duplicates
 
 # ============================== CALLABLE ===========================
@@ -276,6 +277,9 @@ def _debug_dict(source_code: str, threshold: float = 0.85) -> dict:
     DUPS_THRESHOLD = prev_threshold
     debug["duplicates"] = duplicates
 
+    if debug is None:
+        refactor_logger.error("debug_dict was not generated")
+        
     refactor_logger.debug("debug_dict", debug)
     return debug
 # ===================================================================

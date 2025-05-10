@@ -4,7 +4,7 @@
 #
 # __file__: code_metrics.py
 #
-# __brief__: TODO -> log
+# __brief__: This file contains the code metrics functionality
 
 # =========
 import sys
