@@ -180,7 +180,9 @@ def save_to_json(metadata: dict):
     Returns:
         _type_: path of the output file (<path>/json/info_<file_name>_<timestamp>.json)
     """
-    json_dir = os.path.join(os.getcwd(), "file_info")
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    
+    json_dir = os.path.join(project_root, "data", "file_info")
     os.makedirs(json_dir, exist_ok=True)
 
     base_name = os.path.splitext(metadata['Name'])[0]
