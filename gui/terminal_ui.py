@@ -4,21 +4,29 @@
 #
 # __file__: new_gui.py
 #
-# __brief__: TODO
+# __brief__: Terminal user interface for the Code Smell Detector
 
 # IDK HOW THIS WORKS with logging and message passing
+
+# =========
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# =========
 
 import os
 import json
 
-from CPSC4260.project_root.core.file_info_extractor import extract_file_info, save_to_json
-from CPSC4260.project_root.core.file_saver import save_refactored_file
+from core.file_info_extractor import extract_file_info, save_to_json
+from core.file_saver import save_refactored_file
 
 from core.code_metrics import (fetch_code_metrics)
-from CPSC4260.project_root.core.halstead import (fetch_halstead_metrics)
+from core.halstead import (fetch_halstead_metrics)
 from core.code_smells import (find_code_smells)
+from core.refactor import (refactor_duplicates)
 
-from CPSC4260.project_root.utils.exceptions import (FileReadError, CorruptFileError, FileNotFoundError,
+from utils.exceptions import (FileReadError, CorruptFileError, FileNotFoundError,
                         FileEmptyError, FileTypeUnsupportedError, FileDecodeError,
                         FileLockedError, FileTooLargeError, FileOpenError)
 
@@ -74,9 +82,21 @@ def analyze_file(filepath):
         print(f"  - {key}: {val}")
         
     print("\n[*] Code Smells Found:") # Fix
-    for smell in code_smells:
-        for key, val in smell:
-            print(f"  - {key}: {val}")
+    for category, issues in code_smells.items():
+        print(f"\n[+] {category.replace('_', ' ').title()}:")
+        for i, issue in enumerate(issues, start=1):
+            print(f"  {i}.")
+            if isinstance(issue, dict):
+                for key, val in issue.items():
+                    # nested structure for duplicated_code
+                    if isinstance(val, dict):
+                        print(f"    - {key}:")
+                        for sub_key, sub_val in val.items():
+                            print(f"        {sub_key}: {repr(sub_val)}")
+                    else:
+                        print(f"    - {key}: {repr(val)}")
+            else:
+                print(f"    - {issue}")
 
 def refactor_code(filepath):
     if not filepath:
@@ -85,7 +105,8 @@ def refactor_code(filepath):
 
     print("🛠️ Refactoring duplicate code...")
     try:
-        save_refactored_file(filepath)
+        refactored = refactor_duplicates(filepath)
+        save_refactored_file(refactored, filepath)
         print("[✅] Refactoring complete.")
     except Exception as e:
         print(f"[⛔️] Error during refactoring: {e}")

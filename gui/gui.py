@@ -4,7 +4,7 @@
 #
 # __file__: gui.py
 #
-# __brief__: TODO
+# __brief__: Graphical user interface for the Code Smell Detector
 
 # TRASH
 
