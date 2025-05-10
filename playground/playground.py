@@ -26,9 +26,13 @@ from utils.utility import (_read_file_contents,
                            _pretty_print,
                            _pretty_print_debug_dict)
 
+from core.method_length import _find_long_method
+from core.param_length import _find_long_parameter_list
+from core.duplicated_finder import _find_duplicated_code
+from core.code_smells import find_code_smells
 
-new_code = refactor_duplicates(TEST_PATHS['12'])
-print(new_code)
+print(find_code_smells(TEST_PATHS['34']))
+
 
 
 
