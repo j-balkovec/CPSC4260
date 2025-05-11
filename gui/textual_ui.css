@@ -5,13 +5,13 @@
 
 #left-pane {
   layout: vertical;
-  width: 50%;  /* Makes left-pane take minimal width */
+  width: 50%; 
   min-width: 20;
 }
 
 #right-pane {
   layout: vertical;
-  width: 50%;  /* The right pane takes up the remaining space */
+  width: 50%; 
   min-width: 20;
 }
 
@@ -30,7 +30,7 @@
 }
 
 #buttons {
-  height: auto;               /* Set fixed height */
+  height: auto;              
   layout: horizontal;
   align: center top;
   padding: 1;
@@ -46,4 +46,192 @@
   padding-left: 2;
   color: gray;
   text-style: italic;
+}
+
+.dark {
+  background: #1e1e1e;
+  color: #ffffff;
+}
+
+.dark #code_editor {
+  background: #2e2e2e;
+  color: #ffffff;
+}
+
+.dark #log {
+  background: #2e2e2e;
+  color: #ffffff;
+}
+
+
+.light {
+  background: #ffffff;
+  color: #000000;
+}
+
+.light #code_editor {
+  background: #f5f5f5;
+  color: #000000;
+}
+
+.light #log {
+  background: #f5f5f5;
+  color: #000000;
+}
+
+
+.confirmation-dialog {
+  align: center middle; 
+  width: 40%; 
+  height: 30%; 
+  max-width: 50; 
+  min-width: 30; 
+  overlay: screen; 
+  background: transparent;
+}
+
+#dialog-title {
+  width: 100%;
+  text-align: center;
+  padding: 1;
+  border-bottom: tall $accent;
+}
+
+.dark .confirmation-dialog #dialog-title {
+  color: #4CAF50; 
+}
+
+.light .confirmation-dialog #dialog-title {
+  color: #F5F5F5 !important; 
+}
+
+#dialog-container {
+  background: $panel; 
+  border: solid $accent; 
+  padding: 1 2; 
+  width: 40%;
+  height: 30%;
+}
+
+
+#dialog-message {
+  width: 100%;
+  text-align: center; 
+  color: $text; 
+  padding: 1; 
+}
+
+
+#dialog-container Horizontal {
+  height: auto;
+  width: auto;
+  content-align: center middle; 
+}
+
+#button-container {
+  width: 100%;
+  align: center middle;
+}
+
+#button-container Horizontal {
+  width: auto;
+}
+
+#confirm_yes {
+  background: $success; 
+  color: $text;
+  width: 10;
+  height: 3;
+  border: tall $success-darken-1; 
+}
+
+#confirm_yes:hover {
+  background: $success-lighten-1; 
+}
+
+
+#confirm_no {
+  background: $error; 
+  color: $text;
+  width: 10;
+  height: 3;
+  border: tall $error-darken-1; 
+}
+
+#confirm_no:hover {
+  background: $error-lighten-1; 
+}
+
+
+.dark .confirmation-dialog #dialog-container {
+  background: #333333; 
+  border: solid #4CAF50; 
+}
+
+.dark .confirmation-dialog #dialog-message {
+  color: #FFFFFF; 
+}
+
+.dark .confirmation-dialog #confirm_yes {
+  background: #4CAF50; 
+  border: tall #388E3C;
+  color: #FFFFFF; 
+}
+
+.dark .confirmation-dialog #confirm_no {
+  background: #F44336; 
+  border: tall #D32F2F;
+  color: #FFFFFF; 
+}
+
+
+.light .confirmation-dialog #dialog-container {
+  background: #93d0dd; 
+  border: solid #4CAF50; 
+}
+
+.light .confirmation-dialog #dialog-message {
+  color: #F5F5F5; 
+}
+
+.light .confirmation-dialog #confirm_yes {
+  background: #388E3C; 
+  border: tall #2E7D32;
+  color: #FFFFFF; 
+}
+.light .confirmation-dialog #confirm_no {
+  background: #D32F2F;
+  border: tall #C62828;
+  color: #FFFFFF; 
+}
+
+
+.dark {
+  background: #1e1e1e;
+  color: #ffffff;
+}
+
+.dark #code_editor {
+  background: #2e2e2e;
+  color: #ffffff;
+}
+
+.dark #log {
+  background: #2e2e2e;
+  color: #ffffff;
+}
+
+.light {
+  background: #ffffff;
+  color: #000000;
+}
+
+.light #code_editor {
+  background: #f5f5f5;
+  color: #000000;
+}
+
+.light #log {
+  background: #f5f5f5;
+  color: #000000;
 }
