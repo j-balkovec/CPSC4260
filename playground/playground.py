@@ -30,9 +30,8 @@ from core.method_length import _find_long_method
 from core.param_length import _find_long_parameter_list
 from core.duplicated_finder import _find_duplicated_code
 from core.code_smells import find_code_smells
+from core.halstead import fetch_halstead_metrics
+from core.code_metrics import fetch_code_metrics
 
-print(find_code_smells(TEST_PATHS['34']))
-
-
-
+refacotred = refactor_duplicates(TEST_PATHS['41'])
 
