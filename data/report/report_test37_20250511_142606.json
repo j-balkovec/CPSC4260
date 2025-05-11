@@ -1,0 +1,79 @@
+{
+    "long_parameter_list": [],
+    "long_method": [],
+    "duplicated_code": [
+        {
+            "block1": {
+                "index": 0,
+                "text": "if not isinstance(username, str):\n        raise TypeError(\"Username must be a string.\")\n    return f\"Hello, {username}!\"",
+                "type": "code",
+                "tokens": [
+                    "if",
+                    "not",
+                    "VAR",
+                    "(",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ")",
+                    ":",
+                    "raise",
+                    "VAR",
+                    "(",
+                    "VAR",
+                    ")",
+                    "return",
+                    "VAR"
+                ],
+                "line_number": 2
+            },
+            "block2": {
+                "index": 1,
+                "text": "if not isinstance(person_name, str):\n        raise TypeError(\"Person's name must be a string.\")\n    return f\"Hello, {person_name}!\"",
+                "type": "code",
+                "tokens": [
+                    "if",
+                    "not",
+                    "VAR",
+                    "(",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ")",
+                    ":",
+                    "raise",
+                    "VAR",
+                    "(",
+                    "VAR",
+                    ")",
+                    "return",
+                    "VAR"
+                ],
+                "line_number": 6
+            },
+            "similarity": 1.0,
+            "threshold": 0.75
+        }
+    ],
+    "code_metrics": {
+        "LOC": 8,
+        "SLOC": 15,
+        "Comment Density": 0.4,
+        "Blank Line Density": 0.067
+    },
+    "halstead_metrics": {
+        "n1": 0,
+        "n2": 13,
+        "N1": 0,
+        "N2": 13,
+        "N": 13,
+        "n": 13,
+        "V": 48.106,
+        "D": 0.0,
+        "HN": 0,
+        "E": 0.0,
+        "T": 0.0,
+        "B": 0.0,
+        "M": 81.995
+    }
+}
