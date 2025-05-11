@@ -136,4 +136,5 @@ TEST_PATHS = {
             '38' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test38.py')),
             '39' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test39.py')),
             '40' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test40.py')),
+            '41' : r'/Users/jbalkovec/Desktop/CPSC4610/Projects/P2/multiagent/multiAgents.py' 
               }

@@ -45,12 +45,20 @@ class DuplicateRefactorer(ast.NodeTransformer):
         """
         super().__init__()
         self.dup_funcs = {f for f1, f2, _ in duplicates for f in (f1, f2)}
-        sample = functions_map[duplicates[0][0]].body
+        
+        key = duplicates[0][0]
+        if key not in functions_map:
+            raise ValueError(f"Duplicate refers to unknown function: {key}")
+        
+        func_node = functions_map[key]
+        sample = func_node.body
         self.helper = _make_helper_node(
-            func_name=duplicates[0][0],
-            args=[arg.arg for arg in functions_map[duplicates[0][0]].args.args],
+            func_name=key,
+            args=[arg.arg for arg in func_node.args.args],
             body=sample
         )
+        refactor_logger.debug(f"Helper function created: {self.helper.name}")
+        refactor_logger.debug(f"dups: {self.dup_funcs}")
 
 
     def visit_Module(self, node: ast.Module):
@@ -163,6 +171,11 @@ def _extract_functions(source_code: str) -> dict:
 
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef):
+        
+            func_name = node.name.strip()
+            if func_name != node.name:
+                refactor_logger.warning(f"Function name sanitized: original='{node.name}' → stripped='{func_name}'")
+            
             if not hasattr(node, 'end_lineno'):
                 start_line = node.lineno - 1
                 indent = len(lines[start_line]) - len(lines[start_line].lstrip())
@@ -192,7 +205,9 @@ def _extract_functions(source_code: str) -> dict:
                 "end": end_offset,
                 "text": func_text
             }
-            
+
+    refactor_logger.debug(f"Extracted functions: {functions}")
+    refactor_logger.debug(f"Keys: {functions.keys()}")
     return functions
 
 
@@ -218,10 +233,11 @@ def _find_duplicates(func_map: dict) -> list:
                 duplicates.append((a, b, sim))
                 seen.add((a, b))
     
+    refactor_logger.debug(f"Found duplicates: {duplicates}")
     return duplicates
 
 # ============================== CALLABLE ===========================
-def refactor_duplicates(filepath) -> str:
+def refactor_duplicates(filepath) -> Tuple[str, bool]:
     """_summary_
 
     Args:
@@ -240,7 +256,10 @@ def refactor_duplicates(filepath) -> str:
     functions_dict = _extract_functions(source_code)
     duplicates = _find_duplicates(functions_dict)
     
-    return _refactor_with_ast(source_code, duplicates)
+    if not duplicates:
+        return ("# No duplicates found, nothing to refactor.", False)
+    
+    return (_refactor_with_ast(source_code, duplicates), True)
 # ===================================================================
 # >
 # >

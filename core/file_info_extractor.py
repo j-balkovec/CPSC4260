@@ -196,3 +196,5 @@ def save_to_json(metadata: dict):
     get_file_info_logger.info(f"Saved metadata to JSON: {file_path}")
     
     return file_path
+
+# index out of range

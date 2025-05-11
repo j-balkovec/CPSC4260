@@ -230,7 +230,8 @@ def _find_duplicated_code(source_code: str) -> list:
     if not cleaned_code.strip():
         msg = "No valid code after removing comments"
         duplicated_code_logger.error("[error] " + msg)
-        raise CodeProcessingError(msg, function="_remove_comments", source_code=source_code)
+        # raise CodeProcessingError(msg, function="_remove_comments", source_code=source_code)
+        return []
     
     blocks = _split_into_blocks(cleaned_code)
     formatted_blocks = "\n\n".join(
@@ -241,7 +242,8 @@ def _find_duplicated_code(source_code: str) -> list:
     if len(blocks) < 2:
         msg = "Not enough code blocks to compare for duplication"
         duplicated_code_logger.error(f"[error] " + msg)
-        raise CodeProcessingError(msg, function="_split_into_blocks", source_code=source_code)
+        # raise CodeProcessingError(msg, function="_split_into_blocks", source_code=source_code)
+        return []
 
     tokenized_blocks = [(_tokenize_block(block), block, line_num) for block, line_num in blocks]
     duplicated_code_logger.debug(f"[info] tokenized all code blocks, {tokenized_blocks}")
