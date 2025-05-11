@@ -1,0 +1,49 @@
+#main-pane {
+  height: 100%;
+  layout: horizontal;
+}
+
+#left-pane {
+  layout: vertical;
+  width: 50%;  /* Makes left-pane take minimal width */
+  min-width: 20;
+}
+
+#right-pane {
+  layout: vertical;
+  width: 50%;  /* The right pane takes up the remaining space */
+  min-width: 20;
+}
+
+#log {
+  height: 1fr;
+  overflow: auto;
+  border: round yellow;
+  background: black;
+  padding: 1;
+}
+
+#code_editor {
+  height: 1fr;
+  border: round green;
+  background: #1e1e1e;
+}
+
+#buttons {
+  height: auto;               /* Set fixed height */
+  layout: horizontal;
+  align: center top;
+  padding: 1;
+}
+
+#buttons Button {
+  margin: 0 1;
+  width: auto;
+  min-width: 10;
+}
+
+#file_info {
+  padding-left: 2;
+  color: gray;
+  text-style: italic;
+}
