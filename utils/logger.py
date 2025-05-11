@@ -4,7 +4,7 @@
 #
 # __file__: logger.py
 #
-# __brief__: TODO
+# __brief__: THis file defines the logger used throughout this project
 
 # =========
 import sys

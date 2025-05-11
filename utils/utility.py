@@ -4,7 +4,7 @@
 #
 # __file__: analyze.py
 #
-# __brief__: TODO
+# __brief__: This file contains the utility functions used throughout the project.
 
 # =========
 import sys
@@ -75,62 +75,175 @@ def _save_to_json(analysis_dict: dict, filename: str) -> str:
     return file_path
 
 
-def _generate_readable_report(filename: str):
+def get_code_metric_description(metric):
     """_summary_
 
     Args:
-        file_name (str): Name of the JSON report file, @see save_to_json() in 'analyze.py'.
+        metric (_type_): metric to get the description for
+
+    Returns:
+        _type_: description of the metric
     """
-    with open(filename, 'r') as f:
-        data = json.load(f)
+    descriptions = {
+        'LOC': 'Lines of Code',
+        'SLOC': 'Source Lines of Code',
+        'Comment Density': 'Proportion of comment lines to total lines',
+        'Blank Line Density': 'Proportion of blank lines to total lines'
+    }
+    return descriptions.get(metric, 'No description available')
+
+
+def get_halstead_metric_description(metric):
+    """_summary_
+
+    Args:
+        metric (_type_): metric to get the description for
+
+    Returns:
+        _type_: description of the metric
+    """
+    descriptions = {
+        'n1': 'Number of unique operators',
+        'n2': 'Number of unique operands',
+        'N1': 'Total occurrences of operators',
+        'N2': 'Total occurrences of operands',
+        'N': 'Total number of operators and operands (N1 + N2)',
+        'n': 'Total number of distinct operators and operands (n1 + n2)',
+        'V': 'Volume (size of the implementation)',
+        'D': 'Difficulty (how difficult the program is to understand)',
+        'HN': 'Halstead\'s number (product of difficulty and volume)',
+        'E': 'Effort (estimated mental effort)',
+        'T': 'Time (estimated time to understand the program)',
+        'B': 'Bugs (estimated number of bugs in the program)',
+        'M': 'Vocabulary (unique operators and operands used)'
+    }
+    return descriptions.get(metric, 'No description available')
+
+
+def _generate_readable_report(code_analysis_dict_path: dict) -> str:
+    """_summary_
+
+    Args:
+        code_smells_filename (str): filename containing the code smells
+        code_metrics_filename (str): filename containing the code metrics
+        halstead_metrics_filename (str): filename containing the halstead metrics
+    """
     
+    # Code smells
+    with open(code_analysis_dict_path, 'r') as f:
+        analysis_dict = json.load(f)
+        
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
     report_dir = os.path.join(project_root, "data", "readable")
-    base_name = os.path.splitext(os.path.basename(filename))[0]
-    output_filename = f"report_{base_name}_readable.txt"
+    base_name = os.path.splitext(os.path.basename(code_analysis_dict_path))[0]
+    output_filename = f"report_{base_name}_readable.md"
     file_path = os.path.join(report_dir, output_filename)
 
     os.makedirs(report_dir, exist_ok=True)
     
     with open(file_path, 'w') as out:
-        out.write("===== SOFTWARE ANALYSIS REPORT =====\n\n")
+        out.write("# ===== SOFTWARE ANALYSIS REPORT =====\n\n")
+        out.write("---\n")
         
-        out.write(">> Long Parameter List Detections:\n\n")
-        for item in data.get('long_parameter_list', []):
-            out.write(f"  - Function '{item['function']}' at line {item['position']}\n")
-            out.write(f"    * Parameters: {item['params_count']} (Threshold: {item['threshold']})\n\n")
-        
-        out.write(">> Long Method Detections:\n\n")
-        for item in data.get('long_method', []):
-            out.write(f"  - Function '{item['function']}' from line {item['start_line']} to {item['end_line']}\n")
-            out.write(f"    * Length: {item['length']} lines (Threshold: {item['threshold']})\n\n")
-        
-        out.write(">> Duplicated Code Detections:\n\n")
-        for idx, item in enumerate(data.get('duplicated_code', []), 1):
-            out.write(f"  - Duplicate {idx}: (Similarity: {item['similarity']:.2f})\n")
+        # ================ CODE METRICS =================
+        out.write("## Code Metrics:\n\n")
+
+        code_metrics = analysis_dict.get('code_metrics', {})
+        if code_metrics:
+            out.write("| Metric | Description | Value |\n")
+            out.write("|--------|-------------|-------|\n")
             
-            block1_text = textwrap.dedent(item['block1']['text']).strip()
-            block2_text = textwrap.dedent(item['block2']['text']).strip()
-            
-            block1_lines = block1_text.splitlines()
-            block2_lines = block2_text.splitlines()
-            
-            out.write(f"    * Block 1 (Line {item['block1']['line_number']}):\n")
-            for line in block1_lines:
-                out.write(f"        {line}\n")
-            
-            out.write(f"    * Block 2 (Line {item['block2']['line_number']}):\n")
-            for line in block2_lines:
-                out.write(f"        {line}\n")
+            for metric, value in code_metrics.items():
+                description = get_code_metric_description(metric)
+                out.write(f"| `{metric}` | {description} | `{value}` |\n")
             
             out.write("\n")
+        else:
+            out.write("*No code metrics found.*\n\n")
+        # ===============================================
         
-        out.write("===== END OF REPORT =====\n")
+        out.write("---\n")
+        
+        # ============== HALSTEAD METRICS ===============
+        out.write("## Halstead Metrics:\n\n")
+        halstead_metrics = analysis_dict.get('halstead_metrics', {})
+        if halstead_metrics:
+            out.write("| Metric | Description | Value |\n")
+            out.write("|--------|-------------|-------|\n")
+            
+            for metric, value in halstead_metrics.items():
+                description = get_halstead_metric_description(metric)
+                out.write(f"| `{metric}` | {description} | `{value}` |\n")
+            
+            out.write("\n")            
+        else:
+            out.write("*No Halstead metrics found.*\n\n")
+        out.write("\n")
+        # ===============================================
+        
+        out.write("---\n")
+        
+        # ============= LONG PARAM LIST =================
+        out.write("### Long Parameter List Detections:\n\n")
+        items = analysis_dict.get('long_parameter_list', [])
+        if len(items) == 0:
+            out.write("  - *No functions with long parameter lists were found.*\n\n")
+        else:
+            for item in items: 
+                out.write(f"  - Function `'{item['function']}'` at line `{item['position']}`\n")
+                out.write(f"    * **Parameters**: `{item['params_count']}`, Threshold: `{item['threshold']}`\n\n")
+        # ===============================================
+        
+        out.write("---\n")
+        
+        # ================ LONG METHOD ==================
+        out.write("### Long Method Detections:\n\n")
+        items = analysis_dict.get('long_method', [])
+        if len(items) == 0:
+            out.write("  - *No long methods were found.*\n\n")
+        else:
+            for item in items:
+                out.write(f"  - Function `'{item['function']}'` from line `{item['start_line']}` to `{item['end_line']}`\n")
+                out.write(f"    * **Length**: `{item['length']} lines`, Threshold: `{item['threshold']}`\n\n")
+        # ===============================================
+        
+        out.write("---\n")
+        
+        # ============== DUPLICATED CODE ================
+        out.write("### Duplicated Code Detections:\n\n")
+        items = analysis_dict.get('duplicated_code', [])
+        if len(items) == 0:
+            out.write("  - *No duplicated code was found.*\n\n")
+        else:
+            for idx, item in enumerate(items, 1):
+                out.write(f"##### Duplicate {idx}, **Similarity**: `{item['similarity']:.2f}`\n")
+                
+                block1_text = textwrap.dedent(item['block1']['text']).strip()
+                block2_text = textwrap.dedent(item['block2']['text']).strip()
+                
+                block1_lines = block1_text.splitlines()
+                block2_lines = block2_text.splitlines()
+                
+                out.write(f" - **Block 1** `(Line {item['block1']['line_number']})`:\n")
+                out.write("```\n")
+                for line in block1_lines:
+                    out.write(f"        {line}\n")
+                out.write("```\n")
+                
+                out.write(f" - **Block 2** `(Line {item['block2']['line_number']})`:\n")
+                out.write("```\n")
+                for line in block2_lines:
+                    out.write(f"        {line}\n")
+                out.write("```\n")
+                out.write("\n")
+        # =============================================
+        
+        out.write("---\n")
+        out.write("# ===== END OF REPORT =====\n")
     
     utility_logger.info(f"Readable report saved to '{file_path}'")
-    # TODO info messages in color
-
+    return file_path
 
 # Used only during development
 def _pretty_print(funcs_dict: dict) -> None:

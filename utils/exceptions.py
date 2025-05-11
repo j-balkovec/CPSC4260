@@ -4,7 +4,7 @@
 #
 # __file__: error_handler.py
 #
-# __brief__: TODO
+# __brief__: This file defines custom errors used throughout this project
 
 # =========
 import sys
