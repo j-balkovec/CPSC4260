@@ -64,3 +64,7 @@
 - Revisit **file saving** logic:
   - Must support files with **more than 2 duplicated functions**.
   - Ensure the entire file is updated cleanly without corrupting unaffected code.
+
+
+Add welcome message to GUI
+add the option to save the file
