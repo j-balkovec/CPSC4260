@@ -166,8 +166,9 @@ class CodeSmellApp(App):
     Yields:
         _type_: packs everything into a container, code editor + TextArea
     """
+    SCREENS = {"file_picker": FilePicker} # for testing
     CSS_PATH = "textual_ui.css"
-    BINDINGS = [
+    BINDINGS = [ # bindings don't work in the app
         ("q", "quit", "Quit"),
         ("c", "clear_with_confirmation", "Clear"),
         ("e", "exit_with_confirmation", "Exit"),
@@ -257,8 +258,16 @@ class CodeSmellApp(App):
             # self.clear()
         elif btn == "toggle_theme":
             self.theme_dark = not self.theme_dark
-            self.set_class(self.theme_dark, "dark")
-            self.set_class(not self.theme_dark, "light")
+            # self.set_class(self.theme_dark, "dark")
+            # self.set_class(not self.theme_dark, "light")
+            
+            if self.theme_dark:
+                self.remove_class("light")  
+                self.set_class(True, "dark")
+            else:
+                self.remove_class("dark")   
+                self.set_class(True, "light")
+                
             self.query_one("#log", RichLog).write(
                 f"🌗 Switched to {'dark' if self.theme_dark else 'light'} theme."
             )
@@ -410,6 +419,7 @@ class CodeSmellApp(App):
             Clears the code editor and log.
             Displays a confirmation message.
         """
+        self.filename = None # reset filename
         self.query_one("#code_editor", TextArea).clear()
         self.query_one("#log", RichLog).clear()
 
