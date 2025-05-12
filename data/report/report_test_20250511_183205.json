@@ -1,0 +1,26 @@
+{
+    "long_parameter_list": [],
+    "long_method": [],
+    "duplicated_code": [],
+    "code_metrics": {
+        "LOC": 1,
+        "SLOC": 1,
+        "Comment Density": 0.0,
+        "Blank Line Density": 0.0
+    },
+    "halstead_metrics": {
+        "n1": 0,
+        "n2": 2,
+        "N1": 0,
+        "N2": 2,
+        "N": 2,
+        "n": 2,
+        "V": 2.0,
+        "D": 0.0,
+        "HN": 0,
+        "E": 0.0,
+        "T": 0.0,
+        "B": 0.0,
+        "M": 149.6
+    }
+}
