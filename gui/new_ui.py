@@ -166,12 +166,12 @@ class CodeSmellApp(App):
     Yields:
         _type_: packs everything into a container, code editor + TextArea
     """
-    SCREENS = {"file_picker": FilePicker} # for testing
+    SCREENS = {"file_picker": FilePicker}
     CSS_PATH = "textual_ui.css"
     BINDINGS = [ # bindings don't work in the app
         ("q", "quit", "Quit"),
-        ("c", "clear_with_confirmation", "Clear"),
-        ("e", "exit_with_confirmation", "Exit"),
+        ("c", "clear", "Clear"),
+        ("e", "exit", "Exit"),
     ]
 
     filename: reactive[str | None] = reactive(None)
