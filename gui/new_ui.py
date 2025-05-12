@@ -312,7 +312,9 @@ class CodeSmellApp(App):
             code_editor.text = "# ❌ No code found in the file."
             log.write(f"📂 Loaded: {Path(self.filename).name} (empty file)")
         else:
-            code_editor.text = content + "\n\n#=============== ORIGINAL ===============\n\n"
+            code_editor.text = "\n\n#=============== ORIGINAL ===============\n\n" + \
+                                                                           content + \
+                               "\n\n#=============== ORIGINAL ===============\n\n"
             log.write(f"📂 Loaded: {Path(self.filename).name}")
 
         self.query_one("#file_info", Label).update(f"📄 {Path(self.filename).name}")

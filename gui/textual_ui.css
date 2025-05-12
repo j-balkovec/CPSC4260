@@ -19,7 +19,7 @@
   height: 1fr;
   overflow: auto;
   border: round yellow;
-  background: black;
+  background: black 100%;
   padding: 1;
 }
 
