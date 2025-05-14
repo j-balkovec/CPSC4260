@@ -15,34 +15,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from typing import Set
 
-"""__constants__"""
-WINDOW_SIZE: str = "1800x960"
-WINDOW_TITLE: str = "Code Smell Detector"
-
-FONT_FAMILY: str = "Menlo"
-FONT_SIZE: int = 12
-
-UNI_WIDTH: int = 650
-HEIGHT: int = 800
-
-CODE_EDITOR_WIDTH: int = 800
-
-# -- Deprecated
-CTK_ENTRY_X_PADDING: int = 50
-CTK_ENTRY_Y_PADDING: int = 30
-# -- Deprecated
-
-CTK_TEXTBOX_X_PADDING: int = 20
-CTK_TEXTBOX_Y_PADDING: int = 20
-CTK_BUTTON_X_PADDING: int = 10
-CTK_BUTTON_Y_PADDING: int = 10
-CTK_LABEL_Y_PADDING: int = 20
-
-# -- Deprecated
-ENTER_KEY: str = "<Return>"
-# -- Deprecated
-
-
 # Add guide on how to resolve errors
 ERROR_CODES: dict = {
     "file_read": 1001,           
@@ -92,8 +64,8 @@ CLEANUP_PATHS = {
     "readable_report": r"/Users/jbalkovec/Desktop/CPSC4260/project_root/data/readable"
 }
 
-import os
-import sys
+# Set to false when being graded
+i_am_local = False
 
 TEST_PATHS = {
             '1' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test1.py')),
@@ -136,7 +108,7 @@ TEST_PATHS = {
             '38' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test38.py')),
             '39' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test39.py')),
             '40' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test40.py')),
-            '41' : r'/Users/jbalkovec/Desktop/CPSC4610/Projects/P2/multiagent/multiAgents.py', 
+            '41' : r'/Users/jbalkovec/Desktop/CPSC4610/Projects/P2/multiagent/multiAgents.py' if i_am_local else r"invalid/path/check/constants.py", 
             '42' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test42.java')),
             '43' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test43.py')),
             '44' : os.path.abspath(os.path.join(os.path.dirname(__file__), '../tests/test44.py')),

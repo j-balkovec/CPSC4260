@@ -147,14 +147,14 @@ def _remove_comments(source_code: str) -> str:
     return "\n".join(cleaned_lines)   
 
 
-def _tokenize_block(block: str) -> set:
+def _tokenize_block(block: str) -> list:
     """_summary_
 
     Args:
         block (str): code block to be tokenized
 
     Returns:
-        set: set of tokens
+        list: list of tokens
     """
     block = re.sub(r'(["\']).*?\1', 'STR', block)  
     block = re.sub(r'\b\d+\.\d+\b', 'NUM', block)  

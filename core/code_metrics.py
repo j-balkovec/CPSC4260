@@ -138,7 +138,7 @@ def fetch_code_metrics(file_name: str) -> dict:
       Abstract the details from the client
   
   Args:
-      file_name (str): _description_
+      file_name (str): Name of the file to analyze.
   Returns:
       _type_: @see _calculate_code_metrics()
   """
