@@ -28,7 +28,7 @@ The following outlines the key files and directories in the **CodeSmellApp** rep
 
 - [**Directory: `gui/`**](#directory-gui)
   - [`new_ui.py`](#new_uipy): Implements the main Textual-based GUI for the app.
-  - [`terminal_ui.py`](#terminal_uipy): Provides a terminal-based UI alternative.
+  - [`terminal_ui.py`](#terminal_uipy): Provides a terminal-based UI alternative. **TODO**
   - [`textual_ui.css`](#textual_uicss): CSS styles for the Textual GUI.
 <br>
 
@@ -37,8 +37,8 @@ The following outlines the key files and directories in the **CodeSmellApp** rep
 <br>
 
 - [**Directory: `utils/`**](#directory-utils)
-  - [`exceptions.py`](#exceptionspy): Defines custom exceptions for the application. **TODO**
-  - [`utility.py`](#utilitypy): Utility functions for file operations and helpers. **TODO**
+  - [`exceptions.py`](#exceptionspy): Defines custom exceptions for the application. 
+  - [`utility.py`](#utilitypy): Utility functions for file operations and helpers.
   - [`logger.py`](#loggerpy): Configures logging for the application.
 <br>
 
@@ -1034,27 +1034,82 @@ This file defines the graphical user interface (GUI) for the **Code Smell App**,
 
 This file defines the terminal user interface (TUI) for the **Code Smell App**. It handles user interaction for uploading, analyzing, refactoring, and saving Python files. It also manages themes, logs, modal dialogs, and reactive state.
 
+### **Functions**
+
+#### **`__init__(self)`**
+
+- **Args:** None  
+- **Returns:** None  
+- **Brief:** Initializes internal state (file path, code, metadata, etc.).
+
+#### **`upload_file(self, path)`**
+
+- **Args:**
+  - `path (str)`: Path to the file to be uploaded.
+- **Returns:** None  
+- **Throws:** Custom exceptions if file reading fails.  
+- **Brief:** Reads a Python file, extracts metadata, and stores both.  
+- **Notes:**
+  - Supports various error types like empty file, unsupported types, corruption, etc.
+  - Metadata is saved as a JSON file in a designated directory.
+
+#### **`analyze_file(self)`**
+
+- **Args:** None  
+- **Returns:** None  
+- **Throws:** General `Exception` on analysis failure.  
+- **Brief:** Analyzes uploaded Python file for code smells and metrics using static analysis.  
+- **Notes:**
+  - Must upload file before calling.
+  - Outputs code metrics, Halstead metrics, and detected code smells to terminal.
+  - Saves analysis results in a markdown report.
+
+#### **`refactor_code(self)`**
+
+- **Args:** None  
+- **Returns:** None  
+- **Throws:** General `Exception` on refactoring failure.  
+- **Brief:** Refactors duplicate code blocks in the uploaded file.  
+- **Notes:**
+  - Updates internal `code` representation.
+  - Overwrites the original file with refactored content.
+
+
+#### **`save_results(self)`**
+
+- **Args:** None  
+- **Returns:** None  
+- **Throws:** General `Exception` on save failure.  
+- **Brief:** Saves refactored code and extracted metadata.  
+- **Notes:**
+  - Requires that code content is available (from refactoring).
+  - Saves updated code and corresponding JSON metadata.
+
+> **Note:** It supports the use of 4 different flags: `-u`, `-a`, `-rd`, and `-s` for uploading, analyzing, refactoring duplicates, and saving, respectively.
+
+```bash
+# Upload a file
+-u / --upload
+
+# Analyze the uploaded file
+-a / --analyze
+
+# Refactor duplicate code
+-rd / --refactor-duplicates
+
+# Save the refactored code and metadata
+-s / --save
+
+# Example call, where the file is uploaded, analyzed, refactored, and finally, saved
+python terminal_ui.py -u </path/to/file.py> -a -rd -s
+```
+>**Note:** The flags can be used in any order, but the upload flag must be the first one.
+
+<!--**Note:** If you are running the application from the `gui` directory, prepend the path with `../` to access the directory where your file is located. If running from the root directory, use `gui/terminal_ui` to access the `gui` directory. -->
+
 > **Note**: Functions prefixed with an underscore (`_`) are intended to be private and must not be accessed or invoked outside this directory. They are exclusively used internally by the corresponding public functions.
 
 > **Note**: `STATUS: In development`
-
-<!-- 
-#### **Functions**
-
-### **function_name(args)**
-
-- **Args:**
-    - `arg1 (type)`: Description.
-    - `arg2 (type, optional)`: Description. Default is X.
-- **Returns:**
-    - (type): What the function returns.
-- **Throws:**
-    - ExceptionType: When it’s thrown and why.
-- **Yields:**
-    - (type): If it’s a generator, what it yields.
-- **Brief:**One-sentence purpose of the function.
-- **Notes:**Any implementation quirks, assumptions, or caveats.
--->
 
 ---
 
@@ -1207,29 +1262,100 @@ This file defines the styles for the Textual-based **Code Smell App** user inter
 
 ### **`exceptions.py`**
 
-### **Overview**
-
-Brief description of what this file is responsible for.
-
-> **Note**: Functions prefixed with an underscore (`_`) are intended to be private and must not be accessed or invoked outside this directory. They are exclusively used internally by the corresponding public functions.
-> 
-
 ### **Classes**
 
-#### **class ExceptionName**
+#### **class `CustomExceptionSuper`**
 
 - **Attributes:**
-    - `attr1 (type)`: What it represents.
-- **Methods:**Document them just like functions.
-- **Notes:**Anything about inheritance, expected usage, or limitations.
+  - `error_key (str)`: Key to map to error codes from `ERROR_CODES`.
+  - `error_name (str)`: Human-readable name of the exception.
+  - `context (dict)`: Arbitrary keyword arguments providing contextual metadata for debugging.
+- **Methods:**
+  - `__init__(self, message="[DEFAULT]", **context)`: Initializes the exception with a message and optional context.
+  - `__repr__(self)`: Returns a raw, log-friendly string representation of the error.
+  - `what(self)`: Returns a color-formatted message for terminal user display.
+- **Notes:**
+  - All custom exceptions inherit from this base class.
+  - Provides a consistent interface for error formatting and reporting.
+
+
+#### **class `FileReadError`**
+
+- **Attributes:** Inherits from `CustomExceptionSuper`
+- **Notes:** Raised when file reading fails generally; fallback if no more specific error applies.
+- **Error Code:** `1001`
+
+
+#### **class `CorruptFileError`**
+
+- **Attributes:** Inherits from `CustomExceptionSuper`
+- **Notes:** Raised when a file is present but appears unreadable or improperly encoded.
+- **Error Code:** `1002`
+
+
+#### **class `FileNotFoundError`**
+
+- **Attributes:** Inherits from `CustomExceptionSuper`
+- **Notes:** Raised when the specified file path does not point to a valid file.
+- **Error Code:** `1003`
+
+
+#### **class `FileEmptyError`**
+
+- **Attributes:** Inherits from `CustomExceptionSuper`
+- **Notes:** Raised when a file exists but contains no data.
+
+
+#### **class `FileTypeUnsupportedError`**
+
+- **Attributes:** Inherits from `CustomExceptionSuper`
+- **Notes:** Raised when an uploaded file is not of a supported format.
+
+
+#### **class `FileDecodeError`**
+
+- **Attributes:** Inherits from `CustomExceptionSuper`
+- **Notes:** Raised when a file cannot be decoded (e.g., wrong encoding or binary data misread).
+
+
+#### **class `FileLockedError`**
+
+- **Attributes:** Inherits from `CustomExceptionSuper`
+- **Notes:** Raised when a file is inaccessible due to an external lock (another program is using it).
+
+
+#### **class `FileTooLargeError`**
+
+- **Attributes:** Inherits from `CustomExceptionSuper`
+- **Notes:** Raised when a file exceeds the allowed size threshold.
+
+
+#### **class `FileOpenError`**
+
+- **Attributes:** Inherits from `CustomExceptionSuper`
+- **Notes:** Raised when a file cannot be opened despite existing and appearing valid.
+
+
+#### **class `CodeProcessingError`**
+
+- **Attributes:** Inherits from `CustomExceptionSuper`
+- **Notes:** A catch-all for generic issues encountered during code parsing or analysis.
+  - Unpredictable: may occur for unknown reasons; surfaced during development and mitigated with guard clauses.
+  - Recommendation: inspect the input and internal flow manually if triggered.
 
 ### **Constants / Globals**
 
-List and briefly describe constants or config variables.
+- `ERROR_CODES`: Dictionary mapping error keys to numeric error codes.
+- `YELLOW_TEXT`, `RED_TEXT`, `RESET_TEXT`: ANSI escape codes for colored terminal output.
+- `LOG_COLORS`: Dictionary mapping log levels to color names for terminal output.
 
-### **Usage Notes**
+> **Note:** All exceptions inherit from a common base class for unified formatting.
 
-If there’s something unique about using this file/module, document it here.
+> **Note:** Use specific exception subclasses where possible for better error resolution.
+
+> **Note:** `.what()` method is intended for TUI/CLI feedback and should be extended to GUI logging.
+
+> **Note:** Supports flexible context injection for rich debugging output.
 
 ---
 
@@ -1237,43 +1363,82 @@ If there’s something unique about using this file/module, document it here.
 
 ### **Overview**
 
-Brief description of what this file is responsible for.
+Provides internal helper utilities for file handling, metric descriptions, report generation, and debug output formatting used across the code analysis project.
 
 > **Note**: Functions prefixed with an underscore (`_`) are intended to be private and must not be accessed or invoked outside this directory. They are exclusively used internally by the corresponding public functions.
-> 
 
 ### **Functions**
 
-#### **function_name(args)**
+#### **`_read_file_contents(file_name: str)`**
 
 - **Args:**
-    - `arg1 (type)`: Description.
-    - `arg2 (type, optional)`: Description. Default is X.
+  - `file_name (str)`: Path to the file to read.
 - **Returns:**
-    - (type): What the function returns.
+  - `str`: Content of the file, read as UTF-8 or fallback.
 - **Throws:**
-    - ExceptionType: When it’s thrown and why.
-- **Yields:**
-    - (type): If it’s a generator, what it yields.
-- **Brief:**One-sentence purpose of the function.
-- **Notes:**Any implementation quirks, assumptions, or caveats.
+  - `ValueError`: If decoding fails; falls back to binary read.
+- **Brief:** Reads a file's content with fallback for binary-encoded files.
+> **Note:** Handles decoding errors by stripping null bytes and decoding manually.
 
-### **Classes**
 
-### **class ClassName**
+#### **`_save_to_json(analysis_dict: dict, filename: str)`**
 
-- **Attributes:**
-    - `attr1 (type)`: What it represents.
-- **Methods:**Document them just like functions.
-- **Notes:**Anything about inheritance, expected usage, or limitations.
+- **Args:**
+  - `analysis_dict (dict)`: Analysis results to save.
+  - `filename (str)`: Original analyzed file’s name (used for naming the report).
+- **Returns:**
+  - `str`: Full path to the saved JSON report.
+- **Brief:** Saves a dictionary to a timestamped JSON file in `data/report`.
+> **Note:** Ensures `data/report` directory exists before writing.
 
-### **Constants / Globals**
+#### **`get_code_metric_description(metric)`**
 
-List and briefly describe constants or config variables.
+- **Args:**
+  - `metric (str)`: Code metric name.
+- **Returns:**
+  - `str`: Human-readable description.
+- **Brief:** Maps metric codes to descriptions.
+> **Note:** Falls back to a default message if unknown.
 
-### **Usage Notes**
+#### **`get_halstead_metric_description(metric)`**
 
-If there’s something unique about using this file/module, document it here.
+- **Args:**
+  - `metric (str)`: Halstead metric name.
+- **Returns:**
+  - `str`: Human-readable description.
+- **Brief:** Maps Halstead metric codes to descriptions.
+> **Note:** Returns a fallback description for unknown keys.
+
+#### **`_generate_readable_report(code_analysis_dict_path: str)`**
+
+- **Args:**
+  - `code_analysis_dict_path (str)`: Path to JSON analysis file.
+- **Returns:**
+  - `str`: Path to the saved Markdown report.
+- **Brief:** Generates a readable Markdown report from code analysis results.
+> **Note:** Formats metrics and code smells into sections. Handles missing sections gracefully. Stores output in `data/readable`.
+
+#### **`_pretty_print(funcs_dict: dict)`**
+
+- **Args:**
+  - `funcs_dict (dict)`: Dictionary of function code and metadata.
+- **Returns:**
+  - `None`
+- **Brief:** Pretty-prints dictionary of functions for debugging.
+> **Note:** Used only during development.
+
+#### **`_pretty_print_debug_dict(debug: dict)`**
+
+- **Args:**
+  - `debug (dict)`: Dictionary containing debug info.
+- **Returns:**
+  - `None`
+- **Brief:** Formats and prints structured debug output for analysis.
+
+
+> **Module Note:** Should not be directly imported outside the internal toolchain.
+
+> **Module Note:**  Most functions are private for internal file processing and formatting.
 
 ---
 
@@ -1383,10 +1548,6 @@ This file automates the execution of test commands for the project. It defines s
   - Filter: `-m "system"`  
   - File: `sys_test.py`
 
----
-
-### **Usage Notes**
-
 - Run targets from the root of the project directory using `make`, for example:
   
   ```bash
@@ -1405,77 +1566,216 @@ This file automates the execution of test commands for the project. It defines s
 
 ### **Overview**
 
-Brief description of what this file is responsible for.
+This file validates that each key module of the software refactoring project behaves as expected. It includes targeted tests for function length detection, parameter list analysis, duplicated code identification, and AST-based refactoring.
+
+Tests are grouped by feature, executed with `pytest` using labeled parameterized cases and tagging (`@pytest.mark`) for filtering specific test suites.
+
+---
 
 ### **Functions**
 
-#### **test_function_name(args)**
+#### **`test_find_long_method(source_code: str, expected_non_empty: bool)`**
 
 - **Args:**
-    - `arg1 (type)`: Description.
-    - `arg2 (type, optional)`: Description. Default is X.
+  - `source_code (str)`: Python code snippet to be tested.
+  - `expected_non_empty (bool)`: Whether a long method is expected.
+- **Returns:**  
+  - `None`
+- **Brief:** Verifies `_find_long_method()` correctly identifies or ignores long functions.
+
+
+#### **`test_find_long_parameter_list(source_code: str, expected_non_empty: bool)`**
+
+- **Args:**
+  - `source_code (str)`: Python code to test.
+  - `expected_non_empty (bool)`: Expectation flag for long parameter lists.
 - **Returns:**
-    - (type): What the function returns.
-- **Throws:**
-    - ExceptionType: When it’s thrown and why.
-- **Brief:**One-sentence purpose of the test function.
-- **Notes:**Any specific test cases or dependencies.
+  - `None`
+- **Brief:** Checks that `_find_long_parameter_list()` flags functions with excessive parameters.
 
-### **Classes**
 
-### **class TestClassName**
+#### **`test_find_duplicated_code(source_code: str, expected_non_empty: bool)`**
 
-- **Attributes:**
-    - `attr1 (type)`: What it represents.
-- **Methods:**Document them just like functions.
-- **Notes:**Anything about test setup or scope.
+- **Args:**
+  - `source_code (str)`: Source containing one or more functions.
+  - `expected_non_empty (bool)`: Whether duplicated logic is expected.
+- **Returns:**
+  - `None`
+- **Brief:** Ensures `_find_duplicated_code()` reliably detects and returns meaningful duplication data.
 
-### **Constants / Globals**
 
-List and briefly describe constants or config variables.
+#### **`test_refactor_cases(source_code: str, expect_helper: bool)`**
 
-### **Usage Notes**
+- **Args:**
+  - `source_code (str)`: Python code with duplicate functions.
+  - `expect_helper (bool)`: If a helper function should be generated after refactoring.
+- **Returns:**
+  - `None`
+- **Brief:** Confirms `_refactor_with_ast()` rewrites duplicated blocks into shared helpers.
 
-If there’s something unique about using this file/module, document it here.
 
+#### **`generate_ids(test_list: list)`**
+
+- **Args:**
+  - `test_list (list)`: Test cases in tuple form `(source_code, expected_result)`.
+- **Returns:**
+  - `list`: Human-readable test case identifiers.
+- **Brief:** Produces `pytest`-friendly labels by extracting function names from ASTs.
+
+
+#### **`is_helper_generated(refactored_code: str)`**
+
+- **Args:**
+  - `refactored_code (str)`: Code post-refactoring.
+- **Returns:**
+  - `bool`: Whether a `_common_logic_` helper function was created.
+- **Brief:** Simple heuristic to verify if the AST transformation produced a shared helper.
+
+
+- Run all tests with:  
+  ```bash
+  pytest -vs unit_tests.py
+  ```
+
+> **Note:** There is also a Makefile provided, if you would prefer to use that instead. Look at [`Makefile`](#makefile).
 ---
 
 ### **`sys_tests.py`**
 
 ### **Overview**
 
-Brief description of what this file is responsible for.
+This file contains system-level tests for the `CodeSmellApp` GUI. It verifies GUI interactions such as file uploads, UI button functionality, dialogs, and message logs using `pytest` and `textual`.
+
 
 ### **Functions**
 
-#### **test_function_name(args)**
+#### **`test_app_starts()`**
+
+- **Args:** None.
+- **Returns:** `None`
+- **Throws:** AssertionError if the app instance does not run as expected.
+- **Brief:** Ensures the GUI app initializes and runs.
+> **Note:** Verifies the basic sanity of app startup.
+
+
+#### **`test_initial_log_message()`**
+
+- **Args:** None.
+- **Returns:** `None`
+- **Throws:** AssertionError if log is empty.
+- **Brief:** Checks that the initial log is not empty.
+> **Note:** Validates proper app boot logging.
+
+
+#### **`test_upload_file_displays_content()`**
+
+- **Args:** None.
+- **Returns:** `None`
+- **Throws:** AssertionError if editor or log is empty.
+- **Brief:** Verifies that uploading a valid file displays its content.
+> **Note:** Uses file from `TEST_PATHS`.
+
+
+#### **`test_upload_empty_file(mocker)`**
 
 - **Args:**
-    - `arg1 (type)`: Description.
-    - `arg2 (type, optional)`: Description. Default is X.
-- **Returns:**
-    - (type): What the function returns.
-- **Throws:**
-    - ExceptionType: When it’s thrown and why.
-- **Brief:**One-sentence purpose of the test function.
-- **Notes:**Any specific test cases or dependencies.
+  - `mocker (pytest-mock.MockerFixture)`: To patch file reading.
+- **Returns:** `None`
+- **Throws:** AssertionError if expected empty file message is not displayed.
+- **Brief:** Tests response to uploading an empty file.
+> **Note:** Mocks file reading to simulate empty content.
 
-### **Classes**
 
-### **class TestClassName**
+#### **`test_file_picker_selects_file(tmp_path)`**
 
-- **Attributes:**
-    - `attr1 (type)`: What it represents.
-- **Methods:**Document them just like functions.
-- **Notes:**Anything about test setup or scope.
+- **Args:**
+  - `tmp_path (Path)`: Temporary test directory path.
+- **Returns:** `None`
+- **Throws:** AssertionError if filename not updated.
+- **Brief:** Confirms file picker updates filename.
+> **Note:** Uses pre-defined file path for test.
 
-### **Constants / Globals**
 
-List and briefly describe constants or config variables.
+#### **`test_upload_button_opens_file_picker()`**
+
+- **Args:** None.
+- **Returns:** `None`
+- **Throws:** AssertionError if FilePicker not shown.
+- **Brief:** Verifies upload button interaction.
+> **Note:** Checks screen stack for correct modal.
+
+
+#### **`test_analyze_no_file_selected()`**
+
+- **Args:** None.
+- **Returns:** `None`
+- **Throws:** AssertionError if proper log message not shown.
+- **Brief:** Tests analyze behavior with no file selected.
+> **Note:** Validates user feedback for invalid action.
+
+
+#### **`test_clear_button_opens_confirmation_dialog()`**
+
+- **Args:** None.
+- **Returns:** `None`
+- **Throws:** AssertionError if ConfirmationDialog not opened.
+- **Brief:** Verifies clear button opens a dialog.
+> **Note:** Polls for dialog presence.
+
+
+#### **`test_clear_confirmation_yes()`**
+
+- **Args:** None.
+- **Returns:** `None`
+- **Throws:** AssertionError if file path is not cleared.
+- **Brief:** Checks that confirming "yes" clears file and editor.
+> **Note:** Simulates user confirmation.
+
+
+#### **`test_clear_confirmation_no()`**
+
+- **Args:** None.
+- **Returns:** `None`
+- **Throws:** AssertionError if file path is incorrectly cleared.
+- **Brief:** Checks that rejecting clear does not reset file.
+> **Note:** Avoids calling `clear()` to simulate "No".
+
+
+#### **`test_theme_toggle()`**
+
+- **Args:** None.
+- **Returns:** `None`
+- **Throws:** AssertionError if class state does not toggle.
+- **Brief:** Validates theme toggle button functionality.
+> **Note:** Tests GUI class modification.
+
+
+#### **`test_exit_button_opens_confirmation_dialog()`**
+
+- **Args:** None.
+- **Returns:** `None`
+- **Throws:** AssertionError if dialog not present.
+- **Brief:** Ensures exit button triggers dialog.
+> **Note:** Asynchronous wait to detect modal.
+
+
+#### **`test_analyze_file_selected(tmp_path, mocker)`**
+
+- **Args:**
+  - `tmp_path (Path)`: Temporary test file.
+  - `mocker`: For mocking if needed.
+- **Returns:** `None`
+- **Throws:** AssertionError if analyze does not update log.
+- **Brief:** Tests that analyze runs with valid file.
+> **Note:** Verifies basic end-to-end interaction.
+
 
 ### **Usage Notes**
 
-If there’s something unique about using this file/module, document it here.
+- Requires `pytest` and `textual` test runner setup.
+- Tests assume presence of specific component IDs (e.g. `#log`, `#upload`).
+- File paths are pre-defined and must exist or be mocked appropriately.
+- Async support is necessary due to GUI and animation delays.
 
 ---
 

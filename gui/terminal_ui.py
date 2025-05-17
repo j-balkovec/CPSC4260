@@ -6,8 +6,6 @@
 #
 # __brief__: Terminal user interface for the Code Smell Detector
 
-# IDK HOW THIS WORKS with logging and message passing
-
 # =========
 import sys
 import os
@@ -17,148 +15,186 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import os
 import json
+import argparse
 
 from core.file_info_extractor import extract_file_info, save_to_json
+
 from core.file_saver import save_refactored_file
+from core.code_smells import find_code_smells
+from core.refactor import refactor_duplicates
+from core.file_saver import save_refactored_file
+from core.refactor import refactor_duplicates
+from core.constants import (JSON_DIR)
 
-from core.code_metrics import (fetch_code_metrics)
-from core.halstead import (fetch_halstead_metrics)
-from core.code_smells import (find_code_smells)
-from core.refactor import (refactor_duplicates)
+from utils.utility import _read_file_contents
+from utils.logger import setup_logger
 
-from utils.exceptions import (FileReadError, CorruptFileError, FileNotFoundError,
-                        FileEmptyError, FileTypeUnsupportedError, FileDecodeError,
-                        FileLockedError, FileTooLargeError, FileOpenError)
+from utils.exceptions import (
+    FileReadError, CorruptFileError, FileNotFoundError, FileEmptyError,
+    FileTypeUnsupportedError, FileDecodeError, FileLockedError,
+    FileTooLargeError, FileOpenError
+)
 
-def clear_terminal():
-    os.system('cls' if os.name == 'nt' else 'clear')
 
-def print_welcome():
-    print("[*]\tWelcome to the Code Smell Detector (Terminal Edition)")
-    print("--------------------------------------------------------")
-    print("[*]\tUpload a file to get started")
-    print("[*]\tAnalyze the file for code smells")
-    print("[*]\tRefactor duplicate code")
-    print("[*]\tSave the results")
-    print("[*]\tExit the application")
-    print("--------------------------------------------------------")
+class TerminalUI:
+    """_summary_
+    Terminal user interface.
+    """
+    def __init__(self):
+        """_summary_
+        Constructor for the TerminalUI class.
+        """
+        self.filepath = None
+        self.metadata = None
+        self.report_path = None
+        self.code = None
+        self.json_path = None
 
-def upload_file():
-    path = input("Enter path to code file: ").strip()
-    if not os.path.isfile(path):
-        print("[⛔️] File not found.")
-        return None, None
-    try:
-        with open(path, "r") as f:
-            metadata = extract_file_info(f)
-            save_to_json(metadata)
-            print(f"✅ File '{os.path.basename(path)}' uploaded successfully.")
-            return path, metadata["Data"]
-    except (FileReadError, CorruptFileError, FileNotFoundError, FileEmptyError,
-            FileTypeUnsupportedError, FileDecodeError, FileLockedError,
-            FileTooLargeError, FileOpenError) as e:
-        print(f"[⛔️] Error opening file: {e.what()}")
-    except Exception as e:
-        print(f"[⛔️] Unexpected error: {e}")
-    return None, None
+    def upload_file(self, path):
+        """Uploads a file and extracts its metadata.
 
-def analyze_file(filepath):
-    if not filepath:
-        print("[⛔️] Please upload a file first.")
-        return
+        Args:
+            path (str): path or filename of the file to be uploaded
+        """
+        resolved_path = os.path.abspath(path)
 
-    print("\n🔍 Analyzing file...")
-    code_m = fetch_code_metrics(filepath)
-    halstead_m = fetch_halstead_metrics(filepath)
-    
-    code_smells = find_code_smells(filepath)
+        if not os.path.isfile(resolved_path):
+            print(f"[⛔️] File not found: {path}")
+            print("💡 Hint: Try using a relative path or place the file in the current directory.")
+            return
 
-    print("\n[*] Code Metrics:")
-    for key, val in code_m.items():
-        print(f"  - {key}: {val}")
+        try:
+            self.code = _read_file_contents(resolved_path)
+            with open(resolved_path, "r") as f:
+                self.metadata = extract_file_info(f)
+                self.json_path = save_to_json(self.metadata)
+                self.filepath = resolved_path
+                print(f"✅ File '{os.path.basename(resolved_path)}' uploaded successfully.")
 
-    print("\n[*] Halstead Metrics:")
-    for key, val in halstead_m.items():
-        print(f"  - {key}: {val}")
+        except (FileReadError, CorruptFileError, FileNotFoundError, FileEmptyError,
+                FileTypeUnsupportedError, FileDecodeError, FileLockedError,
+                FileTooLargeError, FileOpenError) as e:
+            print(f"[⛔️] Error opening file: {e.what()}")
+        except Exception as e:
+            print(f"[⛔️] Unexpected error: {e}")
+
+    def analyze_file(self):
+        """_summary_
         
-    print("\n[*] Code Smells Found:") # Fix
-    for category, issues in code_smells.items():
-        print(f"\n[+] {category.replace('_', ' ').title()}:")
-        for i, issue in enumerate(issues, start=1):
-            print(f"  {i}.")
-            if isinstance(issue, dict):
-                for key, val in issue.items():
-                    # nested structure for duplicated_code
-                    if isinstance(val, dict):
-                        print(f"    - {key}:")
-                        for sub_key, sub_val in val.items():
-                            print(f"        {sub_key}: {repr(sub_val)}")
-                    else:
-                        print(f"    - {key}: {repr(val)}")
-            else:
-                print(f"    - {issue}")
+        Analyzes the uploaded file for code smells and metrics.
+        
+        """
+        if not self.filepath:
+            print("[⛔️] Please upload a file first.")
+            return
 
-def refactor_code(filepath):
-    if not filepath:
-        print("[⛔️] Please upload a file first.")
-        return
+        print("\n🔍 Analyzing file...")
+        try:
+            code_smells, report_path = find_code_smells(self.filepath)
+            self.report_path = report_path
 
-    print("🛠️ Refactoring duplicate code...")
-    try:
-        refactored = refactor_duplicates(filepath)
-        save_refactored_file(refactored, filepath)
-        print("[✅] Refactoring complete.")
-    except Exception as e:
-        print(f"[⛔️] Error during refactoring: {e}")
+            print("\n[*] Code Metrics:")
+            for key, val in code_smells.get("code_metrics", {}).items():
+                print(f"  - {key}: {val}")
 
-def save_results():
-    filename = input("Enter filename to save results (e.g., results.json): ").strip()
-    if not filename:
-        print("[⛔️] Invalid filename.")
-        return
-    try:
-        # assuming metadata.json was previously saved
-        with open("metadata.json", "r") as infile:
-            data = json.load(infile)
-        with open(filename, "w") as outfile:
-            json.dump(data, outfile, indent=2)
-        print(f"[✅] Results saved to {filename}")
-    except Exception as e:
-        print(f"[⛔️] Error saving results: {e}")
+            print("\n[*] Halstead Metrics:")
+            for key, val in code_smells.get("halstead_metrics", {}).items():
+                print(f"  - {key}: {val}")
 
-def main():
-    filepath = None
-    code_str = ""
+            print("\n[*] Code Smells Found:")
+            for category in ["long_parameter_list", "long_method", "duplicated_code"]:
+                issues = code_smells.get(category, [])
+                print(f"\n[+] {category.replace('_', ' ').title()}:")
+                if not issues:
+                    print(" - None Found")
+                else:
+                    for i, issue in enumerate(issues, start=1):
+                        print(f"  {i}.")
+                        if isinstance(issue, dict):
+                            for key, val in issue.items():
+                                if isinstance(val, dict):
+                                    print(f"\n    - {key}:")
+                                    for sub_key, sub_val in val.items():
+                                        if sub_key == "text" and val.get("type") == "code":
+                                            print("\n        +---------------- CODE ----------------+")
+                                            for line in sub_val.splitlines():
+                                                print(f"        | {line}")
+                                            print("        +--------------------------------------+\n")
+                                        print(f"        {sub_key}: {repr(sub_val)}")
+                                else:
+                                    print(f"    - {key}: {repr(val)}")
+                        else:
+                            print(f"    - {issue}")
 
-    clear_terminal()
-    print_welcome()
+            print(f"\n📄 Markdown report saved at: {report_path}")
 
-    while True:
-        print("\nOptions:")
-        print("-u Upload File")
-        print("-a Analyze File")
-        print("-rd Refactor Duplicates")
-        print("-s Save Results")
-        print("-c Clear Output")
-        print("-q Exit")
-        choice = input("Select a flag: ").strip()
+        except Exception as e:
+            print(f"[⛔️] Error analyzing file: {e}")
 
-        if choice == "-u":
-            filepath, code_str = upload_file()
-        elif choice == "-a":
-            analyze_file(filepath)
-        elif choice == "-rd":
-            refactor_code(filepath)
-        elif choice == "-s":
-            save_results()
-        elif choice == "-c":
-            clear_terminal()
-            print_welcome()
-        elif choice == "-q":
-            print("[*] Goodbye!")
-            break
-        else:
-            print("[⛔️] Invalid option. Try again.")
+    def refactor_code(self):
+        """_summary_
+
+        Refactors the uploaded file to remove duplicate code.
+        
+        Returns:
+            str: Refactored code content
+        """
+        if not self.filepath:
+            print("[⛔️] Please upload a file first.")
+            return
+
+        print("🛠️ Refactoring duplicate code...")
+        try:
+            refactored, _ = refactor_duplicates(self.filepath) # discard did_work return obj
+            self.code = refactored
+            save_refactored_file(refactored, self.filepath)
+            print("[✅] Refactoring complete.")
+        except Exception as e:
+            print(f"[⛔️] Error during refactoring: {e}")
+
+    def save_results(self):
+        """_summary_
+        
+        Saves the refactored code and metadata to a JSON file
+        
+        """
+        if not self.code:
+            print("[⛔️] No code content available to save. Run upload and refactor/analyze first.")
+            return
+
+        try:
+            updated_code_file = save_refactored_file(self.code, self.filepath)
+            print(f"[✅] Refactored code saved to: {updated_code_file}")
+
+            if not self.json_path or not os.path.isfile(self.json_path):
+                print("[⛔️] JSON metadata file missing; cannot save results.")
+                return
+
+            with open(self.json_path, "r") as infile:
+                data = json.load(infile)
+
+        except Exception as e:
+            print(f"[⛔️] Error saving results: {e}")
+
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Code Smell Detector CLI")
+    parser.add_argument("-u", "--upload", metavar="FILE", help="Upload file")
+    parser.add_argument("-a", "--analyze", action="store_true", help="Analyze file")
+    parser.add_argument("-rd", "--refactor-duplicates", action="store_true", help="Refactor duplicates")
+    parser.add_argument("-s", "--save", action="store_true", help="Save file")
+
+    args = parser.parse_args()
+    ui = TerminalUI()
+
+    if args.upload:
+        ui.upload_file(args.upload)
+
+    if args.analyze:
+        ui.analyze_file()
+
+    if args.refactor_duplicates:
+        ui.refactor_code()
+
+    if args.save:
+        ui.save_results()

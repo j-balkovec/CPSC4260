@@ -2,7 +2,7 @@
 # __class__: CPSC 4260 - Software Refactoring
 # __date__: Sat Apr 19th, 2025
 #
-# __file__: get_file_info.py
+# __file__: file_info_extracotr.py
 #
 # __brief__: This script extracts all the necessary file info
 
@@ -36,12 +36,11 @@ get_file_info_logger = setup_logger(name="get_file_info.py_logger", log_file="ge
 
 get_file_info_logger.info("get_file_info")
 
-# Add try catch in GUI
 def extract_file_info(file_obj) -> dict:
     """_summary_
 
     Args:
-        file_obj (_type_): 'Object' returned from 'upload_file()'. @see gui.py
+        file_obj (_type_): 'Object' returned from 'upload_file()'.
 
     Raises:
         FileReadError: @see exceptions.py

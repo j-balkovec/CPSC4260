@@ -64,6 +64,9 @@ CLEANUP_PATHS = {
     "readable_report": r"/Users/jbalkovec/Desktop/CPSC4260/project_root/data/readable"
 }
 
+
+JSON_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../data/json/'))
+
 # Set to false when being graded
 i_am_local = False
 
