@@ -1105,7 +1105,7 @@ python terminal_ui.py -u </path/to/file.py> -a -rd -s
 ```
 >**Note:** The flags can be used in any order, but the upload flag must be the first one.
 
-<!--**Note:** If you are running the application from the `gui` directory, prepend the path with `../` to access the directory where your file is located. If running from the root directory, use `gui/terminal_ui` to access the `gui` directory. -->
+**Note:** If you are running the application from the `gui` directory, prepend the path with `../` to access the directory where your file is located. If running from the root directory, use `gui/terminal_ui` to access the `gui` directory.
 
 > **Note**: Functions prefixed with an underscore (`_`) are intended to be private and must not be accessed or invoked outside this directory. They are exclusively used internally by the corresponding public functions.
 
