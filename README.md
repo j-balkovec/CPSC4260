@@ -29,7 +29,6 @@ The app is designed for developers and students working on code quality improvem
 - ✅ **Save Functionality**: Saves refactored code to a new file.
 - ✅ **Theme Switching**: Toggle between dark and light themes.
 - ✅ **Clear and Exit**: Clear the editor/console or exit with confirmation dialogs.
-- 🚧 **Grading Mode**: Experimental support for setting project root during grading (in progress).
 
 ## Installation
 ```bash
