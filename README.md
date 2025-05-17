@@ -22,6 +22,8 @@ CodeSmellApp is a Python application built for CPSC 4260 - Software Refactoring.
 
 The app is designed for developers and students working on code quality improvement, offering an intuitive way to interact with code analysis and refactoring tools. It solves the problem of manual code smell detection and duplicate code refactoring by automating these processes in a visual environment.
 
+📖 Full Docs → [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md)
+
 ## Features
 - ✅ **File Upload**: Select Python files via a directory tree picker.
 - ✅ **Code Smell Analysis**: Detects code smells and displays results and metrics as a Markdown report in the console.
