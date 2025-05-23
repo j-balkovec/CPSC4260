@@ -57,8 +57,6 @@ unit_tests.py                                                                 86
 TOTAL                                                                       1277    340    73%
 ```
 
-<!-- EDIT -->
-
 - **Code Smells: `pylint`**
   - [ ] have pylint score > 8.0, the higher the better
   - currently at `7.5`
@@ -70,8 +68,10 @@ TOTAL                                                                       1277
 
 **Results as of now (Fri May 23rd):**
 
+This is the result of running `pylint` on the codebase. The `pylintrc` file is used to configure the pylint settings, this includes ignoring certain errors and warnings due to the nature of some packages used in the codebase, and some of my "hotfixes" that I have made in order to fix certain bugs. Nonetheless, the result should still reflect the overall quality of the codebase.
+
 ```plaintext
-Your code has been rated at 5.09/10
+Your code has been rated at 10.00/10 (previous run: 9.93/10, +0.07)
 ```
 
 <!-- EDIT -->

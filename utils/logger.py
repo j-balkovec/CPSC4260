@@ -10,16 +10,18 @@
 import sys
 import os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========
 
 import logging
 import colorlog
-from datetime import datetime
 
-from core.constants import (LOG_COLORS)
+from core.constants import LOG_COLORS
 
-def setup_logger(name: str, log_file: str = None, level: int = logging.DEBUG, enable_console = False) -> logging.Logger:
+
+def setup_logger(
+    name: str, log_file: str = None, level: int = logging.DEBUG, enable_console=False
+) -> logging.Logger:
     """_summary_
 
     Args:
@@ -32,42 +34,35 @@ def setup_logger(name: str, log_file: str = None, level: int = logging.DEBUG, en
     """
     logger = logging.getLogger(name)
     logger.setLevel(level)
-    logger.propagate = False 
+    logger.propagate = False
 
-    log_format = (
-        "%(log_color)s%(asctime)s | %(levelname)-8s | %(message)s%(reset)s"
-    )
+    log_format = "%(log_color)s%(asctime)s | %(levelname)-8s | %(message)s%(reset)s"
     date_format = "%Y-%m-%d %H:%M:%S"
 
     formatter = colorlog.ColoredFormatter(
-        log_format,
-        datefmt=date_format,
-        log_colors=LOG_COLORS
+        log_format, datefmt=date_format, log_colors=LOG_COLORS
     )
 
     if enable_console:
         formatter = colorlog.ColoredFormatter(
-            log_format,
-            datefmt=date_format,
-            log_colors=LOG_COLORS
+            log_format, datefmt=date_format, log_colors=LOG_COLORS
         )
         console_handler = logging.StreamHandler()
         console_handler.setLevel(level)
         console_handler.setFormatter(formatter)
         logger.addHandler(console_handler)
-    
+
     if log_file:
-        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-        log_file = os.path.join(project_root, 'data', 'logs', f'log_{log_file}')
-        
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+        log_file = os.path.join(project_root, "data", "logs", f"log_{log_file}")
+
         os.makedirs(os.path.dirname(log_file), exist_ok=True)
 
         file_handler = logging.FileHandler(log_file)
         file_handler.setLevel(level)
 
         file_formatter = logging.Formatter(
-            "%(asctime)s | %(levelname)-8s | %(message)s",
-            datefmt=date_format
+            "%(asctime)s | %(levelname)-8s | %(message)s", datefmt=date_format
         )
         file_handler.setFormatter(file_formatter)
         logger.addHandler(file_handler)

@@ -11,7 +11,7 @@
 import sys
 import os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========
 
 from pathlib import Path
@@ -20,8 +20,14 @@ from textual import events
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical, Container
 from textual.widgets import (
-    Header, Footer, Button, Input, Label,
-    TextArea, RichLog, DirectoryTree
+    Header,
+    Footer,
+    Button,
+    Input,
+    Label,
+    TextArea,
+    RichLog,
+    DirectoryTree,
 )
 from textual.message import Message
 from textual.reactive import reactive
@@ -44,13 +50,16 @@ new_ui.info("new_ui")
 
 # =========== IN-PROGRESS ===========
 # A little risky, from a security perspective
-is_being_graded = False
+IS_BEING_GRADED = False
+
 
 def set_project_root():
     os.environ["CPSC4260_GRADING"] = Path.home()
-    
+
+
 # Set env var to the root repo, use that in the file picker
 # ===================================
+
 
 class ConfirmationDialog(ModalScreen[bool]):
     """_summary_
@@ -58,6 +67,7 @@ class ConfirmationDialog(ModalScreen[bool]):
     Args:
         ModalScreen (_type_): screen with the dialog
     """
+
     def __init__(self, message: str):
         """_summary_
 
@@ -67,7 +77,6 @@ class ConfirmationDialog(ModalScreen[bool]):
         super().__init__()
         self.message = message
         self.add_class("confirmation-dialog")
-
 
     def compose(self) -> ComposeResult:
         """_summary_
@@ -86,11 +95,10 @@ class ConfirmationDialog(ModalScreen[bool]):
                     Button("Yes", id="confirm_yes"),
                     Button("No", id="confirm_no"),
                 ),
-            id="button-container"
-        ),
-        id="dialog-container"
-    )
-
+                id="button-container",
+            ),
+            id="dialog-container",
+        )
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """_summary_
@@ -118,7 +126,7 @@ class FilePicker(ModalScreen):
         Yields:
             _type_: packs the dialog into a container
         """
-        if is_being_graded:
+        if IS_BEING_GRADED:
             project_root = Path.home()
         else:
             project_root = Path(__file__).resolve().parent.parent
@@ -126,7 +134,6 @@ class FilePicker(ModalScreen):
             Input(placeholder="Filter filenames..."),
             DirectoryTree(project_root, id="directory_tree", name="Directory Tree"),
         )
-
 
     def on_directory_tree_file_selected(self, event: DirectoryTree.FileSelected):
         """_summary_
@@ -140,23 +147,23 @@ class FilePicker(ModalScreen):
             )
             new_ui.warning(f"Unsupported file type: {event.path.suffix}")
             return
-        
-        else:
-            self.app.pop_screen()
-            self.app.post_message(UploadFileSelected(event.path))
-        
-                
+
+        self.app.pop_screen()
+        self.app.post_message(UploadFileSelected(event.path))
+
+
 class UploadFileSelected(Message):
     """_summary_
 
     Args:
         Message (_type_): message to be sent to the app
     """
+
     def __init__(self, path: Path):
         self.path = path
         super().__init__()
 
-        
+
 class CodeSmellApp(App):
     """_summary_
 
@@ -166,9 +173,10 @@ class CodeSmellApp(App):
     Yields:
         _type_: packs everything into a container, code editor + TextArea
     """
+
     SCREENS = {"file_picker": FilePicker}
     CSS_PATH = "textual_ui.css"
-    BINDINGS = [ # bindings don't work in the app
+    BINDINGS = [  # bindings don't work in the app
         ("q", "quit", "Quit"),
         ("c", "clear", "Clear"),
         ("e", "exit", "Exit"),
@@ -178,8 +186,7 @@ class CodeSmellApp(App):
     theme_dark: reactive[bool] = reactive(True)
 
     chosen_path = None
-    
-    
+
     def compose(self) -> ComposeResult:
         """_summary_
 
@@ -208,10 +215,9 @@ class CodeSmellApp(App):
                 yield TextArea.code_editor(language="python", id="code_editor")
         yield Footer()
 
-
     def on_mount(self) -> None:
         """
-        Brief: 
+        Brief:
             Triggers on mounting the app, to display the welcome message.
         """
         code_editor = self.query_one("#code_editor", TextArea)
@@ -233,8 +239,7 @@ class CodeSmellApp(App):
             "\t3. Use 'Refactor' to clean up duplicates.\n"
             "\t4. Save or clear your work as needed.\n"
         )
-        
-        
+
     async def on_button_pressed(self, event: Button.Pressed) -> None:
         """_summary_
 
@@ -252,33 +257,34 @@ class CodeSmellApp(App):
             await self.save()
         elif btn == "clear":
             await self.push_screen(
-                ConfirmationDialog("Are you sure you want to clear the editor and console?"),
-                callback=lambda result: self.clear() if result else None
+                ConfirmationDialog(
+                    "Are you sure you want to clear the editor and console?"
+                ),
+                callback=lambda result: self.clear() if result else None,
             )
             # self.clear()
         elif btn == "toggle_theme":
             self.theme_dark = not self.theme_dark
             # self.set_class(self.theme_dark, "dark")
             # self.set_class(not self.theme_dark, "light")
-            
+
             if self.theme_dark:
-                self.remove_class("light")  
+                self.remove_class("light")
                 self.set_class(True, "dark")
             else:
-                self.remove_class("dark")   
+                self.remove_class("dark")
                 self.set_class(True, "light")
-                
+
             self.query_one("#log", RichLog).write(
                 f"🌗 Switched to {'dark' if self.theme_dark else 'light'} theme."
             )
         elif btn == "exit":
             await self.push_screen(
-                    ConfirmationDialog("Are you sure you want to exit?"),
-                    callback=lambda result: self.exit() if result else None
-                )
+                ConfirmationDialog("Are you sure you want to exit?"),
+                callback=lambda result: self.exit() if result else None,
+            )
             # self.exit()
-    
-    
+
     async def on_key(self, event: events.Key) -> None:
         """_summary_
 
@@ -288,8 +294,7 @@ class CodeSmellApp(App):
         code_editor = self.query_one("#code_editor", TextArea)
         if self.focused == code_editor:
             event.stop()
-    
-    
+
     async def on_upload_file_selected(self, message: UploadFileSelected) -> None:
         """_summary_
 
@@ -301,7 +306,7 @@ class CodeSmellApp(App):
         log = self.query_one("#log", RichLog)
 
         try:
-            content = Path(self.filename).read_text()
+            content = Path(self.filename).read_text(encoding='utf-8')
         except Exception as e:
             self.log.write(f"❌ Failed to read file: {e}")
             return
@@ -312,78 +317,81 @@ class CodeSmellApp(App):
             code_editor.text = "# ❌ No code found in the file."
             log.write(f"📂 Loaded: {Path(self.filename).name} (empty file)")
         else:
-            code_editor.text = "\n\n#=============== ORIGINAL ===============\n\n" + \
-                                                                           content + \
-                               "\n\n#=============== ORIGINAL ===============\n\n"
+            code_editor.text = (
+                "\n\n#=============== ORIGINAL ===============\n\n"
+                + content
+                + "\n\n#=============== ORIGINAL ===============\n\n"
+            )
             log.write(f"📂 Loaded: {Path(self.filename).name}")
 
         self.query_one("#file_info", Label).update(f"📄 {Path(self.filename).name}")
 
-
     def analyze(self):
         """_summary_
-        
+
         Brief:
             Triggers the analysis of the selected file for code smells.
             Displays the results in the log and updates the code editor.
         """
         log = self.query_one("#log", RichLog)
-        code_editor = self.query_one("#code_editor", TextArea)
-        
+
         if not self.filename:
             log.write("⛔️ No file selected.")
             return
         try:
             # ========== MD REPORT ============
-            (code_smells, report_path) = find_code_smells(self.filename)
+            (_ , report_path) = find_code_smells(self.filename)
             report_str = _read_file_contents(report_path)
             md = Markdown(report_str)
             log.write(md)
             # ========== MD REPORT ============
-            
-        except FileNotFoundError:
-                log.write(f"❌ Report file not found: {self.filename}")
-                new_ui.error(f"Report file not found: {self.filename}", exc_info=True)
-        except PermissionError:
-                log.write(f"❌ Permission denied accessing: {self.filename}")
-                new_ui.error(f"Permission denied: {self.filename}", exc_info=True)
-        except Exception as e:
-                log.write(f"❌ Analysis failed: {str(e)}")
-                new_ui.error(f"Unexpected error during analysis: {e}", exc_info=True)
 
+        except FileNotFoundError:
+            log.write(f"❌ Report file not found: {self.filename}")
+            new_ui.error(f"Report file not found: {self.filename}", exc_info=True)
+        except PermissionError:
+            log.write(f"❌ Permission denied accessing: {self.filename}")
+            new_ui.error(f"Permission denied: {self.filename}", exc_info=True)
+        except Exception as e:
+            log.write(f"❌ Analysis failed: {str(e)}")
+            new_ui.error(f"Unexpected error during analysis: {e}", exc_info=True)
 
     def refactor(self):
         """_summary_
-        
+
         Brief:
             Triggers the refactoring of the selected file to remove duplicates.
             Displays the results in the log and updates the code editor.
         """
         log = self.query_one("#log", RichLog)
         code_editor = self.query_one("#code_editor", TextArea)
-        
+
         log.clear()
-        
+
         if not self.filename:
             log.write("⛔️ No file selected.")
             return
         try:
             refactored, did_work = refactor_duplicates(self.filename)
-            
+
             if did_work:
-                code_editor.insert("\n\n\n#=============== REFACTORED ===============\n\n")
+                code_editor.insert(
+                    "\n\n\n#=============== REFACTORED ===============\n\n"
+                )
                 code_editor.insert(refactored)
-                code_editor.insert("\n\n#=============== REFACTORED ===============\n\n")
-                
+                code_editor.insert(
+                    "\n\n#=============== REFACTORED ===============\n\n"
+                )
+
             else:
                 code_editor.clear()
                 code_editor.insert("\n\n\n#=============== NONE ===============\n\n")
                 code_editor.insert(refactored)
                 code_editor.insert("\n\n#=============== NONE ===============\n\n")
-            
+
             self.query_one("#code_editor", TextArea).value = refactored
             log.write("✅ Refactor complete.")
-            
+
         except FileNotFoundError:
             log.write(f"❌ File not found: {self.filename}")
             new_ui.error(f"File not found: {self.filename}", exc_info=True)
@@ -393,11 +401,10 @@ class CodeSmellApp(App):
         except Exception as e:
             log.write(f"❌ Refactor failed: {str(e)}")
             new_ui.error(f"Unexpected error during refactoring: {e}", exc_info=True)
-                        
-                             
+
     async def save(self):
         """_summary_
-        
+
         Brief:
             Saves the refactored code to a file.
             Displays the save path in the log.
@@ -413,15 +420,14 @@ class CodeSmellApp(App):
             new_ui.error(f"error: {e}", exc_info=True, stack_info=True)
             log.write(f"\n\n❌ Save failed: {e}")
 
-
     def clear(self):
         """_summary_
-        
+
         Brief:
             Clears the code editor and log.
             Displays a confirmation message.
         """
-        self.filename = None # reset filename
+        self.filename = None  # reset filename
         self.query_one("#code_editor", TextArea).clear()
         self.query_one("#log", RichLog).clear()
 

@@ -14,42 +14,46 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 # =========
 
-import re
-import keyword
 import ast
 import hashlib
-from typing import List, Dict, Set, Tuple
+from typing import Tuple
 
 from utils.logger import setup_logger
 from utils.exceptions import CodeProcessingError
 from utils.utility import (_read_file_contents)
 
-from core.duplicated_finder import (_tokenize_block, 
-                                    _normalize_block, 
-                                    _generate_ngrams, 
+from core.duplicated_finder import (_tokenize_block,
                                     _jaccard_similarity,
                                     _remove_comments)
 
 from core.constants import (DUPS_THRESHOLD)
 
 # Logger setup
-refactor_logger = setup_logger(name="refactor_duplicates.py_logger", log_file="refactor_duplicates.log")
+refactor_logger = setup_logger(name="refactor_duplicates.py_logger",
+                               log_file="refactor_duplicates.log")
 
 class DuplicateRefactorer(ast.NodeTransformer):
+    """_summary_
+
+    Args:
+        ast (_type_): Parent class
+    """
+
     def __init__(self, duplicates, functions_map):
         """_summary_
 
         Args:
-            duplicates (_type_): list of tuples containing function names and their Jaccard similarity
+            duplicates (_type_): list of tuples containing function names and their Jaccard
+                                 similarity
             functions_map (_type_): dictionary mapping function names to their AST nodes
         """
         super().__init__()
         self.dup_funcs = {f for f1, f2, _ in duplicates for f in (f1, f2)}
-        
+
         key = duplicates[0][0]
         if key not in functions_map:
             raise ValueError(f"Duplicate refers to unknown function: {key}")
-        
+
         func_node = functions_map[key]
         sample = func_node.body
         self.helper = _make_helper_node(
@@ -117,14 +121,14 @@ def _make_helper_node(func_name: str, args: list, body: list) -> ast.FunctionDef
     """
     h = hashlib.md5(func_name.encode()).hexdigest()
     helper_name = f"_common_logic_{h}"
-    
+
     new_args = ast.arguments(
         posonlyargs=[],
         args=[ast.arg(arg=arg, annotation=None) for arg in args],
         vararg=None, kwonlyargs=[], kw_defaults=[],
         kwarg=None, defaults=[]
     )
-    
+
     return ast.FunctionDef(
         name=helper_name,
         args=new_args,
@@ -132,8 +136,8 @@ def _make_helper_node(func_name: str, args: list, body: list) -> ast.FunctionDef
         decorator_list=[],
         returns=None
     )
-    
-    
+
+
 def _refactor_with_ast(source_code: str, duplicates: list) -> str:
     """_summary_
 
@@ -145,13 +149,13 @@ def _refactor_with_ast(source_code: str, duplicates: list) -> str:
         str: refactored source code
     """
     tree = ast.parse(source_code)
-    
+
     func_map = {n.name: n for n in tree.body if isinstance(n, ast.FunctionDef)}
     transformer = DuplicateRefactorer(duplicates, func_map)
-    
+
     new_tree = transformer.visit(tree)
     ast.fix_missing_locations(new_tree)
-    
+
     return ast.unparse(new_tree)
 
 
@@ -171,11 +175,11 @@ def _extract_functions(source_code: str) -> dict:
 
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef):
-        
+
             func_name = node.name.strip()
             if func_name != node.name:
                 refactor_logger.warning(f"Function name sanitized: original='{node.name}' → stripped='{func_name}'")
-            
+
             if not hasattr(node, 'end_lineno'):
                 start_line = node.lineno - 1
                 indent = len(lines[start_line]) - len(lines[start_line].lstrip())
@@ -222,7 +226,7 @@ def _find_duplicates(func_map: dict) -> list:
     """
     tokens = {name: _tokenize_block(data["text"]) for name, data in func_map.items()}
     duplicates = []
-    
+
     seen = set()
     for a, tokens_a in tokens.items():
         for b, tokens_b in tokens.items():
@@ -232,7 +236,7 @@ def _find_duplicates(func_map: dict) -> list:
             if sim >= DUPS_THRESHOLD:
                 duplicates.append((a, b, sim))
                 seen.add((a, b))
-    
+
     refactor_logger.debug(f"Found duplicates: {duplicates}")
     return duplicates
 
@@ -252,13 +256,13 @@ def refactor_duplicates(filepath) -> Tuple[str, bool]:
     source_code = _read_file_contents(filepath)
     if not source_code:
         raise CodeProcessingError(f"Could't read any code from: {filepath}")
-    
+
     functions_dict = _extract_functions(source_code)
     duplicates = _find_duplicates(functions_dict)
-    
+
     if not duplicates:
         return ("# No duplicates found, nothing to refactor.", False)
-    
+
     return (_refactor_with_ast(source_code, duplicates), True)
 # ===================================================================
 # >
@@ -298,7 +302,7 @@ def _debug_dict(source_code: str, threshold: float = 0.85) -> dict:
 
     if debug is None:
         refactor_logger.error("debug_dict was not generated")
-        
+
     refactor_logger.debug("debug_dict", debug)
     return debug
 # ===================================================================

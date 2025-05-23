@@ -1,3 +1,61 @@
 [MASTER]
-ignore=tests,data,docs,img,midpoint_essay,playground
-ignore-patterns=__pycache__
+# Path to ignore (relative to the working directory)
+ignore=__pycache__,data,docs,img,midpoint_essay,tests/htmlcov,*.pyc,*.json,*.log,*.png,*.md,*.pdf,*.txt
+ignore-patterns=.*_test\d+\.py,test\d+\.py,test\d+\.java
+
+# Set the Python path if needed
+init-hook='import sys; sys.path.append("core"); sys.path.append("gui"); sys.path.append("utils")'
+
+[MESSAGES CONTROL]
+# Disable some noisy or irrelevant warnings
+disable=
+    C0301,  # line too long
+    C0114,  # missing docstring for module
+    C0413,  # import at the top of the file (docs)
+    W0622,  # redefined-builtin, too expensive to fix right now
+    W0718,  # cacthing to broad exception
+    R0912,  # too many attributes (just the way textual works)
+    R1702,  # too-many-nested-blocks (another textual thing)
+    C0115,  # missing-class-docstring
+    C0116,  # missing-function-docstring
+    R0903,  # too-few-public-methods
+    W0703,  # broad-except
+    W1203,  # use % instead of f string
+    C0412,  # ungrouped imports
+    C0103,  # invalid-name-in-module (ast expects a specific name...)
+    W0603,  # global-statement, needed so that the THRESHOLD can be modified when debugging
+    W1201,  # logging-format-interpolation
+    E1205,  # logging too many argument, (1 dict)
+    C0200,  # consider-using-enumerate, no thanks! :)
+
+    ; R0801,  # duplicate-code (optional—enable this if you want detection)
+    ; W0511,  # fixme
+    ; W0621,  # redefined-outer-name
+    ; W0613,  # unused-argument
+    ; R0913,  # too-many-arguments
+    ; R0914,  # too-many-locals
+    ; R0915,  # too-many-statements
+
+
+
+; [REPORTS]
+; # Turn off full reports
+; reports=no
+
+[FORMAT]
+# Enforce sane line length
+max-line-length=100
+
+[TYPECHECK]
+# Useful if you use dynamic attributes or libraries like Textual
+ignored-modules=textual,rich
+
+[LOGGING]
+# Don't require that logging module be used in a certain way
+logging-modules=logging
+
+[REFACTORING]
+# Allow longer methods if it makes sense
+max-args=4
+max-locals=22
+max-statements=100
