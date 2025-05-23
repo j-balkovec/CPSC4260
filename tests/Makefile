@@ -6,3 +6,8 @@ unit:
 
 sys:
 	pytest -vs --tb=short --disable-warnings --maxfail=1 --color=yes -m "system" sys_test.py
+
+coverage-all:
+	coverage run -m pytest -vs --tb=short --disable-warnings --maxfail=1 --color=yes unit_tests.py sys_test.py
+	coverage report
+	coverage html

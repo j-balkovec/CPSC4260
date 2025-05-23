@@ -1,0 +1,62 @@
+{
+    "core/refactor.py": {
+        "mi": 56.45965302748291,
+        "rank": "D"
+    },
+    "core/duplicated_finder.py": {
+        "mi": 56.02396733346565,
+        "rank": "D"
+    },
+    "core/constants.py": {
+        "mi": 81.41768063589605,
+        "rank": "B"
+    },
+    "core/code_metrics.py": {
+        "mi": 71.03145963399191,
+        "rank": "B"
+    },
+    "core/param_length.py": {
+        "mi": 76.08043647716262,
+        "rank": "B"
+    },
+    "core/method_length.py": {
+        "mi": 68.87525714124827,
+        "rank": "C"
+    },
+    "core/halstead.py": {
+        "mi": 64.45022518790564,
+        "rank": "C"
+    },
+    "core/file_saver.py": {
+        "mi": 94.86597758977561,
+        "rank": "A"
+    },
+    "core/code_smells.py": {
+        "mi": 90.5245242491108,
+        "rank": "A"
+    },
+    "core/file_info_extractor.py": {
+        "mi": 72.96822961492745,
+        "rank": "B"
+    },
+    "gui/terminal_ui.py": {
+        "mi": 59.497063462398884,
+        "rank": "D"
+    },
+    "gui/new_ui.py": {
+        "mi": 55.533525720056055,
+        "rank": "D"
+    },
+    "utils/utility.py": {
+        "mi": 56.21101654622807,
+        "rank": "D"
+    },
+    "utils/logger.py": {
+        "mi": 100.0,
+        "rank": "A"
+    },
+    "utils/exceptions.py": {
+        "mi": 44.51663540881331,
+        "rank": "D"
+    }
+}

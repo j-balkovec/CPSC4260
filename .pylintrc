@@ -1,0 +1,3 @@
+[MASTER]
+ignore=tests,data,docs,img,midpoint_essay,playground
+ignore-patterns=__pycache__

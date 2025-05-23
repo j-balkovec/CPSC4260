@@ -1,0 +1,17 @@
+# .radonrc
+[common]
+exclude=tests,docs,data,img,midpoint_essay,playground,__pycache__
+ignore=venv,env,.venv,.env,.git
+include=*.py
+
+[cc]
+min=F
+max=A
+show_closures=True
+order=SCORE
+
+[raw]
+exclude=__init__.py
+
+[mi]
+multi=True

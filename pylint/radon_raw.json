@@ -1,0 +1,137 @@
+{
+    "core/refactor.py": {
+        "loc": 304,
+        "lloc": 148,
+        "sloc": 170,
+        "comments": 19,
+        "multi": 54,
+        "blank": 61,
+        "single_comments": 19
+    },
+    "core/duplicated_finder.py": {
+        "loc": 282,
+        "lloc": 149,
+        "sloc": 162,
+        "comments": 18,
+        "multi": 44,
+        "blank": 61,
+        "single_comments": 15
+    },
+    "core/constants.py": {
+        "loc": 118,
+        "lloc": 29,
+        "sloc": 92,
+        "comments": 14,
+        "multi": 0,
+        "blank": 14,
+        "single_comments": 12
+    },
+    "core/code_metrics.py": {
+        "loc": 156,
+        "lloc": 72,
+        "sloc": 79,
+        "comments": 11,
+        "multi": 26,
+        "blank": 40,
+        "single_comments": 11
+    },
+    "core/param_length.py": {
+        "loc": 72,
+        "lloc": 36,
+        "sloc": 39,
+        "comments": 11,
+        "multi": 6,
+        "blank": 16,
+        "single_comments": 11
+    },
+    "core/method_length.py": {
+        "loc": 100,
+        "lloc": 52,
+        "sloc": 66,
+        "comments": 11,
+        "multi": 6,
+        "blank": 17,
+        "single_comments": 11
+    },
+    "core/halstead.py": {
+        "loc": 197,
+        "lloc": 90,
+        "sloc": 106,
+        "comments": 12,
+        "multi": 35,
+        "blank": 44,
+        "single_comments": 12
+    },
+    "core/file_saver.py": {
+        "loc": 59,
+        "lloc": 24,
+        "sloc": 23,
+        "comments": 11,
+        "multi": 9,
+        "blank": 16,
+        "single_comments": 11
+    },
+    "core/code_smells.py": {
+        "loc": 77,
+        "lloc": 34,
+        "sloc": 40,
+        "comments": 11,
+        "multi": 8,
+        "blank": 18,
+        "single_comments": 11
+    },
+    "core/file_info_extractor.py": {
+        "loc": 199,
+        "lloc": 83,
+        "sloc": 94,
+        "comments": 12,
+        "multi": 39,
+        "blank": 54,
+        "single_comments": 12
+    },
+    "gui/terminal_ui.py": {
+        "loc": 200,
+        "lloc": 129,
+        "sloc": 129,
+        "comments": 10,
+        "multi": 21,
+        "blank": 41,
+        "single_comments": 9
+    },
+    "gui/new_ui.py": {
+        "loc": 433,
+        "lloc": 214,
+        "sloc": 238,
+        "comments": 27,
+        "multi": 84,
+        "blank": 86,
+        "single_comments": 25
+    },
+    "utils/utility.py": {
+        "loc": 318,
+        "lloc": 179,
+        "sloc": 188,
+        "comments": 23,
+        "multi": 40,
+        "blank": 67,
+        "single_comments": 23
+    },
+    "utils/logger.py": {
+        "loc": 75,
+        "lloc": 31,
+        "sloc": 43,
+        "comments": 9,
+        "multi": 8,
+        "blank": 15,
+        "single_comments": 9
+    },
+    "utils/exceptions.py": {
+        "loc": 233,
+        "lloc": 58,
+        "sloc": 54,
+        "comments": 12,
+        "multi": 111,
+        "blank": 57,
+        "single_comments": 11
+    }
+}

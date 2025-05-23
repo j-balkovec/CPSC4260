@@ -1,0 +1,22 @@
+ 1032  coverage run -m pytest
+ 1033  coverage report
+ 1034  coverage html
+
+ 1036  coverage run -m pytest -vs --tb=short --disable-warnings --maxfail=1 --color=yes unit_tests.py sys_test.py
+
+ 1050  pylint project_root
+ 1053  pylint project_root --ignore=tests
+ 1054  pylint project_root --ignore=tests --ignore=playground --ignore=data
+ 1059  pylint core gui utils --ignore=__pycache__,tests,data,docs,img,midpoint_essay,playground
+ 1061  pylint gui core utils
+ 1063  pylint core gui utils --output-format=json:pylint/pylint-report.json,colorized
+
+===== Cyclomatic complexity =====
+ 1064  radon cc core gui utils -s -j > pylint/radon_cc.json
+
+===== Maintainability Index =====
+ 1065  radon mi core gui utils -s -j > pylint/radon_mi.json
+
+===== Raw Metrics =====
+ 1066  radon raw core gui utils -s -j > pylint/radon_raw.json
+

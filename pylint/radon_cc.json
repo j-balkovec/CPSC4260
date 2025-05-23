@@ -1,0 +1,1161 @@
+{
+    "core/refactor.py": [
+        {
+            "type": "function",
+            "rank": "C",
+            "complexity": 14,
+            "col_offset": 0,
+            "lineno": 158,
+            "name": "_extract_functions",
+            "endline": 211,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "B",
+            "complexity": 7,
+            "col_offset": 0,
+            "lineno": 214,
+            "name": "_find_duplicates",
+            "endline": 237,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "B",
+            "complexity": 7,
+            "col_offset": 0,
+            "lineno": 268,
+            "name": "_debug_dict",
+            "endline": 303,
+            "closures": []
+        },
+        {
+            "type": "method",
+            "rank": "B",
+            "complexity": 6,
+            "col_offset": 4,
+            "lineno": 78,
+            "name": "visit_FunctionDef",
+            "endline": 104,
+            "classname": "DuplicateRefactorer",
+            "closures": []
+        },
+        {
+            "type": "class",
+            "rank": "A",
+            "complexity": 5,
+            "col_offset": 0,
+            "lineno": 38,
+            "name": "DuplicateRefactorer",
+            "endline": 104,
+            "methods": [
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 5,
+                    "col_offset": 4,
+                    "lineno": 39,
+                    "name": "__init__",
+                    "endline": 61,
+                    "classname": "DuplicateRefactorer",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 1,
+                    "col_offset": 4,
+                    "lineno": 64,
+                    "name": "visit_Module",
+                    "endline": 75,
+                    "classname": "DuplicateRefactorer",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "B",
+                    "complexity": 6,
+                    "col_offset": 4,
+                    "lineno": 78,
+                    "name": "visit_FunctionDef",
+                    "endline": 104,
+                    "classname": "DuplicateRefactorer",
+                    "closures": []
+                }
+            ]
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 5,
+            "col_offset": 4,
+            "lineno": 39,
+            "name": "__init__",
+            "endline": 61,
+            "classname": "DuplicateRefactorer",
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 3,
+            "col_offset": 0,
+            "lineno": 137,
+            "name": "_refactor_with_ast",
+            "endline": 155,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 3,
+            "col_offset": 0,
+            "lineno": 240,
+            "name": "refactor_duplicates",
+            "endline": 262,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 2,
+            "col_offset": 0,
+            "lineno": 107,
+            "name": "_make_helper_node",
+            "endline": 133,
+            "closures": []
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 4,
+            "lineno": 64,
+            "name": "visit_Module",
+            "endline": 75,
+            "classname": "DuplicateRefactorer",
+            "closures": []
+        }
+    ],
+    "core/duplicated_finder.py": [
+        {
+            "type": "function",
+            "rank": "C",
+            "complexity": 16,
+            "col_offset": 0,
+            "lineno": 46,
+            "name": "_split_into_blocks",
+            "endline": 123,
+            "closures": [
+                {
+                    "type": "function",
+                    "rank": "A",
+                    "complexity": 5,
+                    "col_offset": 4,
+                    "lineno": 63,
+                    "name": "flush_block",
+                    "endline": 73,
+                    "closures": []
+                }
+            ]
+        },
+        {
+            "type": "function",
+            "rank": "B",
+            "complexity": 8,
+            "col_offset": 0,
+            "lineno": 125,
+            "name": "_remove_comments",
+            "endline": 147,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "B",
+            "complexity": 8,
+            "col_offset": 0,
+            "lineno": 216,
+            "name": "_find_duplicated_code",
+            "endline": 282,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 5,
+            "col_offset": 0,
+            "lineno": 150,
+            "name": "_tokenize_block",
+            "endline": 179,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 3,
+            "col_offset": 0,
+            "lineno": 33,
+            "name": "_normalize_block",
+            "endline": 44,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 2,
+            "col_offset": 0,
+            "lineno": 182,
+            "name": "_generate_ngrams",
+            "endline": 192,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 2,
+            "col_offset": 0,
+            "lineno": 195,
+            "name": "_jaccard_similarity",
+            "endline": 213,
+            "closures": []
+        }
+    ],
+    "core/code_metrics.py": [
+        {
+            "type": "function",
+            "rank": "C",
+            "complexity": 12,
+            "col_offset": 0,
+            "lineno": 28,
+            "name": "_classify_lines_of_code",
+            "endline": 101,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 2,
+            "col_offset": 0,
+            "lineno": 104,
+            "name": "_calculate_code_metrics",
+            "endline": 131,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 0,
+            "lineno": 134,
+            "name": "fetch_code_metrics",
+            "endline": 155,
+            "closures": []
+        }
+    ],
+    "core/param_length.py": [
+        {
+            "type": "function",
+            "rank": "C",
+            "complexity": 11,
+            "col_offset": 0,
+            "lineno": 28,
+            "name": "_find_long_parameter_list",
+            "endline": 72,
+            "closures": []
+        }
+    ],
+    "core/method_length.py": [
+        {
+            "type": "function",
+            "rank": "C",
+            "complexity": 13,
+            "col_offset": 0,
+            "lineno": 27,
+            "name": "_find_long_method",
+            "endline": 100,
+            "closures": []
+        }
+    ],
+    "core/halstead.py": [
+        {
+            "type": "function",
+            "rank": "C",
+            "complexity": 13,
+            "col_offset": 0,
+            "lineno": 32,
+            "name": "_extract_operators_and_operands",
+            "endline": 107,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "B",
+            "complexity": 7,
+            "col_offset": 0,
+            "lineno": 110,
+            "name": "_calculate_halstead_metrics",
+            "endline": 178,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 0,
+            "lineno": 181,
+            "name": "fetch_halstead_metrics",
+            "endline": 197,
+            "closures": []
+        }
+    ],
+    "core/file_saver.py": [
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 2,
+            "col_offset": 0,
+            "lineno": 28,
+            "name": "save_refactored_file",
+            "endline": 59,
+            "closures": []
+        }
+    ],
+    "core/code_smells.py": [
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 2,
+            "col_offset": 0,
+            "lineno": 35,
+            "name": "find_code_smells",
+            "endline": 77,
+            "closures": []
+        }
+    ],
+    "core/file_info_extractor.py": [
+        {
+            "type": "function",
+            "rank": "B",
+            "complexity": 8,
+            "col_offset": 0,
+            "lineno": 39,
+            "name": "extract_file_info",
+            "endline": 88,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 5,
+            "col_offset": 0,
+            "lineno": 91,
+            "name": "_validate_file",
+            "endline": 122,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 3,
+            "col_offset": 0,
+            "lineno": 125,
+            "name": "_gather_metadata",
+            "endline": 171,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 0,
+            "lineno": 173,
+            "name": "save_to_json",
+            "endline": 197,
+            "closures": []
+        }
+    ],
+    "gui/terminal_ui.py": [
+        {
+            "type": "method",
+            "rank": "C",
+            "complexity": 15,
+            "col_offset": 4,
+            "lineno": 81,
+            "name": "analyze_file",
+            "endline": 132,
+            "classname": "TerminalUI",
+            "closures": []
+        },
+        {
+            "type": "class",
+            "rank": "B",
+            "complexity": 6,
+            "col_offset": 0,
+            "lineno": 39,
+            "name": "TerminalUI",
+            "endline": 177,
+            "methods": [
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 1,
+                    "col_offset": 4,
+                    "lineno": 43,
+                    "name": "__init__",
+                    "endline": 51,
+                    "classname": "TerminalUI",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 4,
+                    "col_offset": 4,
+                    "lineno": 53,
+                    "name": "upload_file",
+                    "endline": 79,
+                    "classname": "TerminalUI",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "C",
+                    "complexity": 15,
+                    "col_offset": 4,
+                    "lineno": 81,
+                    "name": "analyze_file",
+                    "endline": 132,
+                    "classname": "TerminalUI",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 3,
+                    "col_offset": 4,
+                    "lineno": 134,
+                    "name": "refactor_code",
+                    "endline": 153,
+                    "classname": "TerminalUI",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 5,
+                    "col_offset": 4,
+                    "lineno": 155,
+                    "name": "save_results",
+                    "endline": 177,
+                    "classname": "TerminalUI",
+                    "closures": []
+                }
+            ]
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 5,
+            "col_offset": 4,
+            "lineno": 155,
+            "name": "save_results",
+            "endline": 177,
+            "classname": "TerminalUI",
+            "closures": []
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 4,
+            "col_offset": 4,
+            "lineno": 53,
+            "name": "upload_file",
+            "endline": 79,
+            "classname": "TerminalUI",
+            "closures": []
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 3,
+            "col_offset": 4,
+            "lineno": 134,
+            "name": "refactor_code",
+            "endline": 153,
+            "classname": "TerminalUI",
+            "closures": []
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 4,
+            "lineno": 43,
+            "name": "__init__",
+            "endline": 51,
+            "classname": "TerminalUI",
+            "closures": []
+        }
+    ],
+    "gui/new_ui.py": [
+        {
+            "type": "method",
+            "rank": "C",
+            "complexity": 12,
+            "col_offset": 4,
+            "lineno": 238,
+            "name": "on_button_pressed",
+            "endline": 277,
+            "classname": "CodeSmellApp",
+            "closures": []
+        },
+        {
+            "type": "method",
+            "rank": "B",
+            "complexity": 6,
+            "col_offset": 4,
+            "lineno": 355,
+            "name": "refactor",
+            "endline": 395,
+            "classname": "CodeSmellApp",
+            "closures": []
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 5,
+            "col_offset": 4,
+            "lineno": 323,
+            "name": "analyze",
+            "endline": 352,
+            "classname": "CodeSmellApp",
+            "closures": []
+        },
+        {
+            "type": "class",
+            "rank": "A",
+            "complexity": 4,
+            "col_offset": 0,
+            "lineno": 160,
+            "name": "CodeSmellApp",
+            "endline": 426,
+            "methods": [
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 1,
+                    "col_offset": 4,
+                    "lineno": 183,
+                    "name": "compose",
+                    "endline": 209,
+                    "classname": "CodeSmellApp",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 1,
+                    "col_offset": 4,
+                    "lineno": 212,
+                    "name": "on_mount",
+                    "endline": 226,
+                    "classname": "CodeSmellApp",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "C",
+                    "complexity": 12,
+                    "col_offset": 4,
+                    "lineno": 238,
+                    "name": "on_button_pressed",
+                    "endline": 277,
+                    "classname": "CodeSmellApp",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 2,
+                    "col_offset": 4,
+                    "lineno": 282,
+                    "name": "on_key",
+                    "endline": 290,
+                    "classname": "CodeSmellApp",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 3,
+                    "col_offset": 4,
+                    "lineno": 293,
+                    "name": "on_upload_file_selected",
+                    "endline": 320,
+                    "classname": "CodeSmellApp",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 5,
+                    "col_offset": 4,
+                    "lineno": 323,
+                    "name": "analyze",
+                    "endline": 352,
+                    "classname": "CodeSmellApp",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "B",
+                    "complexity": 6,
+                    "col_offset": 4,
+                    "lineno": 355,
+                    "name": "refactor",
+                    "endline": 395,
+                    "classname": "CodeSmellApp",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 2,
+                    "col_offset": 4,
+                    "lineno": 398,
+                    "name": "save",
+                    "endline": 414,
+                    "classname": "CodeSmellApp",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 1,
+                    "col_offset": 4,
+                    "lineno": 417,
+                    "name": "clear",
+                    "endline": 426,
+                    "classname": "CodeSmellApp",
+                    "closures": []
+                }
+            ]
+        },
+        {
+            "type": "class",
+            "rank": "A",
+            "complexity": 3,
+            "col_offset": 0,
+            "lineno": 104,
+            "name": "FilePicker",
+            "endline": 146,
+            "methods": [
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 2,
+                    "col_offset": 4,
+                    "lineno": 115,
+                    "name": "compose",
+                    "endline": 127,
+                    "classname": "FilePicker",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 2,
+                    "col_offset": 4,
+                    "lineno": 131,
+                    "name": "on_directory_tree_file_selected",
+                    "endline": 146,
+                    "classname": "FilePicker",
+                    "closures": []
+                }
+            ]
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 3,
+            "col_offset": 4,
+            "lineno": 293,
+            "name": "on_upload_file_selected",
+            "endline": 320,
+            "classname": "CodeSmellApp",
+            "closures": []
+        },
+        {
+            "type": "class",
+            "rank": "A",
+            "complexity": 2,
+            "col_offset": 0,
+            "lineno": 55,
+            "name": "ConfirmationDialog",
+            "endline": 101,
+            "methods": [
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 1,
+                    "col_offset": 4,
+                    "lineno": 61,
+                    "name": "__init__",
+                    "endline": 69,
+                    "classname": "ConfirmationDialog",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 1,
+                    "col_offset": 4,
+                    "lineno": 72,
+                    "name": "compose",
+                    "endline": 91,
+                    "classname": "ConfirmationDialog",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 1,
+                    "col_offset": 4,
+                    "lineno": 95,
+                    "name": "on_button_pressed",
+                    "endline": 101,
+                    "classname": "ConfirmationDialog",
+                    "closures": []
+                }
+            ]
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 2,
+            "col_offset": 4,
+            "lineno": 115,
+            "name": "compose",
+            "endline": 127,
+            "classname": "FilePicker",
+            "closures": []
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 2,
+            "col_offset": 4,
+            "lineno": 131,
+            "name": "on_directory_tree_file_selected",
+            "endline": 146,
+            "classname": "FilePicker",
+            "closures": []
+        },
+        {
+            "type": "class",
+            "rank": "A",
+            "complexity": 2,
+            "col_offset": 0,
+            "lineno": 149,
+            "name": "UploadFileSelected",
+            "endline": 157,
+            "methods": [
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 1,
+                    "col_offset": 4,
+                    "lineno": 155,
+                    "name": "__init__",
+                    "endline": 157,
+                    "classname": "UploadFileSelected",
+                    "closures": []
+                }
+            ]
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 2,
+            "col_offset": 4,
+            "lineno": 282,
+            "name": "on_key",
+            "endline": 290,
+            "classname": "CodeSmellApp",
+            "closures": []
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 2,
+            "col_offset": 4,
+            "lineno": 398,
+            "name": "save",
+            "endline": 414,
+            "classname": "CodeSmellApp",
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 0,
+            "lineno": 49,
+            "name": "set_project_root",
+            "endline": 50,
+            "closures": []
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 4,
+            "lineno": 61,
+            "name": "__init__",
+            "endline": 69,
+            "classname": "ConfirmationDialog",
+            "closures": []
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 4,
+            "lineno": 72,
+            "name": "compose",
+            "endline": 91,
+            "classname": "ConfirmationDialog",
+            "closures": []
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 4,
+            "lineno": 95,
+            "name": "on_button_pressed",
+            "endline": 101,
+            "classname": "ConfirmationDialog",
+            "closures": []
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 4,
+            "lineno": 155,
+            "name": "__init__",
+            "endline": 157,
+            "classname": "UploadFileSelected",
+            "closures": []
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 4,
+            "lineno": 183,
+            "name": "compose",
+            "endline": 209,
+            "classname": "CodeSmellApp",
+            "closures": []
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 4,
+            "lineno": 212,
+            "name": "on_mount",
+            "endline": 226,
+            "classname": "CodeSmellApp",
+            "closures": []
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 4,
+            "lineno": 417,
+            "name": "clear",
+            "endline": 426,
+            "classname": "CodeSmellApp",
+            "closures": []
+        }
+    ],
+    "utils/utility.py": [
+        {
+            "type": "function",
+            "rank": "C",
+            "complexity": 13,
+            "col_offset": 0,
+            "lineno": 123,
+            "name": "_generate_readable_report",
+            "endline": 246,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "B",
+            "complexity": 9,
+            "col_offset": 0,
+            "lineno": 270,
+            "name": "_pretty_print_debug_dict",
+            "endline": 318,
+            "closures": [
+                {
+                    "type": "function",
+                    "rank": "A",
+                    "complexity": 2,
+                    "col_offset": 4,
+                    "lineno": 276,
+                    "name": "format_function_text",
+                    "endline": 278,
+                    "closures": []
+                }
+            ]
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 3,
+            "col_offset": 0,
+            "lineno": 249,
+            "name": "_pretty_print",
+            "endline": 267,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 2,
+            "col_offset": 0,
+            "lineno": 30,
+            "name": "_read_file_contents",
+            "endline": 49,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 0,
+            "lineno": 52,
+            "name": "_save_to_json",
+            "endline": 75,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 0,
+            "lineno": 78,
+            "name": "get_code_metric_description",
+            "endline": 93,
+            "closures": []
+        },
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 0,
+            "lineno": 96,
+            "name": "get_halstead_metric_description",
+            "endline": 120,
+            "closures": []
+        }
+    ],
+    "utils/logger.py": [
+        {
+            "type": "function",
+            "rank": "A",
+            "complexity": 3,
+            "col_offset": 0,
+            "lineno": 22,
+            "name": "setup_logger",
+            "endline": 75,
+            "closures": []
+        }
+    ],
+    "utils/exceptions.py": [
+        {
+            "type": "class",
+            "rank": "A",
+            "complexity": 2,
+            "col_offset": 0,
+            "lineno": 22,
+            "name": "CustomExceptionSuper",
+            "endline": 52,
+            "methods": [
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 1,
+                    "col_offset": 4,
+                    "lineno": 35,
+                    "name": "__init__",
+                    "endline": 37,
+                    "classname": "CustomExceptionSuper",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 1,
+                    "col_offset": 4,
+                    "lineno": 40,
+                    "name": "__repr__",
+                    "endline": 42,
+                    "classname": "CustomExceptionSuper",
+                    "closures": []
+                },
+                {
+                    "type": "method",
+                    "rank": "A",
+                    "complexity": 2,
+                    "col_offset": 4,
+                    "lineno": 45,
+                    "name": "what",
+                    "endline": 52,
+                    "classname": "CustomExceptionSuper",
+                    "closures": []
+                }
+            ]
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 2,
+            "col_offset": 4,
+            "lineno": 45,
+            "name": "what",
+            "endline": 52,
+            "classname": "CustomExceptionSuper",
+            "closures": []
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 4,
+            "lineno": 35,
+            "name": "__init__",
+            "endline": 37,
+            "classname": "CustomExceptionSuper",
+            "closures": []
+        },
+        {
+            "type": "method",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 4,
+            "lineno": 40,
+            "name": "__repr__",
+            "endline": 42,
+            "classname": "CustomExceptionSuper",
+            "closures": []
+        },
+        {
+            "type": "class",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 0,
+            "lineno": 55,
+            "name": "FileReadError",
+            "endline": 75,
+            "methods": []
+        },
+        {
+            "type": "class",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 0,
+            "lineno": 77,
+            "name": "CorruptFileError",
+            "endline": 97,
+            "methods": []
+        },
+        {
+            "type": "class",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 0,
+            "lineno": 99,
+            "name": "FileNotFoundError",
+            "endline": 117,
+            "methods": []
+        },
+        {
+            "type": "class",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 0,
+            "lineno": 119,
+            "name": "FileEmptyError",
+            "endline": 133,
+            "methods": []
+        },
+        {
+            "type": "class",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 0,
+            "lineno": 135,
+            "name": "FileTypeUnsupportedError",
+            "endline": 149,
+            "methods": []
+        },
+        {
+            "type": "class",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 0,
+            "lineno": 151,
+            "name": "FileDecodeError",
+            "endline": 165,
+            "methods": []
+        },
+        {
+            "type": "class",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 0,
+            "lineno": 167,
+            "name": "FileLockedError",
+            "endline": 181,
+            "methods": []
+        },
+        {
+            "type": "class",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 0,
+            "lineno": 183,
+            "name": "FileTooLargeError",
+            "endline": 197,
+            "methods": []
+        },
+        {
+            "type": "class",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 0,
+            "lineno": 199,
+            "name": "FileOpenError",
+            "endline": 213,
+            "methods": []
+        },
+        {
+            "type": "class",
+            "rank": "A",
+            "complexity": 1,
+            "col_offset": 0,
+            "lineno": 215,
+            "name": "CodeProcessingError",
+            "endline": 231,
+            "methods": []
+        }
+    ]
+}
