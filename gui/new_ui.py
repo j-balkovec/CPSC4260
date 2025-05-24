@@ -306,7 +306,7 @@ class CodeSmellApp(App):
         log = self.query_one("#log", RichLog)
 
         try:
-            content = Path(self.filename).read_text(encoding='utf-8')
+            content = Path(self.filename).read_text(encoding="utf-8")
         except Exception as e:
             self.log.write(f"❌ Failed to read file: {e}")
             return
@@ -340,7 +340,7 @@ class CodeSmellApp(App):
             return
         try:
             # ========== MD REPORT ============
-            (_ , report_path) = find_code_smells(self.filename)
+            (_, report_path) = find_code_smells(self.filename)
             report_str = _read_file_contents(report_path)
             md = Markdown(report_str)
             log.write(md)

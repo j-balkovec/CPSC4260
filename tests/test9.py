@@ -21,7 +21,9 @@ def format_data_table(data, headers=None, padding=3):
 
     formatted_table = separator + "\n"
     for row in all_data:
-        formatted_row = " | ".join(str(item).ljust(col_widths[i]) for i, item in enumerate(row))
+        formatted_row = " | ".join(
+            str(item).ljust(col_widths[i]) for i, item in enumerate(row)
+        )
         formatted_table += formatted_row + " |\n"
     formatted_table += separator
 

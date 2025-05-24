@@ -18,9 +18,7 @@ def process_string_with_whitespace(input_string):
     if not stripped_string:
         return ""  # Handle string with only whitespace
 
-
     words = stripped_string.split()
-
 
     processed_string = " ".join(words)
 

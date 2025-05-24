@@ -39,6 +39,7 @@ def _find_long_parameter_list(source_code: str) -> list:
     """
     tokens = re.findall(r"\w+|[()]", source_code)
     long_parameter_methods = []
+    found_method = "\0"
 
     i = 0
     while i < len(tokens):

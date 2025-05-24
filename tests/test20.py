@@ -2,7 +2,9 @@
 # label: 20
 # method_tested: find_long_parameter_list()
 # should_fail: False
-def process_audio_segment(audio_data, start_time, end_time, fade_in=0, fade_out=0, apply_normalization=False):
+def process_audio_segment(
+    audio_data, start_time, end_time, fade_in=0, fade_out=0, apply_normalization=False
+):
     """
     Processes a segment of audio data.
 

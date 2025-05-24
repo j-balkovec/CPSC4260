@@ -8,7 +8,10 @@ def display_product_summary(product_code, product_name, price):
         return "Missing Product Code"
     return f"Code: {product_code}, Name: {product_name}, Price: ${price:.2f}"
 
-def show_order_details_with_shipping(order_number, customer, items, total, shipping_address, tracking_number=None):
+
+def show_order_details_with_shipping(
+    order_number, customer, items, total, shipping_address, tracking_number=None
+):
     """Shows detailed order information including shipping."""
     if not order_number:
         return "Invalid Order Number"

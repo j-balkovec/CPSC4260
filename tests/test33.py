@@ -8,6 +8,7 @@ def format_name_v1(first, last):
         raise TypeError("First and last names must be strings.")
     return f"{first.strip()} {last.strip()}"
 
+
 def construct_full_name_v1(given_name, family_name):
     """Constructs a complete name."""
     if not isinstance(given_name, str) or not isinstance(family_name, str):

@@ -10,20 +10,22 @@
 import sys
 import os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========
 
-import pytest
 from rich.console import Console
 from rich.theme import Theme
 
-custom_theme = Theme({
-    "heading": "bold bright_cyan",
-    "test_name": "italic green",
-    "skip": "dim yellow",
-    "fail": "bold bright_red",
-})
+custom_theme = Theme(
+    {
+        "heading": "bold bright_cyan",
+        "test_name": "italic green",
+        "skip": "dim yellow",
+        "fail": "bold bright_red",
+    }
+)
 console = Console(theme=custom_theme)
+
 
 def pytest_collection_modifyitems(config, items):
     """_summary_
@@ -32,7 +34,11 @@ def pytest_collection_modifyitems(config, items):
         config (_type_): config object
         items (_type_): list of test items
     """
-    unit_tests = [item for item in items if "unit" not in item.keywords and "system" not in item.keywords]
+    unit_tests = [
+        item
+        for item in items
+        if "unit" not in item.keywords and "system" not in item.keywords
+    ]
     sys_tests = [item for item in items if "system" in item.keywords]
 
     if unit_tests:
@@ -44,8 +50,9 @@ def pytest_collection_modifyitems(config, items):
         console.print("[heading]\n⚙️ --- System Tests --- 🚀[/heading]")
         for item in sys_tests:
             _display_test_item(item)
-            
+
     items[:] = unit_tests + sys_tests
+
 
 def pytest_runtest_logreport(report):
     """_summary_
@@ -53,13 +60,20 @@ def pytest_runtest_logreport(report):
     Args:
         report (_type_): report object
     """
-    if report.when == "call": 
+    if report.when == "call":
         if report.passed:
-            console.print(f"[test_name]✅ {report.nodeid.split('::')[-1]}[/test_name]", end="  ")
+            console.print(
+                f"[test_name]✅ {report.nodeid.split('::')[-1]}[/test_name]", end="  "
+            )
         elif report.skipped:
-            console.print(f"[skip]🟡 Skipped: {report.nodeid.split('::')[-1]}[/skip]", end="  ")
+            console.print(
+                f"[skip]🟡 Skipped: {report.nodeid.split('::')[-1]}[/skip]", end="  "
+            )
         elif report.failed:
-            console.print(f"[fail]❌ Failed: {report.nodeid.split('::')[-1]}[/fail]", end="  ")
+            console.print(
+                f"[fail]❌ Failed: {report.nodeid.split('::')[-1]}[/fail]", end="  "
+            )
+
 
 def _display_test_item(item):
     """_summary_
@@ -70,7 +84,9 @@ def _display_test_item(item):
     test_name_parts = item.nodeid.split("::")
     file_name = test_name_parts[0]
     test_function_or_class = test_name_parts[-1]
-    console.print(f"  [test_name]📄 {file_name} :: {test_function_or_class}[/test_name]")
+    console.print(
+        f"  [test_name]📄 {file_name} :: {test_function_or_class}[/test_name]"
+    )
 
 
 def pytest_terminal_summary(terminalreporter, exitstatus, config):
@@ -94,5 +110,5 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config):
     if terminalreporter.stats.get("error"):
         num_error = len(terminalreporter.stats["error"])
         console.print(f"[bold bright_red]🚨 Errors:[/bold bright_red] {num_error}")
-        
+
     console.print("\n[heading]🔚 --- End of Test Report --- 🔚\n\n[/heading]")

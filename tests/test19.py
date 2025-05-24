@@ -2,7 +2,14 @@
 # label: 19
 # method_tested: find_long_parameter_list()
 # should_fail: False
-def generate_report(data, report_type="summary", include_details=False, sort_by=None, output_format="text", filename="report.txt"):
+def generate_report(
+    data,
+    report_type="summary",
+    include_details=False,
+    sort_by=None,
+    output_format="text",
+    filename="report.txt",
+):
     """
     Generates a report from a given dataset.
 
@@ -42,6 +49,7 @@ def generate_report(data, report_type="summary", include_details=False, sort_by=
 
     if output_format.lower() == "json":
         import json
+
         try:
             return json.dumps(data, indent=4)
         except TypeError:

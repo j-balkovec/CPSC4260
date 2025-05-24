@@ -2,7 +2,14 @@
 # label: 18
 # method_tested: find_long_parameter_list()
 # should_fail: False
-def calculate_mortgage_payment(principal, annual_interest_rate, loan_term_years, down_payment=0, property_tax_rate=0, insurance_rate=0):
+def calculate_mortgage_payment(
+    principal,
+    annual_interest_rate,
+    loan_term_years,
+    down_payment=0,
+    property_tax_rate=0,
+    insurance_rate=0,
+):
     """
     Calculates the monthly mortgage payment (principal, interest, property tax, and insurance).
 
@@ -31,11 +38,16 @@ def calculate_mortgage_payment(principal, annual_interest_rate, loan_term_years,
     if monthly_interest_rate == 0:
         monthly_principal_interest = loan_amount / num_payments
     else:
-        monthly_principal_interest = (loan_amount * monthly_interest_rate * (1 + monthly_interest_rate)**num_payments) / \
-                                     ((1 + monthly_interest_rate)**num_payments - 1)
+        monthly_principal_interest = (
+            loan_amount
+            * monthly_interest_rate
+            * (1 + monthly_interest_rate) ** num_payments
+        ) / ((1 + monthly_interest_rate) ** num_payments - 1)
 
     monthly_property_tax = (principal * property_tax_rate) / 12
     monthly_insurance = (principal * insurance_rate) / 12
 
-    total_monthly_payment = monthly_principal_interest + monthly_property_tax + monthly_insurance
+    total_monthly_payment = (
+        monthly_principal_interest + monthly_property_tax + monthly_insurance
+    )
     return total_monthly_payment

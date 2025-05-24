@@ -43,11 +43,10 @@ def _read_file_contents(file_name: str) -> str:
 
     except ValueError as e:
         utility_logger.error(e)
-        with open(file_name, "rb", encoding='utf-8') as file:
+        with open(file_name, "rb", encoding="utf-8") as file:
             content = file.read()
             content = content.replace(b"\0", b"")
             return content.decode("utf-8", errors="ignore")
-
 
 
 def _save_to_json(analysis_dict: dict, filename: str) -> str:
@@ -69,7 +68,7 @@ def _save_to_json(analysis_dict: dict, filename: str) -> str:
     file_name = f"report_{base_name}_{timestamp}.json"
     file_path = os.path.join(json_dir, file_name)
 
-    with open(file_path, "w", encoding='utf-8') as json_file:
+    with open(file_path, "w", encoding="utf-8") as json_file:
         json.dump(analysis_dict, json_file, indent=4)
 
     utility_logger.info("Analysis report saved to: %s", file_name)
@@ -131,7 +130,7 @@ def _generate_readable_report(code_analysis_dict_path: dict) -> str:
     """
 
     # Code smells
-    with open(code_analysis_dict_path, "r", encoding='utf-8') as f:
+    with open(code_analysis_dict_path, "r", encoding="utf-8") as f:
         analysis_dict = json.load(f)
 
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -143,7 +142,7 @@ def _generate_readable_report(code_analysis_dict_path: dict) -> str:
 
     os.makedirs(report_dir, exist_ok=True)
 
-    with open(file_path, "w", encoding='utf-8') as out:
+    with open(file_path, "w", encoding="utf-8") as out:
         out.write("# ===== SOFTWARE ANALYSIS REPORT =====\n\n")
         out.write("---\n")
 

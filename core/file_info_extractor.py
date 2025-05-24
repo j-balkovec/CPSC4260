@@ -77,9 +77,7 @@ def extract_file_info(file_obj) -> dict:
                 function="extract_file_info",
             )
 
-        get_file_info_logger.info(
-                f"Metadata gathered successfully for: {file_path}"
-            )
+        get_file_info_logger.info(f"Metadata gathered successfully for: {file_path}")
 
         return metadata
 
@@ -225,7 +223,7 @@ def save_to_json(metadata: dict):
     file_name = f"info_{base_name}_{timestamp}.json"
     file_path = os.path.join(json_dir, file_name)
 
-    with open(file_path, "w", encoding='utf-8') as json_file:
+    with open(file_path, "w", encoding="utf-8") as json_file:
         json.dump(metadata, json_file, indent=4)
 
     get_file_info_logger.info(f"Saved metadata to JSON: {file_path}")

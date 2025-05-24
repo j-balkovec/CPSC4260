@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -36,8 +36,10 @@ def setup_logger(name, log_filename):
     logger.setLevel(logging.INFO)
 
     # file handler
-    file_handler = logging.FileHandler(log_file, mode='w')
-    file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+    file_handler = logging.FileHandler(log_file, mode="w")
+    file_handler.setFormatter(
+        logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+    )
 
     # prevent duplicate handlers
     if not logger.handlers:
@@ -47,13 +49,14 @@ def setup_logger(name, log_filename):
 
 
 # separate loggers for each agent
-ra_logger = setup_logger('ReflexAgent', 'ReflexAgent.log')
-mma_logger = setup_logger('MinMaxAgent', 'MinMaxAgent.log')
-aba_logger = setup_logger('ABAgent', 'ABAgent.log')
-em_logger = setup_logger('EMAgent', 'EMAgent.log')
+ra_logger = setup_logger("ReflexAgent", "ReflexAgent.log")
+mma_logger = setup_logger("MinMaxAgent", "MinMaxAgent.log")
+aba_logger = setup_logger("ABAgent", "ABAgent.log")
+em_logger = setup_logger("EMAgent", "EMAgent.log")
 
 
 # --------------------- CONFIG --------------------- #
+
 
 class ReflexAgent(Agent):
     """
@@ -80,7 +83,9 @@ class ReflexAgent(Agent):
         # Choose one of the best actions
         scores = [self.evaluationFunction(gameState, action) for action in legalMoves]
         bestScore = max(scores)
-        bestIndices = [index for index in range(len(scores)) if scores[index] == bestScore]
+        bestIndices = [
+            index for index in range(len(scores)) if scores[index] == bestScore
+        ]
         chosenIndex = random.choice(bestIndices)  # Pick randomly among the best
 
         "Add more of your code here if you want to"
@@ -131,8 +136,10 @@ class ReflexAgent(Agent):
         # ------ FOOD ------
         foodList = newFood.asList()
         if foodList is not None:
-            closestFoodDist = min((manhattanDistance(newPos, food) for food in foodList),
-                                  default=float('inf'))  # to fix the min() arg is an empty seq
+            closestFoodDist = min(
+                (manhattanDistance(newPos, food) for food in foodList),
+                default=float("inf"),
+            )  # to fix the min() arg is an empty seq
             score += weights["FOOD"] / (closestFoodDist + 1.0)  # div by zero avoidance
 
             # >>
@@ -152,7 +159,9 @@ class ReflexAgent(Agent):
             # >>
 
             if newScaredTimes[i] > 0:
-                score += penalty["GHOST"] / (ghostDist + 1.0)  # largo penalty for being close to a ghost
+                score += penalty["GHOST"] / (
+                    ghostDist + 1.0
+                )  # largo penalty for being close to a ghost
 
                 # >>
                 ra_logger.info("updated score (scared ghost): %s", score)
@@ -170,8 +179,10 @@ class ReflexAgent(Agent):
         # ------ THE THING THAT MAKES THE GHOSTS EATABLE ------
         capsules = currentGameState.getCapsules()
         if capsules is not None:
-            closestCapsuleDist = min((manhattanDistance(newPos, capsule) for capsule in capsules),
-                                     default=float('inf'))  # to fix the min() arg is an empty seq
+            closestCapsuleDist = min(
+                (manhattanDistance(newPos, capsule) for capsule in capsules),
+                default=float("inf"),
+            )  # to fix the min() arg is an empty seq
             score += weights["CAPSULE"] / (closestCapsuleDist + 1.0)
 
             # >>
@@ -214,7 +225,7 @@ class MultiAgentSearchAgent(Agent):
     is another abstract class.
     """
 
-    def __init__(self, evalFn='scoreEvaluationFunction', depth='2'):
+    def __init__(self, evalFn="scoreEvaluationFunction", depth="2"):
         self.index = 0  # Pacman is always agent index 0
         self.evaluationFunction = util.lookup(evalFn, globals())
         self.depth = int(depth)
@@ -238,7 +249,9 @@ class MinimaxAgent(MultiAgentSearchAgent):
             desc: Implements the minimax algorithm for decision-making, handling both pacman (maximizing) and ghosts (minimizing)
             """
             # >>
-            mma_logger.info("Running minimax: agentIndex=%d, depth=%d", agentIndex, depth)
+            mma_logger.info(
+                "Running minimax: agentIndex=%d, depth=%d", agentIndex, depth
+            )
             # >>
 
             # base case: terminal (win, lose) | depth maxed out
@@ -269,7 +282,9 @@ class MinimaxAgent(MultiAgentSearchAgent):
             legalActions = state.getLegalActions(agentIndex)
 
             # >>
-            mma_logger.info("Pacman (max): depth=%d, legalActions=%s", depth, legalActions)
+            mma_logger.info(
+                "Pacman (max): depth=%d, legalActions=%s", depth, legalActions
+            )
             # >>
 
             # if no legal actions -> return eval
@@ -303,7 +318,12 @@ class MinimaxAgent(MultiAgentSearchAgent):
             legalActions = state.getLegalActions(agentIndex)
 
             # >>
-            mma_logger.info("Ghost (min): agentIndex=%d, depth=%d, legalActions=%s", agentIndex, depth, legalActions)
+            mma_logger.info(
+                "Ghost (min): agentIndex=%d, depth=%d, legalActions=%s",
+                agentIndex,
+                depth,
+                legalActions,
+            )
             # >>
 
             # if no legal actions -> return eval
@@ -388,7 +408,9 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             if state.isWin() or state.isLose() or depth == self.depth:
                 result = self.evaluationFunction(state)
                 # >>
-                aba_logger.info("terminal state or max depth reached, evaluation value=%d", result)
+                aba_logger.info(
+                    "terminal state or max depth reached, evaluation value=%d", result
+                )
                 # >>
                 return result
 
@@ -407,7 +429,9 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             desc: Calculates the maximum value for pacman's move while applying alpha-beta pruning
             """
             # >>
-            aba_logger.info("entering maxValue: agentIndex=%d, depth=%d", agentIndex, depth)
+            aba_logger.info(
+                "entering maxValue: agentIndex=%d, depth=%d", agentIndex, depth
+            )
             # >>
 
             bestValue = float("-inf")
@@ -424,7 +448,9 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 
             for action in legalActions:
                 successor = state.generateSuccessor(agentIndex, action)
-                value = alphaBeta(1, depth, successor, alpha, beta)  # move to first ghost
+                value = alphaBeta(
+                    1, depth, successor, alpha, beta
+                )  # move to first ghost
 
                 if value > bestValue:
                     bestValue, bestAction = value, action
@@ -433,7 +459,9 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 alpha = max(alpha, bestValue)
                 if alpha > beta:  # >= fails test case q3/6
                     # >>
-                    aba_logger.info("pruning, alpha > beta: alpha=%d, beta=%d", alpha, beta)
+                    aba_logger.info(
+                        "pruning, alpha > beta: alpha=%d, beta=%d", alpha, beta
+                    )
                     # >>
                     break  # prune remaining branches
 
@@ -446,7 +474,9 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             desc: Calculates the minimum value for ghosts' moves while applying alpha-beta pruning
             """
             # >>
-            aba_logger.info("entering minValue: agentIndex=%d, depth=%d", agentIndex, depth)
+            aba_logger.info(
+                "entering minValue: agentIndex=%d, depth=%d", agentIndex, depth
+            )
             # >>
 
             bestValue = float("inf")
@@ -456,7 +486,9 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             if not legalActions:
                 result = self.evaluationFunction(state)
                 # >>
-                aba_logger.info("no legal actions for ghost, evaluation value=%d", result)
+                aba_logger.info(
+                    "no legal actions for ghost, evaluation value=%d", result
+                )
                 # >>
                 return result
 
@@ -475,7 +507,9 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 beta = min(beta, bestValue)
                 if alpha > beta:  # >= fails test case q3/6
                     # >>
-                    aba_logger.info("pruning, alpha > beta: alpha=%d, beta=%d", alpha, beta)
+                    aba_logger.info(
+                        "pruning, alpha > beta: alpha=%d, beta=%d", alpha, beta
+                    )
                     # >>
                     break  # prune remaining
 
@@ -506,7 +540,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
-      Your expectimax agent (question 4)
+    Your expectimax agent (question 4)
     """
 
     #
@@ -539,10 +573,16 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
             USE_EXPONENTIAL = False
 
             # base case: terminal (win, lose) | depth maxed out
-            if gameState.isWin() or gameState.isLose() or depth == self.depth * state.getNumAgents():
+            if (
+                gameState.isWin()
+                or gameState.isLose()
+                or depth == self.depth * state.getNumAgents()
+            ):
                 result = self.evaluationFunction(state)
                 # >>
-                em_logger.info("terminal state or max depth reached, evaluation value=%d", result)
+                em_logger.info(
+                    "terminal state or max depth reached, evaluation value=%d", result
+                )
                 # >>
                 return result
 
@@ -553,16 +593,27 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
                 if not actions:
                     result = self.evaluationFunction(state)
                     # >>
-                    em_logger.info("pacman has no legal actions at depth=%d, returning evaluation=%d", depth, result)
+                    em_logger.info(
+                        "pacman has no legal actions at depth=%d, returning evaluation=%d",
+                        depth,
+                        result,
+                    )
                     # >>
                     return result
 
-                result = max(expectimax(state.generateSuccessor(agentIndex, action), depth + 1,
-                                        (depth + 1) % state.getNumAgents())
-                             for action in state.getLegalActions(agentIndex))
+                result = max(
+                    expectimax(
+                        state.generateSuccessor(agentIndex, action),
+                        depth + 1,
+                        (depth + 1) % state.getNumAgents(),
+                    )
+                    for action in state.getLegalActions(agentIndex)
+                )
 
                 # >>
-                em_logger.info("pacman (max node) at depth=%d, bestValue=%d", depth, result)
+                em_logger.info(
+                    "pacman (max node) at depth=%d, bestValue=%d", depth, result
+                )
                 # >>
                 return result
 
@@ -573,7 +624,11 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
                 if not actions:
                     result = self.evaluationFunction(state)
                     # >>
-                    em_logger.info("ghost has no legal actions at depth=%d, returning evaluation=%d", depth, result)
+                    em_logger.info(
+                        "ghost has no legal actions at depth=%d, returning evaluation=%d",
+                        depth,
+                        result,
+                    )
                     # >>
                     return result
             try:
@@ -586,49 +641,65 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
                 elif USE_RANDOM_BIAS:
                     randomWeights = [random.uniform(0.1, 1.0) for _ in actions]
                     total = sum(randomWeights)
-                    probability = randomWeights[
-                                      random.randint(0, len(randomWeights) - 1)] / total  # random weight in the list
+                    probability = (
+                        randomWeights[random.randint(0, len(randomWeights) - 1)] / total
+                    )  # random weight in the list
                 # ------ random bias ------
 
                 # ------ Gaussian distribution ------
                 elif USE_GAUSSIAN:
                     mean = len(actions) / 2  # set mean to half the number of actions
                     std_dev = len(actions) / 4  # standard deviation
-                    gaussianWeights = [math.exp(-0.5 * ((i - mean) / std_dev) ** 2) for i in range(len(actions))]
+                    gaussianWeights = [
+                        math.exp(-0.5 * ((i - mean) / std_dev) ** 2)
+                        for i in range(len(actions))
+                    ]
                     total = sum(gaussianWeights)
-                    probability = gaussianWeights[
-                                      random.randint(0, len(gaussianWeights) - 1)] / total  # random weight in the list
+                    probability = (
+                        gaussianWeights[random.randint(0, len(gaussianWeights) - 1)]
+                        / total
+                    )  # random weight in the list
                 # ------ Gaussian distribution ------
 
                 # ------ exponential bias ------
                 elif USE_EXPONENTIAL:
                     base = 2
-                    expWeights = [base ** i for i in range(len(actions))]
+                    expWeights = [base**i for i in range(len(actions))]
                     total = sum(expWeights)
-                    probability = expWeights[
-                                      random.randint(0, len(expWeights) - 1)] / total  # random weight in the list
+                    probability = (
+                        expWeights[random.randint(0, len(expWeights) - 1)] / total
+                    )  # random weight in the list
                 # ------ exponential bias ------
 
                 else:
                     raise NotImplementedError(
-                        "turn probability toggle on: {uniform, gaussian, exponential, exponential bias}")
+                        "turn probability toggle on: {uniform, gaussian, exponential, exponential bias}"
+                    )
 
             except NotImplementedError as notImplemented:
                 # >>
                 em_logger.error(str(notImplemented))
                 # >>
-                print("<ERROR> check EMAgent.log <|> grep \"ERROR\" EMAgent.log")
+                print('<ERROR> check EMAgent.log <|> grep "ERROR" EMAgent.log')
 
             # >>
             em_logger.debug("probability: prob=%.2f", probability)
             # >>
 
-            result = sum(expectimax(state.generateSuccessor(agentIndex, action), depth + 1,
-                                    (depth + 1) % state.getNumAgents()) * probability
-                         for action in actions)
+            result = sum(
+                expectimax(
+                    state.generateSuccessor(agentIndex, action),
+                    depth + 1,
+                    (depth + 1) % state.getNumAgents(),
+                )
+                * probability
+                for action in actions
+            )
 
             # >>
-            em_logger.info("ghost (chance node) at depth=%d, expectedValue=%.2f", depth, result)
+            em_logger.info(
+                "ghost (chance node) at depth=%d, expectedValue=%.2f", depth, result
+            )
             # >>
             return result
 
@@ -643,7 +714,9 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         bestAction = max(actionValues, key=actionValues.get)  # pick the best one
 
         # >>
-        em_logger.info("best action chosen: %s with value=%d", bestAction, actionValues[bestAction])
+        em_logger.info(
+            "best action chosen: %s with value=%d", bestAction, actionValues[bestAction]
+        )
         # >>
 
         return bestAction
@@ -694,7 +767,7 @@ def betterEvaluationFunction(currentGameState):
     foodList = currentGameState.getFood().asList()
 
     # food but bigger
-    giantFoodPellets = currentGameState.getCapsules() # took me a while to find this
+    giantFoodPellets = currentGameState.getCapsules()  # took me a while to find this
 
     if foodList:
         minFoodDist = min(manhattanDistance(pacmanPos, food) for food in foodList)

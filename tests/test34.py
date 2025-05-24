@@ -8,6 +8,7 @@ def multiply_two_numbers_a(x, y):
         raise TypeError("Inputs must be numbers.")
     return x * y
 
+
 def compute_product_of_two_values_b(val1, val2):
     """Computes the product of two values."""
     if not isinstance(val1, (int, float)) or not isinstance(val2, (int, float)):

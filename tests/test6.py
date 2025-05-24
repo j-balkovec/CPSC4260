@@ -12,5 +12,4 @@ def convert_list_to_spaced_string(data_list, separator="   "):
 
     string_representation = separator.join(map(str, data_list))
 
-
     return string_representation

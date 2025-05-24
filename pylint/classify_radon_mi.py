@@ -5,6 +5,7 @@ import json
 
 RADON_MI_FILE = "radon_mi.json"
 
+
 def rank_mi(mi):
     thresholds = {
         "A": 85,
@@ -17,12 +18,12 @@ def rank_mi(mi):
         if mi >= thresholds[rank]:
             return rank
 
+
 with open(RADON_MI_FILE, "r") as radon_file:
     mi_dict = json.load(radon_file)
 
 for filename, metrics in mi_dict.items():
-    metrics['rank'] = rank_mi(metrics['mi'])
+    metrics["rank"] = rank_mi(metrics["mi"])
 
 with open(RADON_MI_FILE, "w") as radon_file:
     json.dump(mi_dict, radon_file, indent=4)
-

@@ -2,7 +2,9 @@
 # label: 11
 # method_tested: find_long_parameter_list()
 # should_fail: False
-def calculate_compound_interest(principal, rate, time, compounding_frequency, initial_deposit=0):
+def calculate_compound_interest(
+    principal, rate, time, compounding_frequency, initial_deposit=0
+):
     """
     Calculates compound interest.
 
@@ -30,5 +32,5 @@ def calculate_compound_interest(principal, rate, time, compounding_frequency, in
     t = time
     P = principal + initial_deposit
 
-    final_amount = P * (1 + r / n)**(n * t)
+    final_amount = P * (1 + r / n) ** (n * t)
     return final_amount

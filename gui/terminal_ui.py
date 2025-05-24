@@ -69,7 +69,7 @@ class TerminalUI:
 
         try:
             self.code = _read_file_contents(resolved_path)
-            with open(resolved_path, "r", encoding='utf-8') as f:
+            with open(resolved_path, "r", encoding="utf-8") as f:
                 self.metadata = extract_file_info(f)
                 self.json_path = save_to_json(self.metadata)
                 self.filepath = resolved_path
@@ -195,7 +195,7 @@ class TerminalUI:
                 print("[⛔️] JSON metadata file missing; cannot save results.")
                 return
 
-            with open(self.json_path, "r", encoding='utf-8') as infile:
+            with open(self.json_path, "r", encoding="utf-8") as infile:
                 json.load(infile)
 
         except Exception as e:

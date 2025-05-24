@@ -14,5 +14,4 @@ def format_paragraph_with_indentation(paragraph, indent_level=4):
     indent = " " * indent_level
     formatted_lines = [indent + line for line in lines]
 
-
     return "\n".join(formatted_lines)

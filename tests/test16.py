@@ -2,7 +2,15 @@
 # label: 16
 # method_tested: find_long_parameter_list()
 # should_fail: False
-def filter_sort_paginate(data, filter_key=None, filter_value=None, sort_key=None, sort_order="asc", page_number=1, page_size=10):
+def filter_sort_paginate(
+    data,
+    filter_key=None,
+    filter_value=None,
+    sort_key=None,
+    sort_order="asc",
+    page_number=1,
+    page_size=10,
+):
     """
     Filters, sorts, and paginates a list of dictionaries.
 

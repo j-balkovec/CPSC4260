@@ -58,7 +58,7 @@ def save_refactored_file(file_content: str, original_filename: str) -> str:
     new_filename = f"refactored_{name}_{timestamp}{ext}"
     out_path = os.path.join(refactored_dir, new_filename)
 
-    with open(out_path, "w", encoding='utf-8') as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         f.write(file_content)
 
     save_refactored_logger.info(f"Refactored file saved as: {out_path}")

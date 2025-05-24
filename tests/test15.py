@@ -31,5 +31,6 @@ def calculate_polygon_area(num_sides, side_length, apothem=None, circumradius=No
         area = 0.5 * num_sides * side_length * apothem
     else:
         import math
-        area = 0.5 * num_sides * (circumradius ** 2) * math.sin(2 * math.pi / num_sides)
+
+        area = 0.5 * num_sides * (circumradius**2) * math.sin(2 * math.pi / num_sides)
     return area

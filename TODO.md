@@ -32,29 +32,32 @@
     - `utility.py` is at `53%`
     - `new_ui` is at `56%`
 
-**Results as of now (Fri May 23rd):**
+**Results as of now (Sat May 24th):**
 
 ```plaintext
+coverage report
 Name                                                                       Stmts   Miss  Cover
 ----------------------------------------------------------------------------------------------
-/Users/jbalkovec/Desktop/CPSC4260/project_root/core/code_metrics.py           65     23    65%
-/Users/jbalkovec/Desktop/CPSC4260/project_root/core/code_smells.py            31      2    94%
-/Users/jbalkovec/Desktop/CPSC4260/project_root/core/constants.py              18      0   100%
-/Users/jbalkovec/Desktop/CPSC4260/project_root/core/duplicated_finder.py     135     16    88%
-/Users/jbalkovec/Desktop/CPSC4260/project_root/core/file_saver.py             23     13    43%
-/Users/jbalkovec/Desktop/CPSC4260/project_root/core/halstead.py               85     12    86%
+/Users/jbalkovec/Desktop/CPSC4260/project_root/core/code_metrics.py           65      0   100%
+/Users/jbalkovec/Desktop/CPSC4260/project_root/core/code_smells.py            30      2    93%
+/Users/jbalkovec/Desktop/CPSC4260/project_root/core/constants.py              17      0   100%
+/Users/jbalkovec/Desktop/CPSC4260/project_root/core/duplicated_finder.py     134     16    88%
+/Users/jbalkovec/Desktop/CPSC4260/project_root/core/file_saver.py             22      0   100%
+/Users/jbalkovec/Desktop/CPSC4260/project_root/core/halstead.py               80     10    88%
 /Users/jbalkovec/Desktop/CPSC4260/project_root/core/method_length.py          48     10    79%
-/Users/jbalkovec/Desktop/CPSC4260/project_root/core/param_length.py           33      2    94%
-/Users/jbalkovec/Desktop/CPSC4260/project_root/core/refactor.py              128     75    41%
-/Users/jbalkovec/Desktop/CPSC4260/project_root/gui/new_ui.py                 186     82    56%
-/Users/jbalkovec/Desktop/CPSC4260/project_root/utils/exceptions.py            45      5    89%
-/Users/jbalkovec/Desktop/CPSC4260/project_root/utils/logger.py                30      5    83%
-/Users/jbalkovec/Desktop/CPSC4260/project_root/utils/utility.py              164     77    53%
+/Users/jbalkovec/Desktop/CPSC4260/project_root/core/param_length.py           35      2    94%
+/Users/jbalkovec/Desktop/CPSC4260/project_root/core/refactor.py              126     15    88%
+/Users/jbalkovec/Desktop/CPSC4260/project_root/gui/new_ui.py                 185     82    56%
+/Users/jbalkovec/Desktop/CPSC4260/project_root/utils/exceptions.py            45      3    93%
+/Users/jbalkovec/Desktop/CPSC4260/project_root/utils/logger.py                29      5    83%
+/Users/jbalkovec/Desktop/CPSC4260/project_root/utils/utility.py              164      6    96%
 conftest.py                                                                   48     10    79%
 sys_test.py                                                                  152      1    99%
-unit_tests.py                                                                 86      7    92%
+unit_tests.py                                                                250      6    98%
 ----------------------------------------------------------------------------------------------
-TOTAL                                                                       1277    340    73%
+TOTAL                                                                       1430    168    88%
+coverage html
+Wrote HTML report to htmlcov/index.html
 ```
 
 - **Code Smells: `pylint`**
@@ -86,6 +89,10 @@ Your code has been rated at 10.00/10 (previous run: 9.93/10, +0.07)
     - `new_ui` is at `12.0`
 
 **Results as of now (Fri May 23rd):**
+
+```plaintextß
+Too large to display
+```
 
 > Focus on **back-end functionality first**, design **frontend later**.
 

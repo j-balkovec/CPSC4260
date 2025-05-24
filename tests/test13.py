@@ -2,7 +2,9 @@
 # label: 13
 # method_tested: find_long_parameter_list()
 # should_fail: False
-def process_data_range(data_list, start_index, end_index, default_value=None, error_on_out_of_bounds=False):
+def process_data_range(
+    data_list, start_index, end_index, default_value=None, error_on_out_of_bounds=False
+):
     """
     Processes a specific range of elements within a list.
 
@@ -31,7 +33,9 @@ def process_data_range(data_list, start_index, end_index, default_value=None, er
         if 0 <= i < len(data_list):
             results.append(data_list[i])
         elif error_on_out_of_bounds:
-            raise IndexError(f"Index {i} is out of bounds for list of length {len(data_list)}.")
+            raise IndexError(
+                f"Index {i} is out of bounds for list of length {len(data_list)}."
+            )
         else:
             results.append(default_value)
     return results

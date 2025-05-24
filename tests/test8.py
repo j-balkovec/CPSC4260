@@ -13,7 +13,6 @@ def find_common_elements_with_whitespace(list1, list2):
     set1 = {item.strip() for item in list1}
     set2 = {item.strip() for item in list2}
 
-
     common_elements = list(set1.intersection(set2))
 
     return common_elements

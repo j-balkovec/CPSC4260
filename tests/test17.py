@@ -22,9 +22,9 @@ def process_sensor_data(timestamp):
         - Invalid data types for readings are not explicitly handled here but could be added.
     """
     sensor_id = 13989732
-    temperature = 67 
+    temperature = 67
     humidity = 5
-    pressure = 12 
+    pressure = 12
     location = "37.7749, -122.4194"  # Example coordinates for San Francisco
     sensor_data = {
         "timestamp": timestamp,
@@ -32,6 +32,6 @@ def process_sensor_data(timestamp):
         "temperature": temperature,
         "humidity": humidity,
         "pressure": pressure,
-        "location": location
+        "location": location,
     }
     return sensor_data

@@ -13,25 +13,35 @@
 import sys
 import os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========
 
 import json
 
-from core.refactor import (_debug_dict,
-                           refactor_duplicates)
+from core.refactor import _debug_dict, refactor_duplicates
 
 from core.constants import TEST_PATHS
-from utils.utility import (_read_file_contents, 
-                           _pretty_print,
-                           _pretty_print_debug_dict)
+from utils.utility import _read_file_contents, _pretty_print, _pretty_print_debug_dict
 
 from core.method_length import _find_long_method
 from core.param_length import _find_long_parameter_list
 from core.duplicated_finder import _find_duplicated_code
 from core.code_smells import find_code_smells
 from core.halstead import fetch_halstead_metrics
+from core.refactor import _extract_functions
 from core.code_metrics import fetch_code_metrics
 
-refacotred = refactor_duplicates(TEST_PATHS['41'])
 
+source_code = _read_file_contents("../tests/test5.py")
+
+print(source_code)
+
+funcs = _extract_functions(source_code)
+
+print()
+print("Type:\t", type(funcs))
+print("Length:\t", len(funcs))
+print("Contents:\n", funcs)
+
+for func_name, func_data in funcs.items():
+    print("Function name:", func_data["name"])

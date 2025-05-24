@@ -2,27 +2,33 @@ def calculate_square_v1(number):
     """Calculates the square of a number."""
     if not isinstance(number, (int, float)):
         raise TypeError("Input must be a number.")
-    return number ** 2
+    return number**2
+
 
 def get_squared_value_v1(value):
     """Gets the squared value of a value."""
     if not isinstance(value, (int, float)):
         raise TypeError("Input must be a number.")
-    return value ** 2
-  
+    return value**2
+
+
 def check_if_positive_v1(num):
     """Checks if a number is positive."""
     if not isinstance(num, (int, float)):
         raise TypeError("Input must be a number.")
     return num > 0
 
+
 def is_greater_than_zero_v1(number):
     """Checks if a number is greater than zero."""
     if not isinstance(number, (int, float)):
         raise TypeError("Input must be a number.")
     return number > 0
-  
-def process_audio_segment(audio_data, start_time, end_time, fade_in=0, fade_out=0, apply_normalization=False):
+
+
+def process_audio_segment(
+    audio_data, start_time, end_time, fade_in=0, fade_out=0, apply_normalization=False
+):
     """
     Processes a segment of audio data.
 
@@ -58,8 +64,11 @@ def process_audio_segment(audio_data, start_time, end_time, fade_in=0, fade_out=
         pass
 
     return processed_segment
-  
-def process_data_range(data_list, start_index, end_index, default_value=None, error_on_out_of_bounds=False):
+
+
+def process_data_range(
+    data_list, start_index, end_index, default_value=None, error_on_out_of_bounds=False
+):
     """
     Processes a specific range of elements within a list.
 
@@ -88,11 +97,14 @@ def process_data_range(data_list, start_index, end_index, default_value=None, er
         if 0 <= i < len(data_list):
             results.append(data_list[i])
         elif error_on_out_of_bounds:
-            raise IndexError(f"Index {i} is out of bounds for list of length {len(data_list)}.")
+            raise IndexError(
+                f"Index {i} is out of bounds for list of length {len(data_list)}."
+            )
         else:
             results.append(default_value)
     return results
-  
+
+
 def format_paragraph_with_indentation(paragraph, indent_level=4):
     """
     Formats a paragraph by splitting it into lines and adding a specified
@@ -105,9 +117,9 @@ def format_paragraph_with_indentation(paragraph, indent_level=4):
     indent = " " * indent_level
     formatted_lines = [indent + line for line in lines]
 
-
     return "\n".join(formatted_lines)
-  
+
+
 def format_data_table(data, headers=None, padding=3):
     """
     Formats a list of lists into a simple text-based table with padding.
@@ -127,13 +139,15 @@ def format_data_table(data, headers=None, padding=3):
 
     formatted_table = separator + "\n"
     for row in all_data:
-        formatted_row = " | ".join(str(item).ljust(col_widths[i]) for i, item in enumerate(row))
+        formatted_row = " | ".join(
+            str(item).ljust(col_widths[i]) for i, item in enumerate(row)
+        )
         formatted_table += formatted_row + " |\n"
     formatted_table += separator
 
     return formatted_table
-  
-  
+
+
 x = 5
 y = 10
 z = 15
