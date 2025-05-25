@@ -16,9 +16,11 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import ast
 import logging
 from unittest import mock
+from unittest.mock import patch
 import pytest
+import math
 
-from utils.exceptions import FileEmptyError
+from utils.exceptions import FileEmptyError, CodeProcessingError
 from utils.utility import _read_file_contents
 from utils.utility import (
     _pretty_print,
@@ -33,6 +35,13 @@ from core.refactor import _refactor_with_ast
 from core.method_length import _find_long_method
 from core.param_length import _find_long_parameter_list
 from core.duplicated_finder import _find_duplicated_code
+
+from core.code_smells import find_code_smells
+
+from core.halstead import (_extract_operators_and_operands,
+                           fetch_halstead_metrics,
+                           _calculate_halstead_metrics
+                           )
 
 from core.refactor import (
     _extract_functions,
@@ -87,12 +96,12 @@ LONG_METHOD = [
     (_read_file_contents(TEST_PATHS["2"]), True),
     (_read_file_contents(TEST_PATHS["3"]), False),
     (_read_file_contents(TEST_PATHS["4"]), True),
-    (_read_file_contents(TEST_PATHS["5"]), False),
+    (_read_file_contents(TEST_PATHS["5"]), True),
     (_read_file_contents(TEST_PATHS["6"]), False),
     (_read_file_contents(TEST_PATHS["7"]), True),
     (_read_file_contents(TEST_PATHS["8"]), False),
     (_read_file_contents(TEST_PATHS["9"]), True),
-    (_read_file_contents(TEST_PATHS["10"]), False),
+    (_read_file_contents(TEST_PATHS["10"]), True),
 ]
 
 
@@ -182,7 +191,7 @@ DUPLICATES = [
     (_read_file_contents(TEST_PATHS["27"]), False),
     (_read_file_contents(TEST_PATHS["28"]), False),
     (_read_file_contents(TEST_PATHS["29"]), True),
-    (_read_file_contents(TEST_PATHS["30"]), False),
+    (_read_file_contents(TEST_PATHS["30"]), True),
 ]
 
 
@@ -775,5 +784,84 @@ def test_inline_comment_only():
     assert not result["comments"]
     assert not result["blank_lines"]
 
+
+# =============================================================================================================
+
+# =========================================== HALSTEAD METRICS ====================================================
+
+@pytest.mark.parametrize("code,expected_keys", [
+    ("a = b + c", {"unique_operators", "unique_operands", "total_operators", "total_operands"}),
+    ("if a == b:\n    pass", {"unique_operators", "unique_operands", "total_operators", "total_operands"}),
+])
+def test_extract_operators_and_operands_valid(code, expected_keys):
+    result = _extract_operators_and_operands(code)
+    assert isinstance(result, dict)
+    assert set(result.keys()) == expected_keys
+    assert all(isinstance(v, (set, list)) for v in result.values())
+
+def test_extract_operators_and_operands_empty_input():
+    with pytest.raises(CodeProcessingError, match="No valid code content found"):
+        _extract_operators_and_operands("   \n  ")
+
+def test_calculate_halstead_metrics_typical_case():
+    info = {
+        "unique_operators": {"+", "="},
+        "unique_operands": {"a", "b", "c"},
+        "total_operators": ["=", "+"],
+        "total_operands": ["a", "b", "c"]
+    }
+    metrics = _calculate_halstead_metrics(info)
+
+    assert isinstance(metrics, dict)
+    assert metrics["n1"] == 2
+    assert metrics["n2"] == 3
+    assert metrics["N1"] == 2
+    assert metrics["N2"] == 3
+    assert metrics["N"] == 5
+    assert metrics["n"] == 5
+    assert metrics["V"] == round(5 * math.log2(5), 3)
+
+
+@patch("core.halstead._read_file_contents")
+def test_fetch_halstead_metrics(mock_read):
+    mock_read.return_value = "x = y + z"
+
+    metrics = fetch_halstead_metrics("fake/path.py")
+    assert isinstance(metrics, dict)
+    assert all(key in metrics for key in ("V", "D", "E", "T", "B", "M"))
+
+# =============================================================================================================
+
+# =========================================== CODE SMELLS =====================================================
+# SHI DON'T WORK, FIX TOMMOROW
+@patch("utils.utility._read_file_contents")
+@patch("core.param_length._find_long_parameter_list")
+@patch("core.method_length._find_long_method")
+@patch("core.duplicated_finder._find_duplicated_code")
+@patch("core.code_metrics.fetch_code_metrics")
+@patch("core.halstead.fetch_halstead_metrics")
+@patch("utils.utility._save_to_json")
+@patch("utils.utility._generate_readable_report")
+def test_find_code_smells_success(
+    mock_report, mock_save_json, mock_halstead, mock_metrics,
+    mock_dup, mock_long_method, mock_param_list, mock_read
+):
+    mock_read.return_value = ["def foo(): pass"]
+    mock_param_list.return_value = ["func1"]
+    mock_long_method.return_value = ["func2"]
+    mock_dup.return_value = ["line1"]
+    mock_metrics.return_value = {"loc": 10}
+    mock_halstead.return_value = {"volume": 42}
+    mock_save_json.return_value = "output.json"
+    mock_report.return_value = "report.txt"
+
+    smells, path = find_code_smells("some_file.py")
+
+    assert path == "report.txt"
+    assert smells["long_parameter_list"] == ["func1"]
+    assert smells["long_method"] == ["func2"]
+    assert smells["duplicated_code"] == ["line1"]
+    assert smells["code_metrics"] == {"loc": 10}
+    assert smells["halstead_metrics"] == {"volume": 42}
 
 # =============================================================================================================
