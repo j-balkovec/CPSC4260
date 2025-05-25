@@ -270,7 +270,7 @@ def refactor_duplicates(filepath) -> Tuple[str, bool]:
     if not duplicates:
         return ("# No duplicates found, nothing to refactor.", False)
 
-    return (_refactor_with_ast(source_code, duplicates), True)
+    return (_refactor_with_ast(source_code, duplicates), True) # str, bool
 
 
 # ===================================================================

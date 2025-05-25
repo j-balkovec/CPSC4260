@@ -21,6 +21,12 @@
   border: round yellow;
   background: black 100%;
   padding: 1;
+  text-wrap: wrap;
+  text-overflow: fold;
+  /*
+  white-space: pre-wrap;
+  word-break: break-word;
+  */
 }
 
 #code_editor {
@@ -240,6 +246,7 @@
   display: none;
 }
 
+/*
 #analyze_modal {
   layer: overlay;
   padding: 2 4;
@@ -252,16 +259,149 @@
   layout: vertical;
 }
 
-/* Dark mode - default */
 .dark #analyze_modal {
   background: #2e2e2e;
   color: #ffffff;
   border: tall #D32F2F;
 }
 
-/* Light mode */
 .light #analyze_modal {
   color: #FFFFFF;
   background: #93d0dd;
   border: tall #4CAF50;
+}
+*/
+
+#analyze_modal {
+  layer: overlay;
+  padding: 2 4;
+  width: 50%;
+  height: auto;
+  align: center middle;
+  margin-top: 20;
+  margin-left: 35;
+  border: tall $primary;
+  layout: vertical;
+}
+
+.dark #analyze_modal {
+  background: #2e2e2e;
+  color: #ffffff;
+  border: tall #D32F2F;
+}
+
+.light #analyze_modal {
+  color: #000000;
+  background: #93d0dd;
+  border: tall #4CAF50;
+}
+
+.dark #buttons Button {
+  background: #424242;
+  color: #ffffff;
+  border: solid #757575;
+}
+
+.dark #buttons Button:hover {
+  background: #616161;
+  color: #ffffff;
+}
+
+.dark #buttons Button:focus {
+  background: #D32F2F;
+  color: #ffffff;
+  border: solid #ffffff;
+}
+
+.light #buttons Button {
+  background: #ffffff;
+  color: #000000;
+  border: solid #4CAF50;
+}
+
+.light #buttons Button:hover {
+  background: #e0e0e0;
+  color: #000000;
+}
+
+.light #buttons Button:focus {
+  background: #4CAF50;
+  color: #ffffff;
+  border: solid #000000;
+}
+
+#analyze_modal Button {
+  width: 1fr;
+  height: auto;
+  margin: 1 1;
+  text-align: center;
+  transition: background 0.2s, color 0.2s;
+}
+
+.dark #analyze_modal Button {
+  background: #424242;
+  color: #ffffff;
+  border: solid #757575;
+}
+
+.dark #analyze_modal Button:hover {
+  background: #616161;
+  color: #ffffff;
+}
+
+.dark #analyze_modal Button:focus {
+  background: #D32F2F;
+  color: #ffffff;
+  border: solid #ffffff;
+}
+
+.light #analyze_modal Button {
+  background: #ffffff;
+  color: #000000;
+  border: solid #4CAF50;
+}
+
+.light #analyze_modal Button:hover {
+  background: #e0e0e0;
+  color: #000000;
+}
+
+.light #analyze_modal Button:focus {
+  background: #4CAF50;
+  color: #ffffff;
+  border: solid #000000;
+}
+
+.dark #dialog-container Button {
+  background: #424242;
+  color: #ffffff;
+  border: solid #757575;
+}
+
+.dark #dialog-container Button:hover {
+  background: #616161;
+  color: #ffffff;
+}
+
+.dark #dialog-container Button:focus {
+  background: #D32F2F;
+  color: #ffffff;
+  border: solid #ffffff;
+}
+
+.light #dialog-container Button {
+  background: #ffffff;
+  color: #000000;
+  border: solid #4CAF50;
+}
+
+.light #dialog-container Button:hover {
+  background: #e0e0e0;
+  color: #000000;
+}
+
+.light #dialog-container Button:focus {
+  background: #4CAF50;
+  color: #ffffff;
+  border: solid #000000;
 }

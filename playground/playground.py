@@ -18,7 +18,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import json
 
-from core.refactor import _debug_dict, refactor_duplicates
+from core.refactor import _debug_dict
 
 from core.constants import TEST_PATHS
 from utils.utility import _read_file_contents, _pretty_print, _pretty_print_debug_dict
@@ -30,18 +30,7 @@ from core.code_smells import find_code_smells
 from core.halstead import fetch_halstead_metrics
 from core.refactor import _extract_functions
 from core.code_metrics import fetch_code_metrics
+from core.file_saver import save_refactored_file
+from core.refactor import refactor_duplicates
 
-
-source_code = _read_file_contents("../tests/test5.py")
-
-print(source_code)
-
-funcs = _extract_functions(source_code)
-
-print()
-print("Type:\t", type(funcs))
-print("Length:\t", len(funcs))
-print("Contents:\n", funcs)
-
-for func_name, func_data in funcs.items():
-    print("Function name:", func_data["name"])
+rn = None

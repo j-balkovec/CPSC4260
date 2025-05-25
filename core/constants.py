@@ -204,4 +204,10 @@ TEST_PATHS = {
     "44": os.path.abspath(
         os.path.join(os.path.dirname(__file__), "../tests/test44.py")
     ),
+    "9998": os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "../tests/test9998.py")
+    ),
+    "9999": os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "../tests/test9999.py")
+    ),
 }

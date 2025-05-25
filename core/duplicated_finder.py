@@ -176,7 +176,9 @@ def _tokenize_block(block: str) -> list:
     block = re.sub(r"(?<!\w)(\d+/\d+/\d+)(?!\w)", "DATE", block)
     block = re.sub(r"(?<!\w)(\d+/\d+/\d+ \d+:\d+)(?!\w)", "DATETIME", block)
 
-    raw_tokens = re.findall(r"\w+|[+\-*/=<>!&|%^~]+|[()\[\]{},;.:]", block)
+    # raw_tokens = re.findall(r"\w+|[+\-*/=<>!&|%^~]+|[()\[\]{},;.:]", block)
+    # Updated:
+    raw_tokens = re.findall(r"\w+|[+\-*/=<>!&|%^~]+|[()\[\]{},;.:]|\n", block)
 
     tokens = []
     for tok in raw_tokens:
@@ -189,8 +191,8 @@ def _tokenize_block(block: str) -> list:
 
     return tokens  # return as set maybe??? to remove dups and sort?
 
-
-def _generate_ngrams(tokens: list, n: int = 3) -> set:
+# Update: Changed 3 to 2 for better tokenization granularity
+def _generate_ngrams(tokens: list, n: int = 2) -> set:
     """_summary_
 
     Args:

@@ -19,6 +19,7 @@ from unittest import mock
 from unittest.mock import patch
 import pytest
 import math
+import re
 
 from utils.exceptions import FileEmptyError, CodeProcessingError
 from utils.utility import _read_file_contents
@@ -833,35 +834,25 @@ def test_fetch_halstead_metrics(mock_read):
 # =============================================================================================================
 
 # =========================================== CODE SMELLS =====================================================
-# SHI DON'T WORK, FIX TOMMOROW
-@patch("utils.utility._read_file_contents")
-@patch("core.param_length._find_long_parameter_list")
-@patch("core.method_length._find_long_method")
-@patch("core.duplicated_finder._find_duplicated_code")
-@patch("core.code_metrics.fetch_code_metrics")
-@patch("core.halstead.fetch_halstead_metrics")
-@patch("utils.utility._save_to_json")
-@patch("utils.utility._generate_readable_report")
-def test_find_code_smells_success(
-    mock_report, mock_save_json, mock_halstead, mock_metrics,
-    mock_dup, mock_long_method, mock_param_list, mock_read
-):
-    mock_read.return_value = ["def foo(): pass"]
-    mock_param_list.return_value = ["func1"]
-    mock_long_method.return_value = ["func2"]
-    mock_dup.return_value = ["line1"]
-    mock_metrics.return_value = {"loc": 10}
-    mock_halstead.return_value = {"volume": 42}
-    mock_save_json.return_value = "output.json"
-    mock_report.return_value = "report.txt"
 
-    smells, path = find_code_smells("some_file.py")
+FIND_SMELLS = [
+    (TEST_PATHS["9"],  True),
+    (TEST_PATHS["1"],  True),
+    (TEST_PATHS["32"], True),
+    (TEST_PATHS["22"], True),
+    (TEST_PATHS["11"], True),
+    (TEST_PATHS["17"], True),
+    (TEST_PATHS["5"],  True)
+    ]
 
-    assert path == "report.txt"
-    assert smells["long_parameter_list"] == ["func1"]
-    assert smells["long_method"] == ["func2"]
-    assert smells["duplicated_code"] == ["line1"]
-    assert smells["code_metrics"] == {"loc": 10}
-    assert smells["halstead_metrics"] == {"volume": 42}
+@pytest.mark.parametrize("source_code, expected_non_empty", FIND_SMELLS,
+                         ids=generate_ids(FIND_SMELLS))
+def test_find_code_smells_success(source_code, expected_non_empty):
+    smells, path = find_code_smells(source_code)
+
+    assert isinstance(smells, dict)
+    assert (smells != {}) == expected_non_empty
+
+    assert re.search(r"report_report_\w+_\d{8}_\d{6}_readable\.md", path), f"Unexpected path: {path}"
 
 # =============================================================================================================

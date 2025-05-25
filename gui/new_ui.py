@@ -246,7 +246,7 @@ class CodeSmellApp(App):
         log.write(
             "🚀 Welcome to CodeSmellApp!\n"
             "==================================================\n"
-            "Please resize your terminal window to fit the app.\n"
+            "\u001b[1mPlease resize your terminal window to fit the app.\033[0m\n"
             "==================================================\n\n"
             "Options:\n"
             "\t1. Click 'Upload' to select a Python file (*.py).\n"
@@ -286,11 +286,14 @@ class CodeSmellApp(App):
             )
 
         elif btn == "save":
-            await self.save()
+            await self.push_screen(
+                ConfirmationDialog("Want to create a copy? (YES) for copy, (NO) for in-place save."),
+                callback=lambda result: self.save(make_copy=True) if result else self.save(make_copy=False),
+            )
 
         elif btn == "refactor":
             await self.push_screen(
-                ConfirmationDialog("Are you sure you want to create a copy and refactor the file?"),
+                ConfirmationDialog("Are you sure you want to refactor the file?"),
                 callback=lambda result: self.refactor() if result else None,
             )
 
@@ -302,12 +305,12 @@ class CodeSmellApp(App):
 
         match event.button.id:
             case "analyze":
-                self.query_one("#analyze_modal").remove_class("hidden")  # 👈 ONLY show modal here
+                self.query_one("#analyze_modal").remove_class("hidden")
             case "cancel_analysis_modal":
                 self.query_one("#analyze_modal").add_class("hidden")
             case "run_selected_analysis":
                 self.query_one("#analyze_modal").add_class("hidden")
-                self.analyze()  # 👈 Now we run analysis AFTER user presses the ✅ button
+                self.analyze()
 
     async def on_key(self, event: events.Key) -> None:
         """_summary_
@@ -490,8 +493,10 @@ class CodeSmellApp(App):
             log.write(f"❌ Refactor failed: {str(e)}")
             new_ui.error(f"Unexpected error during refactoring: {e}", exc_info=True)
 
-    async def save(self):
+    async def save(self, make_copy: bool):
         """_summary_
+        Args:
+            make_copy (bool): If True, saves a copy of the refactored file; if False, saves in place.
 
         Brief:
             Saves the refactored code to a file.
@@ -502,8 +507,15 @@ class CodeSmellApp(App):
         content = code_editor.value
 
         try:
-            out_path = save_refactored_file(content, self.filename)
-            log.write(f"\n\n💾 Saved to default path:\n\t{out_path}")
+
+            out_path = save_refactored_file(content, self.filename, make_copy)
+
+            if make_copy:
+               log.write(f"\n\n💾 Saved to default path:\n\t{out_path}")
+            else:
+                log.write(f"\n\n💾 Saved in place:\n\t{out_path}")
+
+            print("I can access \" out_path \" from here:", out_path)
         except Exception as e:
             new_ui.error(f"error: {e}", exc_info=True, stack_info=True)
             log.write(f"\n\n❌ Save failed: {e}")

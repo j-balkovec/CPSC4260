@@ -15,8 +15,8 @@
 
 # Today
 
-- [ ] Format `analysis` buttons!!!
-- [ ] Have the ability to refactor in place and crate a copy!!!
+- [x] Format `analysis` buttons!!!
+- [x] Have the ability to refactor in place and crate a copy!!!
 - [x] finish docs
 - [x] fix `save_refactored_file` function:
   - make sure it works with **multiple duplicated functions**.
