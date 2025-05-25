@@ -82,15 +82,6 @@ LOG_COLORS = {
     "CRITICAL": "bold_red",
 }
 
-CLEANUP_PATHS = {
-    "log_analyze": r"/Users/jbalkovec/Desktop/CPSC4260/project_root/data/logs/log_analyze.log",
-    "file_info": r"/Users/jbalkovec/Desktop/CPSC4260/project_root/data/info",
-    "analysis_report": r"/Users/jbalkovec/Desktop/CPSC4260/project_root/data/report",
-    "output": r"/Users/jbalkovec/Desktop/CPSC4260/project_root/data/output",
-    "readable_report": r"/Users/jbalkovec/Desktop/CPSC4260/project_root/data/readable",
-}
-
-
 JSON_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../data/json/"))
 
 # Set to false when being graded

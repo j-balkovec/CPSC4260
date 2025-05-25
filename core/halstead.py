@@ -102,11 +102,20 @@ def _extract_operators_and_operands(source_code: str) -> dict:
                 grouped["unique_operands"].add(token)
 
         else:
-            raise CodeProcessingError(
-                "Failed to parse the code",
-                function="_extract_operators_and_operands",
-                source_code=source_code,
-            )
+            # raise CodeProcessingError(
+            #     "Failed to parse the code",
+            #     function="_extract_operators_and_operands",
+            #     source_code=source_code,
+            # )
+            continue
+
+    # sanity check
+    if not grouped["total_operators"] and not grouped["total_operands"]:
+        raise CodeProcessingError(
+            "No valid code content found for Halstead metrics.",
+            function="_extract_operators_and_operands",
+            source_code=source_code,
+        )
 
     halstead_metrics_logger.info(
         "[_extract_operators_and_operands] Finished extraction. Operators: %d, Operands: %d",

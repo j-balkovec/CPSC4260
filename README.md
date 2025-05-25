@@ -3,6 +3,7 @@
 > A simple Textual-based GUI for analyzing and refactoring Python code to detect and fix code smells.
 
 ## Table of Contents
+
 - [Overview](#overview)
 - [Features](#features)
 - [Installation](#installation)
@@ -14,7 +15,9 @@
 - [Acknowledgments](#acknowledgments)
 
 ## Overview
+
 CodeSmellApp is a Python application built for CPSC 4260 - Software Refactoring. It provides a user-friendly interface using the [Textual](https://textual.textualize.io/) library to:
+
 - Upload Python files for analysis.
 - Detect code smells and generate Markdown reports.
 - Refactor code to eliminate duplicates (Supports Type 1, 2, and 3).
@@ -25,6 +28,7 @@ The app is designed for developers and students working on code quality improvem
 📖 Full Docs → [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md)
 
 ## Features
+
 - ✅ **File Upload**: Select Python files via a directory tree picker.
 - ✅ **Code Smell Analysis**: Detects code smells and displays results and metrics as a Markdown report in the console.
 - ✅ **Refactoring**: Automatically refactors duplicate code and displays results in the code editor.
@@ -32,7 +36,12 @@ The app is designed for developers and students working on code quality improvem
 - ✅ **Theme Switching**: Toggle between dark and light themes.
 - ✅ **Clear and Exit**: Clear the editor/console or exit with confirmation dialogs.
 
+> **Note:** The app does not call or use any APIs. Everything was built from scratch and is done locally. This includes file uploads, code analysis, and refactoring.
+
+> **Note:** The app currently only supports refactoring of top-level functions and does not handle nested functions, lambdas or classes. Detection still works. This is a limitation of the current implementation and may be addressed in future updates...
+
 ## Installation
+
 ```bash
 # Clone the repository (replace with your repo URL)
 git clone https://github.com/j-balkovec/CPSC4260
@@ -47,9 +56,11 @@ conda activate vene # If using Anaconda
 # Install dependencies
 pip install -r requirements.txt
 ```
+
 **Note**: Ensure **Python 3.8+** is installed. Additional dependencies may be required based on core and utils modules (e.g., pathlib, logging).
 
 ## Usage
+
 Run the application:
 
 ```bash
@@ -67,8 +78,10 @@ The app launches a Textual-based GUI with the following workflow:
 ## Examples
 
 ### Uploading a File
+
 - Click **Upload**, navigate the directory tree, and select a .py file.
 - **Output** in the console:
+
 ```plaintext
 📂 Loaded: example.py
 ```
@@ -76,16 +89,20 @@ The app launches a Textual-based GUI with the following workflow:
 The code editor displays the file's contents.
 
 ### Analyzing Code Smells
+
 - Click **Analyze** after uploading a file.
 - **Output** in the console is a neatly formatted Markdown report
 - Errors (e.g., file not found) are logged:
+
 ```plaintext
 ❌ File not found: example.py
 ```
 
 ### Refactoring
+
 - Click **Refactor** to remove duplicates.
 - **Output** in the code editor:
+
 ```python
 # =============== REACTORED ==============
 def _common_logic_6a66bdf324c4e92e0313ab42dc5839ef(val1, val2):
@@ -113,14 +130,17 @@ def compute_product_of_two_values_b(val1, val2):
     if not isinstance(val1, (int, float)) or not isinstance(val2, (int, float)):
         raise TypeError("Inputs must be numeric.")
     return val1 * val2
-# =============== ORIGINAL ===============    
+# =============== ORIGINAL ===============
 ```
+
 - Console confirms:
+
 ```plaintext
 ✅ Refactor complete.
 ```
 
 ## Project Structure
+
 ```bash
 .
 ├── LICENSE
@@ -240,8 +260,8 @@ def compute_product_of_two_values_b(val1, val2):
     ├── logger.py
     └── utility.py
 ```
-- *Reports, Logs and JSON files omitted.*
 
+- _Reports, Logs and JSON files omitted._
 
 - `gui/`: Defines the Textual-based GUI using widgets like `DirectoryTree`, `TextArea`, and `RichLog`.
 - `core/`: Contains backend logic for analysis, refactoring, and file saving.
@@ -257,26 +277,28 @@ def compute_product_of_two_values_b(val1, val2):
 
 ## Screenshots
 
-Explore **CodeSmellApp**’s key features through these screenshots. *Note*: Text in the images may appear small. Click the links to view full-resolution versions for better readability.
+Explore **CodeSmellApp**’s key features through these screenshots. _Note_: Text in the images may appear small. Click the links to view full-resolution versions for better readability.
 
-- **File Picker**: Navigate and select `.py` files using a directory tree.  
-  ![File Picker](img/file_picker.png)  
+- **File Picker**: Navigate and select `.py` files using a directory tree.
+  ![File Picker](img/file_picker.png)
   [View Full Resolution](img/file_picker.png)
 
-- **Refactored Code**: View original and refactored code in the editor after removing duplicates.  
-  ![Refactor](img/refactor.png)  
+- **Refactored Code**: View original and refactored code in the editor after removing duplicates.
+  ![Refactor](img/refactor.png)
   [View Full Resolution](img/refactor.png)
 
-- **Code Smell Report**: See a Markdown report with Halstead metrics and code quality insights.  
-  ![Report](img/report.png)  
+- **Code Smell Report**: See a Markdown report with Halstead metrics and code quality insights.
+  ![Report](img/report.png)
   [View Full Resolution](img/report.png)
 
 Run the app locally for the clearest view of the UI and its features.
 
 ## Tests
+
 - Unit tests are located in the `tests/` directory.
 - System tests are in `tests/sys_test.py`.
 - **Usage**:
+
 ```bash
 # Run all tests
 pytest tests/
@@ -309,6 +331,7 @@ make sys
 ## Contributing
 
 Contributions are welcome after June 15th! To contribute:
+
 1. Fork the repository.
 2. Create a feature branch `git checkout -b feature/<new_feature>`.
 3. Commit your changes `git commit -m "add new feature"`.
@@ -318,11 +341,11 @@ Contributions are welcome after June 15th! To contribute:
 If you do contribute, please include tests and update documentation where applicable.
 
 ## License
+
 [MIT License](LICENSE) - see the [LICENSE](LICENSE) file for details.
 
-
 ## Acknowledgments
+
 - `Textual` for the TUI framework.
 - `Rich` for console formatting.
 - CPSC 4260 - Software Refactoring course for the project inspiration.
-

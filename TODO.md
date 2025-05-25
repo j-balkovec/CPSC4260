@@ -15,6 +15,8 @@
 
 # Today
 
+- [ ] Format `analysis` buttons!!!
+- [ ] Have the ability to refactor in place and crate a copy!!!
 - [x] finish docs
 - [x] fix `save_refactored_file` function:
   - make sure it works with **multiple duplicated functions**.
@@ -23,14 +25,6 @@
 # Metrics, Coverge, and Code Smells Goals and Reports
 
 - **Coverage: `coverage`**
-
-  - [ ] have coverage > 85%, the higher the better
-  - currently at 73%
-  - **Critical:**
-    - `refactor.py` is at `41%`
-    - `file_saver.py` is at `43%`
-    - `utility.py` is at `53%`
-    - `new_ui` is at `56%`
 
 **Results as of now (Sat May 24th):**
 
@@ -61,23 +55,14 @@ Wrote HTML report to htmlcov/index.html
 ```
 
 - **Code Smells: `pylint`**
-  - [ ] have pylint score > 8.0, the higher the better
-  - currently at `7.5`
-  - **Critical:**
-    - `refactor.py` is at `6.0`
-    - `file_saver.py` is at `6.0`
-    - `utility.py` is at `7.0`
-    - `new_ui` is at `7.0`
 
-**Results as of now (Fri May 23rd):**
+**Results as of now (Sat May 24th):**
 
 This is the result of running `pylint` on the codebase. The `pylintrc` file is used to configure the pylint settings, this includes ignoring certain errors and warnings due to the nature of some packages used in the codebase, and some of my "hotfixes" that I have made in order to fix certain bugs. Nonetheless, the result should still reflect the overall quality of the codebase.
 
 ```plaintext
 Your code has been rated at 10.00/10 (previous run: 9.93/10, +0.07)
 ```
-
-<!-- EDIT -->
 
 - **Metrics: `radon`**
   - [ ] have cyclomatic complexity < 10, the lower the better
@@ -90,7 +75,7 @@ Your code has been rated at 10.00/10 (previous run: 9.93/10, +0.07)
 
 **Results as of now (Fri May 23rd):**
 
-```plaintextß
+```plaintext
 Too large to display
 ```
 

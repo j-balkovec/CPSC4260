@@ -15,6 +15,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========
 
 from pathlib import Path
+import re
 
 from textual import events
 from textual.app import App, ComposeResult
@@ -32,6 +33,8 @@ from textual.widgets import (
 from textual.message import Message
 from textual.reactive import reactive
 from textual.screen import ModalScreen
+from textual.containers import Container
+from textual.widgets import Checkbox, Button, Label, Static
 
 from rich.markdown import Markdown
 
@@ -106,7 +109,8 @@ class ConfirmationDialog(ModalScreen[bool]):
         Args:
             event (Button.Pressed): button pressed event
         """
-        self.dismiss(event.button.id == "confirm_yes")
+        result = event.button.id == "confirm_yes"
+        self.dismiss(result)
 
 
 class FilePicker(ModalScreen):
@@ -164,6 +168,16 @@ class UploadFileSelected(Message):
         super().__init__()
 
 
+class AnalyzeOptionsModal(Static):
+    def compose(self) -> ComposeResult:
+        yield Label("Select Code Smells to Analyze:")
+        yield Checkbox("Long Method", id="detect_long_method", value=True)
+        yield Checkbox("Long Parameter List", id="detect_long_param", value=True)
+        yield Checkbox("Duplicated Code", id="detect_dup_code", value=True)
+        yield Button("✅ Run Analysis", id="run_selected_analysis")
+        yield Button("❌ Cancel", id="cancel_analysis_modal")
+
+
 class CodeSmellApp(App):
     """_summary_
 
@@ -201,6 +215,7 @@ class CodeSmellApp(App):
             with Vertical(id="left-pane"):
                 yield Label("Console")
                 yield RichLog(id="log")
+                yield AnalyzeOptionsModal(id="analyze_modal", classes="hidden")
                 with Horizontal(id="buttons"):
                     yield Button("📂 Upload", id="upload")
                     yield Button("🧠 Analyze", id="analyze")
@@ -241,28 +256,19 @@ class CodeSmellApp(App):
         )
 
     async def on_button_pressed(self, event: Button.Pressed) -> None:
-        """_summary_
-
-        Args:
-            event (Button.Pressed): button pressed event
-        """
         btn = event.button.id
+
         if btn == "upload":
             await self.push_screen(FilePicker())
-        elif btn == "analyze":
-            self.analyze()
-        elif btn == "refactor":
-            self.refactor()
-        elif btn == "save":
-            await self.save()
+
         elif btn == "clear":
             await self.push_screen(
                 ConfirmationDialog(
-                    "Are you sure you want to clear the editor and console?"
+                    "Are you sure you want to clear the file, editor, and the console?"
                 ),
                 callback=lambda result: self.clear() if result else None,
             )
-            # self.clear()
+
         elif btn == "toggle_theme":
             self.theme_dark = not self.theme_dark
             # self.set_class(self.theme_dark, "dark")
@@ -278,12 +284,30 @@ class CodeSmellApp(App):
             self.query_one("#log", RichLog).write(
                 f"🌗 Switched to {'dark' if self.theme_dark else 'light'} theme."
             )
+
+        elif btn == "save":
+            await self.save()
+
+        elif btn == "refactor":
+            await self.push_screen(
+                ConfirmationDialog("Are you sure you want to create a copy and refactor the file?"),
+                callback=lambda result: self.refactor() if result else None,
+            )
+
         elif btn == "exit":
             await self.push_screen(
                 ConfirmationDialog("Are you sure you want to exit?"),
                 callback=lambda result: self.exit() if result else None,
             )
-            # self.exit()
+
+        match event.button.id:
+            case "analyze":
+                self.query_one("#analyze_modal").remove_class("hidden")  # 👈 ONLY show modal here
+            case "cancel_analysis_modal":
+                self.query_one("#analyze_modal").add_class("hidden")
+            case "run_selected_analysis":
+                self.query_one("#analyze_modal").add_class("hidden")
+                self.analyze()  # 👈 Now we run analysis AFTER user presses the ✅ button
 
     async def on_key(self, event: events.Key) -> None:
         """_summary_
@@ -326,7 +350,48 @@ class CodeSmellApp(App):
 
         self.query_one("#file_info", Label).update(f"📄 {Path(self.filename).name}")
 
+    def filter_report_sections(self,
+                               report: str,
+                               include_methods: bool,
+                               include_params: bool,
+                               include_dupes: bool) -> str:
+        """Filter the full Markdown report based on selected smell types."""
+
+        section_patterns = {
+            "methods": r"### Long Method Detections:.*?(?=\n---|\Z)",
+            "params": r"### Long Parameter List Detections:.*?(?=\n---|\Z)",
+            "dupes": r"### Duplicated Code Detections:.*?(?=\n---|\Z)"
+        }
+
+        selected_sections = []
+
+        if include_methods:
+            match = re.search(section_patterns["methods"], report, re.DOTALL)
+            if match:
+                selected_sections.append(match.group())
+
+        if include_params:
+            match = re.search(section_patterns["params"], report, re.DOTALL)
+            if match:
+                selected_sections.append(match.group())
+
+        if include_dupes:
+            match = re.search(section_patterns["dupes"], report, re.DOTALL)
+            if match:
+                selected_sections.append(match.group())
+
+        # Always keep the header
+        header_match = re.search(r"# ===== SOFTWARE ANALYSIS REPORT =====.*?(?=\n---|\Z)", report, re.DOTALL)
+        header = header_match.group() if header_match else ""
+
+        return f"{header}\n\n---\n" + "\n\n---\n".join(selected_sections) + "\n\n---\n# ===== END OF REPORT ====="
+
     def analyze(self):
+
+        # I need to add the option or like a switch to choose what type of code smells the function is detecting
+        # If all on...scan for all
+        # If none on...scan for none, and return, no option selected
+        # If one selected, scan for that one and report
         """_summary_
 
         Brief:
@@ -339,11 +404,29 @@ class CodeSmellApp(App):
             log.write("⛔️ No file selected.")
             return
         try:
-            # ========== MD REPORT ============
             (_, report_path) = find_code_smells(self.filename)
             report_str = _read_file_contents(report_path)
-            md = Markdown(report_str)
-            log.write(md)
+
+            check_long = self.query_one("#detect_long_method", Checkbox).value
+            check_param = self.query_one("#detect_long_param", Checkbox).value
+            check_dup = self.query_one("#detect_dup_code", Checkbox).value
+
+            if not (check_long or check_param or check_dup):
+                log.write("⚠️ No analysis options selected.")
+                return
+
+            # Filter report sections
+            filtered_report = self.filter_report_sections(report_str, check_long, check_param, check_dup)
+
+            # Render filtered report
+            log.write(Markdown(filtered_report))
+
+            # ========== MD REPORT ============
+            # (_, report_path) = find_code_smells(self.filename)
+            # # This part is fine, we can just render specific part of the file, or splice the report string with a helper function
+            # report_str = _read_file_contents(report_path)
+            # md = Markdown(report_str)
+            # log.write(md)
             # ========== MD REPORT ============
 
         except FileNotFoundError:
@@ -382,15 +465,20 @@ class CodeSmellApp(App):
                 code_editor.insert(
                     "\n\n#=============== REFACTORED ===============\n\n"
                 )
+                self.query_one("#code_editor", TextArea).value = refactored
+                log.write("✅ Refactor complete.")
 
             else:
                 code_editor.clear()
-                code_editor.insert("\n\n\n#=============== NONE ===============\n\n")
+                code_editor.insert(
+                    "\n\n\n#=============== NONE ===============\n\n"
+                    )
                 code_editor.insert(refactored)
-                code_editor.insert("\n\n#=============== NONE ===============\n\n")
-
-            self.query_one("#code_editor", TextArea).value = refactored
-            log.write("✅ Refactor complete.")
+                code_editor.insert(
+                    "\n\n#=============== NONE ===============\n\n"
+                    )
+                self.query_one("#code_editor", TextArea).value = refactored
+                log.write("🤔 Nothing to refactor.")
 
         except FileNotFoundError:
             log.write(f"❌ File not found: {self.filename}")
