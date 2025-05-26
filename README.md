@@ -27,6 +27,12 @@ The app is designed for developers and students working on code quality improvem
 
 📖 Full Docs → [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md)
 
+## Architecture
+
+> **Note**: Can also be found in the [docs/arch.png](docs/arch.png) file.
+
+![Architecture Diagram](docs/arch.png)
+
 ## Features
 
 - ✅ **File Upload**: Select Python files via a directory tree picker.
