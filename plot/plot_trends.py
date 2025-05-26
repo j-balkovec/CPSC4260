@@ -27,13 +27,17 @@ from utils.logger import setup_logger
 from core.constants import TEST_PATHS
 
 
-def plot_trends(test_paths: List[Path]):
+def plot_dir_trends(test_paths: List[Path]) -> Dict[str, Dict[str, List[float]]]:
   """_summary_
 
   Args:
       test_paths (List[Path]): list of paths to analyze
+
+  Returns:
+      Passes the result form the backend, so that it can be rendered in MD format
+        Think of it as message passing.
   """
-  chart_config = main(test_paths)
+  chart_config, result = main(test_paths)
 
   sns.set_theme(style="whitegrid")
 
@@ -73,11 +77,4 @@ def plot_trends(test_paths: List[Path]):
   full_path = os.path.join(save_dir, filename)
   plt.savefig(full_path, bbox_inches='tight', dpi=300)
 
-
-# dbg rn
-trimmed_test_paths = dict(list(TEST_PATHS.items())[:-6])
-test_paths = []
-for _, v in trimmed_test_paths.items():
-  test_paths.append(Path(v))
-
-plot_trends(test_paths)
+  return result

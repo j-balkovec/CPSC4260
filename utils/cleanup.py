@@ -23,19 +23,25 @@ CLEANUP_PATHS = {
     "readable": os.path.join(BASE_DIR, "readable"),
     "refactored": os.path.join(BASE_DIR, "refactored"),
     "report": os.path.join(BASE_DIR, "report"),
+    "plots": os.path.join(BASE_DIR, "plots"),
 }
 
-for name, path in CLEANUP_PATHS.items():
-    print(f"Cleaning: {name.ljust(12)} -> {path}")
-    if os.path.exists(path):
-        for f in os.listdir(path):
-            full_path = os.path.join(path, f)
-            try:
-                if os.path.isfile(full_path) or os.path.islink(full_path):
-                    os.unlink(full_path)
-                elif os.path.isdir(full_path):
-                    shutil.rmtree(full_path)
-            except Exception as e:
-                print(f"  Failed to delete {full_path}: {e}")
+def clean_dirs(are_you_sure: bool = False):
+    if are_you_sure:
+        for name, path in CLEANUP_PATHS.items():
+            print(f"Cleaning: {name.ljust(12)} -> {path}")
+            if os.path.exists(path):
+                for f in os.listdir(path):
+                    full_path = os.path.join(path, f)
+                    try:
+                        if os.path.isfile(full_path) or os.path.islink(full_path):
+                            os.unlink(full_path)
+                        elif os.path.isdir(full_path):
+                            shutil.rmtree(full_path)
+                    except Exception as e:
+                        print(f"  Failed to delete {full_path}: {e}")
+            else:
+                print(f"  Path does not exist: {path}")
     else:
-        print(f"  Path does not exist: {path}")
+        # to avoid accidents
+        print("Cleanup aborted. Please run with are_you_sure=True to confirm deletion.")

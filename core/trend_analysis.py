@@ -40,6 +40,14 @@ trend_logger = setup_logger(
 
 
 def _calculate_cyclomatic_complexity(node: ast.AST) -> int:
+    """_summary_
+
+    Args:
+        node (ast.AST): The AST node to analyze for cyclomatic complexity.
+
+    Returns:
+        int: The cyclomatic complexity of the node.
+    """
     if isinstance(node, ast.FunctionDef):
         complexity = 1
         for child in ast.walk(node):
@@ -53,6 +61,14 @@ def _calculate_cyclomatic_complexity(node: ast.AST) -> int:
 
 
 def extract_metrics(file_path: Path) -> Dict[str, float]:
+    """_summary_
+
+    Args:
+        file_path (Path): The path to the Python file to analyze.
+
+    Returns:
+        Dict[str, float]: A dictionary containing the calculated metrics:
+    """
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             source_code = file.read()
@@ -88,6 +104,14 @@ def extract_metrics(file_path: Path) -> Dict[str, float]:
 
 
 def collect_metrics(file_paths: List[Path]) -> List[Dict[str, float]]:
+    """_summary_
+
+    Args:
+        file_paths (List[Path]): A list of file paths to Python files.
+
+    Returns:
+        List[Dict[str, float]]: A list of dictionaries containing the metrics for each file.
+    """
     metrics_list = []
     for file_path in file_paths:
         if file_path.is_file() and file_path.suffix == '.py':
@@ -99,6 +123,15 @@ def collect_metrics(file_paths: List[Path]) -> List[Dict[str, float]]:
 
 
 def train_model(metrics: List[Dict[str, float]], target: str = 'effort') -> Tuple[np.ndarray, float]:
+    """_summary_
+
+    Args:
+        metrics (List[Dict[str, float]]): A list of dictionaries containing the metrics for each file.
+        target (str, optional): target on which the model is trained on . Defaults to 'effort'.
+
+    Returns:
+        Tuple[np.ndarray, float]: A tuple containing the weights of the trained model and the predicted value for the next file.
+    """
     if not metrics:
         trend_logger.error("No metrics to train the model")
         return np.array([]), 0.0
@@ -126,6 +159,14 @@ def train_model(metrics: List[Dict[str, float]], target: str = 'effort') -> Tupl
 
 
 def analyze_trends(file_paths: List[Path]) -> Dict:
+    """_summary_
+
+    Args:
+        file_paths (List[Path]): A list of file paths to Python files to analyze.
+
+    Returns:
+        Dict: A dictionary containing the analysis results, including metrics, statistics, predictions, and chart data.
+    """
     metrics = collect_metrics(file_paths)
 
     if not metrics:
@@ -163,24 +204,69 @@ def analyze_trends(file_paths: List[Path]) -> Dict:
 
     return export_dict
 
-def markdown_fmt(result: Dict) -> str:
+def markdown_fmt(result: Dict, image: str) -> str:
+    """
+    Args:
+        result (Dict): The analysis result containing metrics, statistics, predictions, and chart data.
+        image (str): The path to the image file for visualizations.
+
+    Returns:
+        str: A markdown formatted report summarizing the analysis result.
+
+    Brief:
+        Generates a markdown formatted report from the analysis result.
+    """
     report = f"""
-                # Complexity Trend Analysis
-                **Files Analyzed**: {len(result['metrics'])}
+# Complexity Trend Analysis
 
-                **Statistics**:
-                - Effort: Mean={result['stats']['effort']['mean']:.2f}, Std={result['stats']['effort']['std']:.2f}
-                - Difficulty: Mean={result['stats']['difficulty']['mean']:.2f}, Std={result['stats']['difficulty']['std']:.2f}
-                - Volume: Mean={result['stats']['volume']['mean']:.2f}, Std={result['stats']['volume']['std']:.2f}
-                - Length: Mean={result['stats']['length']['mean']:.2f}, Std={result['stats']['length']['std']:.2f}
-                - Cyclomatic Complexity: Mean={result['stats']['cyclomatic_complexity']['mean']:.2f}, Std={result['stats']['cyclomatic_complexity']['std']:.2f}
-                - LOC: Mean={result['stats']['loc']['mean']:.2f}, Std={result['stats']['loc']['std']:.2f}
+---
 
-                **Prediction**:
-                - Next File Effort: {result['prediction']['next_effort']:.2f}
-                """
+### Summary
 
-def export_to_json(result: Dict, filename: str) -> None:
+- **Files Analyzed:** {len(result['metrics'])}
+
+---
+
+### Statistics Overview (Model Predictions)
+
+| Metric                | Mean     | Std Dev  |
+|-----------------------|----------|----------|
+| Effort                | {result['stats']['effort']['mean']:.2f}     | {result['stats']['effort']['std']:.2f}     |
+| Difficulty            | {result['stats']['difficulty']['mean']:.2f} | {result['stats']['difficulty']['std']:.2f} |
+| Volume                | {result['stats']['volume']['mean']:.2f}     | {result['stats']['volume']['std']:.2f}     |
+| Length                | {result['stats']['length']['mean']:.2f}     | {result['stats']['length']['std']:.2f}     |
+| Cyclomatic Complexity | {result['stats']['cyclomatic_complexity']['mean']:.2f} | {result['stats']['cyclomatic_complexity']['std']:.2f} |
+| LOC                   | {result['stats']['loc']['mean']:.2f}        | {result['stats']['loc']['std']:.2f}        |
+
+> _Note: These values are predicted by a trained model, not derived via traditional metrics._
+
+---
+
+### Prediction
+
+- **Next File Effort:** `{result['prediction']['next_effort']:.2f}`
+
+---
+
+### Visualizations
+
+![Complexity Trends]({image}) can be found in the `data/plots` directory. There is only one file in there, so you can't miss it.
+
+---
+             """
+
+    return report
+
+def export_to_json(result: Dict, filename: str) -> Dict:
+    """_summary_
+
+    Args:
+        result (Dict): The analysis result containing metrics, statistics, predictions, and chart data.
+        filename (str): The name of the file to save the chart configuration.
+
+    Returns:
+        _type_: the chart configuration dictionary
+    """
     chart_config = {
         "type": "line",
         "data": {
@@ -208,29 +294,30 @@ def export_to_json(result: Dict, filename: str) -> None:
     return chart_config
 
 
-def main(list_of_files: List[str]) -> None:
-    # Define test files
-    # modify
+def main(list_of_files: List[str]) -> Tuple:
+    """_summary_
 
-    # trimmed_test_paths = dict(list(TEST_PATHS.items())[:-6])
-    # test_paths = []
-    # for _, v in trimmed_test_paths.items():
-    #   test_paths.append(Path(v))
-    # py_files = test_paths
+    Args:
+        list_of_files (List[str]): A list of file paths to Python files to analyze.
 
-    py_files = list_of_files
+    Raises:
+        FileNotFoundError: If no Python files are provided for trend analysis.
+        CodeProcessingError: If there is an error during the analysis process.
 
-    if not py_files:
-        trend_logger.error("No Python files found in tests/")
-        raise FileNotFoundError("No Python files found in tests/")
+    Returns:
+        Tuple(Dict, Dict): A tuple containing the chart configuration and the analysis result.
+    """
+    if not list_of_files:
+        msg = "No Python files provided for trend analysis"
+        trend_logger.error(msg)
+        raise FileNotFoundError(msg)
 
-    trend_logger.info(f"analyzing {len(py_files)} files: {[f.name for f in py_files]}")
+    trend_logger.info(f"analyzing {len(list_of_files)} files: {[f.name for f in list_of_files]}")
 
-    # Run trend analysis
-    result = analyze_trends(py_files)
+    result = analyze_trends(list_of_files)
 
     if "error" in result:
         trend_logger.error(f"Error: {result['error']}")
         raise CodeProcessingError(f"Error: {result['error']}")
 
-    return export_to_json(result, "chart_data.json")
+    return (export_to_json(result, "chart_data.json"), result)

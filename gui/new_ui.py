@@ -41,9 +41,13 @@ from rich.markdown import Markdown
 from core.file_saver import save_refactored_file
 from core.refactor import refactor_duplicates
 from core.code_smells import find_code_smells
+from core.trend_analysis import markdown_fmt
 
 from utils.utility import _read_file_contents
 from utils.logger import setup_logger
+from utils.cleanup import clean_dirs
+
+from plot.plot_trends import plot_dir_trends
 
 # ==========
 new_ui = setup_logger(name="new_ui.py_logger", log_file="new_ui.log")
@@ -219,6 +223,7 @@ class CodeSmellApp(App):
                 with Horizontal(id="buttons"):
                     yield Button("📂 Upload", id="upload")
                     yield Button("🧠 Analyze", id="analyze")
+                    yield Button("📈 Trends (Beta)", id="trends")
                     yield Button("🛠️  Refactor", id="refactor")
                     yield Button("💾 Save", id="save")
                     yield Button("🧹 Clear", id="clear")
@@ -254,12 +259,17 @@ class CodeSmellApp(App):
             "\t3. Use 'Refactor' to clean up duplicates.\n"
             "\t4. Save or clear your work as needed.\n"
         )
+        clean_dirs(are_you_sure=True) # IMPORTANT: deletes recent logs, reports,...
+                                      #     essentially starts from scratch
 
     async def on_button_pressed(self, event: Button.Pressed) -> None:
         btn = event.button.id
 
         if btn == "upload":
             await self.push_screen(FilePicker())
+
+        elif btn == "trends":
+            self.trends()
 
         elif btn == "clear":
             await self.push_screen(
@@ -390,11 +400,6 @@ class CodeSmellApp(App):
         return f"{header}\n\n---\n" + "\n\n---\n".join(selected_sections) + "\n\n---\n# ===== END OF REPORT ====="
 
     def analyze(self):
-
-        # I need to add the option or like a switch to choose what type of code smells the function is detecting
-        # If all on...scan for all
-        # If none on...scan for none, and return, no option selected
-        # If one selected, scan for that one and report
         """_summary_
 
         Brief:
@@ -519,6 +524,48 @@ class CodeSmellApp(App):
         except Exception as e:
             new_ui.error(f"error: {e}", exc_info=True, stack_info=True)
             log.write(f"\n\n❌ Save failed: {e}")
+
+    def trends(self):
+        """_summary_
+
+        Brief
+            Renders a MD report of the trends in the repo.
+        """
+        def get_creation_date(file_path: Path) -> str:
+            """_summary_
+
+            Args:
+                file_path (Path): path to the file
+
+            Returns:
+                str: creation date of the file
+            """
+            try:
+                return file_path.stat().st_ctime
+            except Exception:
+                return file_path.stat().st_mtime
+
+        repo_files = []
+        root_dir = Path(__file__).resolve().parent.parent
+
+        for file in root_dir.rglob("*.py"):
+            if file.name != "plot_trends.py":
+                repo_files.append(file)
+
+        repo_files.sort(key=get_creation_date)
+
+        result_dict = plot_dir_trends(repo_files)
+
+        # find the plot file
+        plots_dir = Path(__file__).resolve().parent.parent / "data" / "plots"
+        plot_file = next(plots_dir.iterdir())
+
+        md_str = markdown_fmt(result_dict, plot_file.name)
+
+        log = self.query_one("#log", RichLog)
+        log.write(
+            Markdown(md_str)
+        )
 
     def clear(self):
         """_summary_

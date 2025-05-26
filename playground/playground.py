@@ -34,16 +34,11 @@ from core.file_saver import save_refactored_file
 from core.refactor import refactor_duplicates
 from core.trend_analysis import main
 
+from plot.plot_trends import plot_dir_trends
+from core.trend_analysis import markdown_fmt
+
 from pathlib import Path
 
 rn = None
 
-trimmed_test_paths = dict(list(TEST_PATHS.items())[:-6])
-test_paths = []
-for _, v in trimmed_test_paths.items():
-  test_paths.append(Path(v))
-py_files = test_paths
-
-
-main(py_files)
 
