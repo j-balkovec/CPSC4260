@@ -1,0 +1,236 @@
+# __name__: Jakob Balkovec
+# __class__: CPSC 4260 - Software Refactoring
+# __date__: Sun Apr 20th, 2025
+#
+# __file__: trend_analysis.py
+#
+# __brief__:
+#     This file implements the trend analysis feature.
+#     This is done thought a lightweight regression model
+
+# =========
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+# =========
+
+import sys
+import os
+import ast
+from pathlib import Path
+import json
+import numpy as np
+from typing import List, Tuple, Dict
+from datetime import datetime
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from core.halstead import _calculate_halstead_metrics, _extract_operators_and_operands
+from utils.logger import setup_logger
+from utils.utility import _save_to_json
+from utils.exceptions import CodeProcessingError
+
+from core.constants import TEST_PATHS
+
+trend_logger = setup_logger(
+    name="trend_analysis.py_logger",
+    log_file="trend_analysis.log"
+)
+
+
+def _calculate_cyclomatic_complexity(node: ast.AST) -> int:
+    if isinstance(node, ast.FunctionDef):
+        complexity = 1
+        for child in ast.walk(node):
+            if isinstance(child, (ast.If, ast.For, ast.While, ast.Try, ast.With)):
+                complexity += 1
+            elif isinstance(child, ast.BoolOp):
+                complexity += len(child.values) - 1
+        return complexity
+    trend_logger.warning(f"Invalid node type {type(node)} for cyclomatic complexity")
+    return -9999
+
+
+def extract_metrics(file_path: Path) -> Dict[str, float]:
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            source_code = file.read()
+
+        tree = ast.parse(source_code)
+
+        lines = _extract_operators_and_operands(source_code)
+        halstead_metrics = _calculate_halstead_metrics(lines)
+
+        cyclo_sum = 0
+        func_count = 0
+        for node in ast.walk(tree):
+            if isinstance(node, ast.FunctionDef):
+                cyclo = _calculate_cyclomatic_complexity(node)
+                if cyclo != -9999:
+                    cyclo_sum += cyclo
+                    func_count += 1
+        avg_cyclo = cyclo_sum / func_count if func_count > 0 else 1.0
+        if func_count == 0:
+            trend_logger.warning(f"No functions found in {file_path}, using default cyclomatic complexity")
+        return {
+            'effort': halstead_metrics.get('E', 0.0),
+            'difficulty': halstead_metrics.get('D', 0.0),
+            'volume': halstead_metrics.get('V', 0.0),
+            'length': halstead_metrics.get('N', 0.0),
+            'cyclomatic_complexity': avg_cyclo,
+            'loc': len(source_code.splitlines()),
+        }
+    except Exception as e:
+        trend_logger.error(f"Error processing file {file_path}: {e}")
+        trend_logger.debug(f"Exception for {file_path.name}: {e}")
+        return {}
+
+
+def collect_metrics(file_paths: List[Path]) -> List[Dict[str, float]]:
+    metrics_list = []
+    for file_path in file_paths:
+        if file_path.is_file() and file_path.suffix == '.py':
+            metrics = extract_metrics(file_path)
+            if isinstance(metrics, dict) and metrics:
+                metrics['file'] = file_path.name
+                metrics_list.append(metrics)
+    return metrics_list
+
+
+def train_model(metrics: List[Dict[str, float]], target: str = 'effort') -> Tuple[np.ndarray, float]:
+    if not metrics:
+        trend_logger.error("No metrics to train the model")
+        return np.array([]), 0.0
+    X = np.array([[i, m['loc'], m['cyclomatic_complexity'], m['volume'], m['length']] for i, m in enumerate(metrics)])
+    y = np.array([m[target] for m in metrics])
+    X_mean = np.mean(X, axis=0)
+    X_std = np.std(X, axis=0)
+    X_std[X_std == 0] = 1
+    X_normalized = (X - X_mean) / X_std
+    X_normalized = np.c_[np.ones(X_normalized.shape[0]), X_normalized]
+    weights = np.random.randn(X_normalized.shape[1])
+    learning_rate = 0.01
+    n_iterations = 1000
+    m = len(y)
+    for _ in range(n_iterations):
+        predictions = X_normalized @ weights
+        errors = predictions - y
+        gradient = (1/m) * X_normalized.T @ errors
+        weights -= learning_rate * gradient
+    next_X = np.array([len(metrics), X[-1, 1], X[-1, 2], X[-1, 3], X[-1, 4]])
+    next_X_normalized = (next_X - X_mean) / X_std
+    next_X_normalized = np.r_[1, next_X_normalized]
+    next_pred = next_X_normalized @ weights
+    return weights, next_pred
+
+
+def analyze_trends(file_paths: List[Path]) -> Dict:
+    metrics = collect_metrics(file_paths)
+
+    if not metrics:
+        return {"error": "No valid metrics extracted"}
+
+    stats = {
+        'effort': {'mean': np.mean([m['effort'] for m in metrics]), 'std': np.std([m['effort'] for m in metrics])},
+        'difficulty': {'mean': np.mean([m['difficulty'] for m in metrics]), 'std': np.std([m['difficulty'] for m in metrics])},
+        'volume': {'mean': np.mean([m['volume'] for m in metrics]), 'std': np.std([m['volume'] for m in metrics])},
+        'length': {'mean': np.mean([m['length'] for m in metrics]), 'std': np.std([m['length'] for m in metrics])},
+        'cyclomatic_complexity': {'mean': np.mean([m['cyclomatic_complexity'] for m in metrics]), 'std': np.std([m['cyclomatic_complexity'] for m in metrics])},
+        'loc': {'mean': np.mean([m['loc'] for m in metrics]), 'std': np.std([m['loc'] for m in metrics])}
+    }
+    weights, next_effort = train_model(metrics, target='effort')
+    chart_data = {
+        'labels': [m['file'] for m in metrics],
+        'effort': [m['effort'] for m in metrics],
+        'difficulty': [m['difficulty'] for m in metrics],
+        'volume': [m['volume'] for m in metrics],
+        'length': [m['length'] for m in metrics],
+        'cyclomatic_complexity': [m['cyclomatic_complexity'] for m in metrics],
+        'loc': [m['loc'] for m in metrics]
+    }
+
+    export_dict = {
+        'metrics': metrics,
+        'stats': stats,
+        'prediction': {'next_effort': next_effort},
+        'chart_data': chart_data
+    }
+
+    path = _save_to_json(export_dict,
+                         "export_dict.json" + datetime.now().strftime("%Y%m%d_%H%M%S"))
+    trend_logger.info(f"chart data saved to {path}")
+
+    return export_dict
+
+def markdown_fmt(result: Dict) -> str:
+    report = f"""
+                # Complexity Trend Analysis
+                **Files Analyzed**: {len(result['metrics'])}
+
+                **Statistics**:
+                - Effort: Mean={result['stats']['effort']['mean']:.2f}, Std={result['stats']['effort']['std']:.2f}
+                - Difficulty: Mean={result['stats']['difficulty']['mean']:.2f}, Std={result['stats']['difficulty']['std']:.2f}
+                - Volume: Mean={result['stats']['volume']['mean']:.2f}, Std={result['stats']['volume']['std']:.2f}
+                - Length: Mean={result['stats']['length']['mean']:.2f}, Std={result['stats']['length']['std']:.2f}
+                - Cyclomatic Complexity: Mean={result['stats']['cyclomatic_complexity']['mean']:.2f}, Std={result['stats']['cyclomatic_complexity']['std']:.2f}
+                - LOC: Mean={result['stats']['loc']['mean']:.2f}, Std={result['stats']['loc']['std']:.2f}
+
+                **Prediction**:
+                - Next File Effort: {result['prediction']['next_effort']:.2f}
+                """
+
+def export_to_json(result: Dict, filename: str) -> None:
+    chart_config = {
+        "type": "line",
+        "data": {
+            "labels": result['chart_data']['labels'],
+            "datasets": [
+                {"label": "Effort", "data": result['chart_data']['effort'], "borderColor": "#FF6384", "fill": False},
+                {"label": "Difficulty", "data": result['chart_data']['difficulty'], "borderColor": "#36A2EB", "fill": False},
+                {"label": "Volume", "data": result['chart_data']['volume'], "borderColor": "#FFCE56", "fill": False},
+                {"label": "Length", "data": result['chart_data']['length'], "borderColor": "#4BC0C0", "fill": False},
+                {"label": "Cyclomatic Complexity", "data": result['chart_data']['cyclomatic_complexity'], "borderColor": "#9966FF", "fill": False},
+                {"label": "LOC", "data": result['chart_data']['loc'], "borderColor": "#FF9F40", "fill": False}
+            ]
+        },
+        "options": {
+            "responsive": True,
+            "scales": {
+                "y": {"beginAtZero": True, "title": {"display": True, "text": "Metric Value"}},
+                "x": {"title": {"display": True, "text": "File"}}
+            }
+        }
+    }
+    path = _save_to_json(chart_config, filename)
+    trend_logger.info(f"chart data saved to {path}")
+
+    return chart_config
+
+
+def main(list_of_files: List[str]) -> None:
+    # Define test files
+    # modify
+
+    # trimmed_test_paths = dict(list(TEST_PATHS.items())[:-6])
+    # test_paths = []
+    # for _, v in trimmed_test_paths.items():
+    #   test_paths.append(Path(v))
+    # py_files = test_paths
+
+    py_files = list_of_files
+
+    if not py_files:
+        trend_logger.error("No Python files found in tests/")
+        raise FileNotFoundError("No Python files found in tests/")
+
+    trend_logger.info(f"analyzing {len(py_files)} files: {[f.name for f in py_files]}")
+
+    # Run trend analysis
+    result = analyze_trends(py_files)
+
+    if "error" in result:
+        trend_logger.error(f"Error: {result['error']}")
+        raise CodeProcessingError(f"Error: {result['error']}")
+
+    return export_to_json(result, "chart_data.json")
