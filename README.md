@@ -35,6 +35,7 @@ The app is designed for developers and students working on code quality improvem
 - ✅ **Save Functionality**: Saves refactored code to a new file.
 - ✅ **Theme Switching**: Toggle between dark and light themes.
 - ✅ **Clear and Exit**: Clear the editor/console or exit with confirmation dialogs.
+- 🟨 **Trend Analysis (Beta)**: Analyze your trends over time across the whole repo.
 
 > **Note:** The app does not call or use any APIs. Everything was built from scratch and is done locally. This includes file uploads, code analysis, and refactoring.
 
