@@ -26,6 +26,7 @@ CLEANUP_PATHS = {
     "plots": os.path.join(BASE_DIR, "plots"),
 }
 
+
 def clean_dirs(are_you_sure: bool = False):
     if are_you_sure:
         for name, path in CLEANUP_PATHS.items():

@@ -259,8 +259,8 @@ class CodeSmellApp(App):
             "\t3. Use 'Refactor' to clean up duplicates.\n"
             "\t4. Save or clear your work as needed.\n"
         )
-        clean_dirs(are_you_sure=True) # IMPORTANT: deletes recent logs, reports,...
-                                      #     essentially starts from scratch
+        clean_dirs(are_you_sure=True)  # IMPORTANT: deletes recent logs, reports,...
+        #     essentially starts from scratch
 
     async def on_button_pressed(self, event: Button.Pressed) -> None:
         btn = event.button.id
@@ -297,8 +297,12 @@ class CodeSmellApp(App):
 
         elif btn == "save":
             await self.push_screen(
-                ConfirmationDialog("Want to create a copy? (YES) for copy, (NO) for in-place save."),
-                callback=lambda result: self.save(make_copy=True) if result else self.save(make_copy=False),
+                ConfirmationDialog(
+                    "Want to create a copy? (YES) for copy, (NO) for in-place save."
+                ),
+                callback=lambda result: (
+                    self.save(make_copy=True) if result else self.save(make_copy=False)
+                ),
             )
 
         elif btn == "refactor":
@@ -363,17 +367,19 @@ class CodeSmellApp(App):
 
         self.query_one("#file_info", Label).update(f"📄 {Path(self.filename).name}")
 
-    def filter_report_sections(self,
-                               report: str,
-                               include_methods: bool,
-                               include_params: bool,
-                               include_dupes: bool) -> str:
+    def filter_report_sections(
+        self,
+        report: str,
+        include_methods: bool,
+        include_params: bool,
+        include_dupes: bool,
+    ) -> str:
         """Filter the full Markdown report based on selected smell types."""
 
         section_patterns = {
             "methods": r"### Long Method Detections:.*?(?=\n---|\Z)",
             "params": r"### Long Parameter List Detections:.*?(?=\n---|\Z)",
-            "dupes": r"### Duplicated Code Detections:.*?(?=\n---|\Z)"
+            "dupes": r"### Duplicated Code Detections:.*?(?=\n---|\Z)",
         }
 
         selected_sections = []
@@ -394,10 +400,16 @@ class CodeSmellApp(App):
                 selected_sections.append(match.group())
 
         # Always keep the header
-        header_match = re.search(r"# ===== SOFTWARE ANALYSIS REPORT =====.*?(?=\n---|\Z)", report, re.DOTALL)
+        header_match = re.search(
+            r"# ===== SOFTWARE ANALYSIS REPORT =====.*?(?=\n---|\Z)", report, re.DOTALL
+        )
         header = header_match.group() if header_match else ""
 
-        return f"{header}\n\n---\n" + "\n\n---\n".join(selected_sections) + "\n\n---\n# ===== END OF REPORT ====="
+        return (
+            f"{header}\n\n---\n"
+            + "\n\n---\n".join(selected_sections)
+            + "\n\n---\n# ===== END OF REPORT ====="
+        )
 
     def analyze(self):
         """_summary_
@@ -424,7 +436,9 @@ class CodeSmellApp(App):
                 return
 
             # Filter report sections
-            filtered_report = self.filter_report_sections(report_str, check_long, check_param, check_dup)
+            filtered_report = self.filter_report_sections(
+                report_str, check_long, check_param, check_dup
+            )
 
             # Render filtered report
             log.write(Markdown(filtered_report))
@@ -478,13 +492,9 @@ class CodeSmellApp(App):
 
             else:
                 code_editor.clear()
-                code_editor.insert(
-                    "\n\n\n#=============== NONE ===============\n\n"
-                    )
+                code_editor.insert("\n\n\n#=============== NONE ===============\n\n")
                 code_editor.insert(refactored)
-                code_editor.insert(
-                    "\n\n#=============== NONE ===============\n\n"
-                    )
+                code_editor.insert("\n\n#=============== NONE ===============\n\n")
                 self.query_one("#code_editor", TextArea).value = refactored
                 log.write("🤔 Nothing to refactor.")
 
@@ -516,11 +526,11 @@ class CodeSmellApp(App):
             out_path = save_refactored_file(content, self.filename, make_copy)
 
             if make_copy:
-               log.write(f"\n\n💾 Saved to default path:\n\t{out_path}")
+                log.write(f"\n\n💾 Saved to default path:\n\t{out_path}")
             else:
                 log.write(f"\n\n💾 Saved in place:\n\t{out_path}")
 
-            print("I can access \" out_path \" from here:", out_path)
+            print('I can access " out_path " from here:', out_path)
         except Exception as e:
             new_ui.error(f"error: {e}", exc_info=True, stack_info=True)
             log.write(f"\n\n❌ Save failed: {e}")
@@ -531,7 +541,8 @@ class CodeSmellApp(App):
         Brief
             Renders a MD report of the trends in the repo.
         """
-        def get_creation_date(file_path: Path) -> str:
+
+        def get_creation_date(file_path: Path) -> float:
             """_summary_
 
             Args:
@@ -563,9 +574,7 @@ class CodeSmellApp(App):
         md_str = markdown_fmt(result_dict, plot_file.name)
 
         log = self.query_one("#log", RichLog)
-        log.write(
-            Markdown(md_str)
-        )
+        log.write(Markdown(md_str))
 
     def clear(self):
         """_summary_

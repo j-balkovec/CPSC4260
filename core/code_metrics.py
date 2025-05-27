@@ -120,9 +120,8 @@ def _calculate_code_metrics(info_dict: dict) -> dict:
     """
     code_metrics_logger.debug("Calculating code metrics.")
 
-    metrics = {"LOC": 0, "SLOC": 0, "Comment Density": 0, "Blank Line Density": 0}
+    metrics = {"LOC": len(info_dict["code"]), "SLOC": 0, "Comment Density": 0, "Blank Line Density": 0}
 
-    metrics["LOC"] = len(info_dict["code"])
     metrics["SLOC"] = (
         len(info_dict["comments"]) + len(info_dict["blank_lines"]) + metrics["LOC"]
     )

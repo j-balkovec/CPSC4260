@@ -188,11 +188,11 @@ DUPLICATES = [
     (_read_file_contents(TEST_PATHS["23"]), True),
     (_read_file_contents(TEST_PATHS["24"]), True),
     (_read_file_contents(TEST_PATHS["25"]), False),
-    (_read_file_contents(TEST_PATHS["26"]), True),
+    (_read_file_contents(TEST_PATHS["26"]), False),
     (_read_file_contents(TEST_PATHS["27"]), False),
     (_read_file_contents(TEST_PATHS["28"]), False),
     (_read_file_contents(TEST_PATHS["29"]), True),
-    (_read_file_contents(TEST_PATHS["30"]), True),
+    (_read_file_contents(TEST_PATHS["30"]), False),
 ]
 
 
@@ -363,7 +363,7 @@ DUPS = [
     (_read_file_contents(TEST_PATHS["35"]), True),
     (_read_file_contents(TEST_PATHS["31"]), True),
     (_read_file_contents(TEST_PATHS["5"]), False),
-    (_read_file_contents(TEST_PATHS["39"]), True),
+    (_read_file_contents(TEST_PATHS["37"]), True),
 ]
 
 

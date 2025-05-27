@@ -27,8 +27,9 @@ save_refactored_logger = setup_logger(
 save_refactored_logger.info("save_refactored_logger")
 
 
-def save_refactored_file(file_content: str, original_filename: str,
-                         make_copy: bool = False) -> str:
+def save_refactored_file(
+    file_content: str, original_filename: str, make_copy: bool = False
+) -> str:
     """_summary_
 
     Args:
@@ -75,9 +76,10 @@ def save_refactored_file(file_content: str, original_filename: str,
         with open(original_filename, "w", encoding="utf-8") as f:
             f.write(file_content)
 
-        save_refactored_logger.info(f"Refactored file saved in place: {original_filename}")
+        save_refactored_logger.info(
+            f"Refactored file saved in place: {original_filename}"
+        )
         out_path = original_filename
 
-
-    print("I can access \" out_path \" from here:", out_path)
+    print('I can access " out_path " from here:', out_path)
     return out_path

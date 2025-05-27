@@ -53,19 +53,9 @@ def find_code_smells(file_name: str) -> Tuple[Dict, str]:
         code_smells_logger.error(f"could not read file: {file_name}")
         raise TypeError(f"could not read file: {file_name}")
 
-    code_smells = {
-        "long_parameter_list": [],
-        "long_method": [],
-        "duplicated_code": [],
-        "code_metrics": {},
-        "halstead_metrics": {},
-    }
-
-    code_smells["long_parameter_list"] = _find_long_parameter_list(source_code)
-    code_smells["long_method"] = _find_long_method(source_code)
-    code_smells["duplicated_code"] = _find_duplicated_code(source_code)
-    code_smells["code_metrics"] = fetch_code_metrics(file_name)
-    code_smells["halstead_metrics"] = fetch_halstead_metrics(file_name)
+    code_smells = {"long_parameter_list": _find_long_parameter_list(source_code),
+                   "long_method": _find_long_method(source_code), "duplicated_code": _find_duplicated_code(source_code),
+                   "code_metrics": fetch_code_metrics(file_name), "halstead_metrics": fetch_halstead_metrics(file_name)}
 
     raw_json = _save_to_json(code_smells, file_name)
     readable_report_path = _generate_readable_report(raw_json)
@@ -73,4 +63,4 @@ def find_code_smells(file_name: str) -> Tuple[Dict, str]:
     code_smells_logger.info(f"found code smells: {code_smells}")
     code_smells_logger.info(f"json ready: {raw_json}")
 
-    return (code_smells, readable_report_path)
+    return code_smells, readable_report_path

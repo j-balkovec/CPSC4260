@@ -105,7 +105,7 @@ def _extract_operators_and_operands(source_code: str) -> dict:
             # raise CodeProcessingError(
             #     "Failed to parse the code",
             #     function="_extract_operators_and_operands",
-            #     source_code=source_code,
+            #     source_code=source_code
             # )
             continue
 

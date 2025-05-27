@@ -191,6 +191,7 @@ def _tokenize_block(block: str) -> list:
 
     return tokens  # return as set maybe??? to remove dups and sort?
 
+
 # Update: Changed 3 to 2 for better tokenization granularity
 def _generate_ngrams(tokens: list, n: int = 2) -> set:
     """_summary_
