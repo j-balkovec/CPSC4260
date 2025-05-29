@@ -151,7 +151,7 @@ class FilePicker(ModalScreen):
         """
         if event.path.suffix != ".py":
             self.app.query_one("#log", RichLog).write(
-                f"⛔️ Please select a Python file (*.py). Got: {event.path.suffix}"
+                f"Please select a Python file (*.py). Got: {event.path.suffix}"
             )
             new_ui.warning(f"Unsupported file type: {event.path.suffix}")
             return
@@ -178,8 +178,8 @@ class AnalyzeOptionsModal(Static):
         yield Checkbox("Long Method", id="detect_long_method", value=True)
         yield Checkbox("Long Parameter List", id="detect_long_param", value=True)
         yield Checkbox("Duplicated Code", id="detect_dup_code", value=True)
-        yield Button("✅ Run Analysis", id="run_selected_analysis")
-        yield Button("❌ Cancel", id="cancel_analysis_modal")
+        yield Button("Run Analysis", id="run_selected_analysis")
+        yield Button(" Cancel", id="cancel_analysis_modal")
 
 
 class CodeSmellApp(App):
@@ -221,14 +221,14 @@ class CodeSmellApp(App):
                 yield RichLog(id="log")
                 yield AnalyzeOptionsModal(id="analyze_modal", classes="hidden")
                 with Horizontal(id="buttons"):
-                    yield Button("📂 Upload", id="upload")
-                    yield Button("🧠 Analyze", id="analyze")
-                    yield Button("📈 Trends (β)", id="trends")
-                    yield Button("🛠️  Refactor", id="refactor")
-                    yield Button("💾 Save", id="save")
-                    yield Button("🧹 Clear", id="clear")
-                    yield Button("🌗 Theme", id="toggle_theme")
-                    yield Button("❌ Exit", id="exit")
+                    yield Button("Upload", id="upload")
+                    yield Button("Analyze", id="analyze")
+                    yield Button("Trends (β)", id="trends")
+                    yield Button("Refactor", id="refactor")
+                    yield Button("Save", id="save")
+                    yield Button("Clear", id="clear")
+                    yield Button("Theme", id="toggle_theme")
+                    yield Button("Exit", id="exit")
                 yield Label("", id="file_info")
             with Vertical(id="right-pane"):
                 yield Label("Code Editor")
@@ -249,7 +249,7 @@ class CodeSmellApp(App):
 
         log = self.query_one("#log", RichLog)
         log.write(
-            "🚀 Welcome to CodeSmellApp!\n"
+            "Welcome to CodeSmellApp!\n"
             "==================================================\n"
             "\u001b[1mPlease resize your terminal window to fit the app.\033[0m\n"
             "==================================================\n\n"
@@ -349,23 +349,23 @@ class CodeSmellApp(App):
         try:
             content = Path(self.filename).read_text(encoding="utf-8")
         except Exception as e:
-            self.log.write(f"❌ Failed to read file: {e}")
+            self.log.write(f" Failed to read file: {e}")
             return
 
         code_editor.clear()
 
         if not content.strip():
-            code_editor.text = "# ❌ No code found in the file."
-            log.write(f"📂 Loaded: {Path(self.filename).name} (empty file)")
+            code_editor.text = "#  No code found in the file."
+            log.write(f"Loaded: {Path(self.filename).name} (empty file)")
         else:
             code_editor.text = (
                 "\n\n#=============== ORIGINAL ===============\n\n"
                 + content
                 + "\n\n#=============== ORIGINAL ===============\n\n"
             )
-            log.write(f"📂 Loaded: {Path(self.filename).name}")
+            log.write(f"Loaded: {Path(self.filename).name}")
 
-        self.query_one("#file_info", Label).update(f"📄 {Path(self.filename).name}")
+        self.query_one("#file_info", Label).update(f"{Path(self.filename).name}")
 
     def filter_report_sections(
         self,
@@ -421,7 +421,7 @@ class CodeSmellApp(App):
         log = self.query_one("#log", RichLog)
 
         if not self.filename:
-            log.write("⛔️ No file selected.")
+            log.write("No file selected.")
             return
         try:
             (_, report_path) = find_code_smells(self.filename)
@@ -432,7 +432,7 @@ class CodeSmellApp(App):
             check_dup = self.query_one("#detect_dup_code", Checkbox).value
 
             if not (check_long or check_param or check_dup):
-                log.write("⚠️ No analysis options selected.")
+                log.write("No analysis options selected.")
                 return
 
             # Filter report sections
@@ -452,13 +452,13 @@ class CodeSmellApp(App):
             # ========== MD REPORT ============
 
         except FileNotFoundError:
-            log.write(f"❌ Report file not found: {self.filename}")
+            log.write(f" Report file not found: {self.filename}")
             new_ui.error(f"Report file not found: {self.filename}", exc_info=True)
         except PermissionError:
-            log.write(f"❌ Permission denied accessing: {self.filename}")
+            log.write(f" Permission denied accessing: {self.filename}")
             new_ui.error(f"Permission denied: {self.filename}", exc_info=True)
         except Exception as e:
-            log.write(f"❌ Analysis failed: {str(e)}")
+            log.write(f" Analysis failed: {str(e)}")
             new_ui.error(f"Unexpected error during analysis: {e}", exc_info=True)
 
     def refactor(self):
@@ -474,7 +474,7 @@ class CodeSmellApp(App):
         log.clear()
 
         if not self.filename:
-            log.write("⛔️ No file selected.")
+            log.write("No file selected.")
             return
         try:
             refactored, did_work = refactor_duplicates(self.filename)
@@ -488,7 +488,7 @@ class CodeSmellApp(App):
                     "\n\n#=============== REFACTORED ===============\n\n"
                 )
                 self.query_one("#code_editor", TextArea).value = refactored
-                log.write("✅ Refactor complete.")
+                log.write("Refactor complete.")
 
             else:
                 code_editor.clear()
@@ -496,16 +496,16 @@ class CodeSmellApp(App):
                 code_editor.insert(refactored)
                 code_editor.insert("\n\n#=============== NONE ===============\n\n")
                 self.query_one("#code_editor", TextArea).value = refactored
-                log.write("🤔 Nothing to refactor.")
+                log.write("Nothing to refactor.")
 
         except FileNotFoundError:
-            log.write(f"❌ File not found: {self.filename}")
+            log.write(f" File not found: {self.filename}")
             new_ui.error(f"File not found: {self.filename}", exc_info=True)
         except PermissionError:
-            log.write(f"❌ Permission denied accessing: {self.filename}")
+            log.write(f" Permission denied accessing: {self.filename}")
             new_ui.error(f"Permission denied: {self.filename}", exc_info=True)
         except Exception as e:
-            log.write(f"❌ Refactor failed: {str(e)}")
+            log.write(f" Refactor failed: {str(e)}")
             new_ui.error(f"Unexpected error during refactoring: {e}", exc_info=True)
 
     async def save(self, make_copy: bool):
@@ -526,14 +526,14 @@ class CodeSmellApp(App):
             out_path = save_refactored_file(content, self.filename, make_copy)
 
             if make_copy:
-                log.write(f"\n\n💾 Saved to default path:\n\t{out_path}")
+                log.write(f"\n\nSaved to default path:\n\t{out_path}")
             else:
-                log.write(f"\n\n💾 Saved in place:\n\t{out_path}")
+                log.write(f"\n\nSaved in place:\n\t{out_path}")
 
             print('I can access " out_path " from here:', out_path)
         except Exception as e:
             new_ui.error(f"error: {e}", exc_info=True, stack_info=True)
-            log.write(f"\n\n❌ Save failed: {e}")
+            log.write(f"\n\n Save failed: {e}")
 
     def trends(self):
         """_summary_

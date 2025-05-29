@@ -46,3 +46,6 @@ def clean_dirs(are_you_sure: bool = False):
     else:
         # to avoid accidents
         print("Cleanup aborted. Please run with are_you_sure=True to confirm deletion.")
+
+
+clean_dirs(True)

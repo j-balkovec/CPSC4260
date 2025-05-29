@@ -61,9 +61,9 @@ class TerminalUI:
         resolved_path = os.path.abspath(path)
 
         if not os.path.isfile(resolved_path):
-            print(f"[⛔️] File not found: {path}")
+            print(f"File not found: {path}")
             print(
-                "💡 Hint: Try using a relative path or place the file in the current directory."
+                "Hint: Try using a relative path or place the file in the current directory."
             )
             return
 
@@ -74,7 +74,7 @@ class TerminalUI:
                 self.json_path = save_to_json(self.metadata)
                 self.filepath = resolved_path
                 print(
-                    f"✅ File '{os.path.basename(resolved_path)}' uploaded successfully."
+                    f"File '{os.path.basename(resolved_path)}' uploaded successfully."
                 )
 
         except (
@@ -88,9 +88,9 @@ class TerminalUI:
             FileTooLargeError,
             FileOpenError,
         ) as e:
-            print(f"[⛔️] Error opening file: {e.what()}")
+            print(f"Error opening file: {e.what()}")
         except Exception as e:
-            print(f"[⛔️] Unexpected error: {e}")
+            print(f"Unexpected error: {e}")
 
     def analyze_file(self):
         """_summary_
@@ -99,10 +99,10 @@ class TerminalUI:
 
         """
         if not self.filepath:
-            print("[⛔️] Please upload a file first.")
+            print("Please upload a file first.")
             return
 
-        print("\n🔍 Analyzing file...")
+        print("\nAnalyzing file...")
         try:
             code_smells, report_path = find_code_smells(self.filepath)
             self.report_path = report_path
@@ -147,10 +147,10 @@ class TerminalUI:
                         else:
                             print(f"    - {issue}")
 
-            print(f"\n📄 Markdown report saved at: {report_path}")
+            print(f"\nMarkdown report saved at: {report_path}")
 
         except Exception as e:
-            print(f"[⛔️] Error analyzing file: {e}")
+            print(f"Error analyzing file: {e}")
 
     def refactor_code(self):
         """_summary_
@@ -161,19 +161,19 @@ class TerminalUI:
             str: Refactored code content
         """
         if not self.filepath:
-            print("[⛔️] Please upload a file first.")
+            print("Please upload a file first.")
             return
 
-        print("🛠️ Refactoring duplicate code...")
+        print("Refactoring duplicate code...")
         try:
             refactored, _ = refactor_duplicates(
                 self.filepath
             )  # discard did_work return obj
             self.code = refactored
             save_refactored_file(refactored, self.filepath)
-            print("[✅] Refactoring complete.")
+            print("Refactoring complete.")
         except Exception as e:
-            print(f"[⛔️] Error during refactoring: {e}")
+            print(f"Error during refactoring: {e}")
 
     def save_results(self):
         """_summary_
@@ -183,23 +183,23 @@ class TerminalUI:
         """
         if not self.code:
             print(
-                "[⛔️] No code content available to save. Run upload and refactor/analyze first."
+                "No code content available to save. Run upload and refactor/analyze first."
             )
             return
 
         try:
             updated_code_file = save_refactored_file(self.code, self.filepath)
-            print(f"[✅] Refactored code saved to: {updated_code_file}")
+            print(f"Refactored code saved to: {updated_code_file}")
 
             if not self.json_path or not os.path.isfile(self.json_path):
-                print("[⛔️] JSON metadata file missing; cannot save results.")
+                print("JSON metadata file missing; cannot save results.")
                 return
 
             with open(self.json_path, "r", encoding="utf-8") as infile:
                 json.load(infile)
 
         except Exception as e:
-            print(f"[⛔️] Error saving results: {e}")
+            print(f"Error saving results: {e}")
 
 
 if __name__ == "__main__":
