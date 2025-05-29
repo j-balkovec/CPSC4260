@@ -50,7 +50,10 @@ def _find_long_method(source_code: str) -> list:
         if re.match(r"(async\s+)?def\s+\w+", stripped):
             if in_function:
                 end_line = idx - 1
-                method_length = end_line - start_line + 1
+
+                body_lines = lines[start_line:end_line + 1]
+                method_length = sum(1 for line in body_lines if line.strip())
+
                 if method_length > LENGTH_THRESHOLD:
                     long_methods.append(
                         {

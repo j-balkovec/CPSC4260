@@ -72,7 +72,7 @@ ALLOWED_OPERATORS = {
 
 PARAMS_THRESHOLD: int = 3
 LENGTH_THRESHOLD: int = 15
-DUPS_THRESHOLD: float = 0.75  # 0.75
+DUPS_THRESHOLD: float = 0.76  # 0.75
 
 LOG_COLORS = {
     "DEBUG": "cyan",
@@ -203,6 +203,9 @@ TEST_PATHS = {
     ),
     "44": os.path.abspath(
         os.path.join(os.path.dirname(__file__), "../tests/test44.py")
+    ),
+    "9997": os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "../tests/test9997.py")
     ),
     "9998": os.path.abspath(
         os.path.join(os.path.dirname(__file__), "../tests/test9998.py")

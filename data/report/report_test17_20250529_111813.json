@@ -1,0 +1,34 @@
+{
+    "long_parameter_list": [],
+    "long_method": [
+        {
+            "function": "process_sensor_data",
+            "start_line": 5,
+            "end_line": 38,
+            "length": 34,
+            "threshold": 15
+        }
+    ],
+    "duplicated_code": [],
+    "code_metrics": {
+        "LOC": 15,
+        "SLOC": 37,
+        "Comment Density": 0.595,
+        "Blank Line Density": 0.0
+    },
+    "halstead_metrics": {
+        "n1": 2,
+        "n2": 8,
+        "N1": 7,
+        "N2": 21,
+        "N": 28,
+        "n": 10,
+        "V": 93.014,
+        "D": 2.625,
+        "HN": 26.0,
+        "E": 244.162,
+        "T": 13.565,
+        "B": 0.081,
+        "M": 58.512
+    }
+}

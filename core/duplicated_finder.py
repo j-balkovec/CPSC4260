@@ -16,6 +16,10 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import re
 import keyword
+import ast
+import io
+import tokenize
+import textwrap
 import json
 from collections import defaultdict
 
@@ -31,23 +35,70 @@ duplicated_code_logger = setup_logger(
 
 duplicated_code_logger.info("duplicated_code_logger")
 
-
-def _normalize_block(text: str) -> str:
-    """_summary_
+def _normalize_indentation(text: str) -> str:
+    """
+    Normalize indentation by replacing tabs with spaces and dedenting the text.
 
     Args:
-        text (str): block of text to be normalized
+        text (str): Input text to normalize
 
     Returns:
-        str: returns the normalized text
+        str: Normalized text with consistent indentation
+    """
+    # Replace tabs with 4 spaces
+    text = text.replace("\t", "    ")
+    try:
+        # Dedent to remove common leading whitespace
+        text = textwrap.dedent(text)
+    except textwrap.TextWrapError as e:
+        duplicated_code_logger.warning(f"Failed to dedent text: {e}")
+    return text
+
+def _validate_indentation(text: str) -> bool:
+    """
+    Validate indentation in the text to detect issues like mixed tabs/spaces or invalid unindents.
+
+    Args:
+        text (str): Input text to validate
+
+    Returns:
+        bool: True if indentation is valid, False otherwise
     """
     lines = text.splitlines()
-    norm_lines = [line.strip() for line in lines if line.strip()]
+    indent_levels = []
+    for i, line in enumerate(lines, 1):
+        if not line.strip():  # Skip empty lines
+            continue
+        leading_ws = len(line) - len(line.lstrip())
+        # Check for mixed tabs and spaces
+        if "\t" in line[:leading_ws] and " " in line[:leading_ws]:
+            duplicated_code_logger.warning(f"Mixed tabs and spaces in line {i}: {line}")
+            return False
+        # Track indentation levels for non-empty lines
+        if indent_levels and leading_ws < indent_levels[-1]:
+            if leading_ws not in indent_levels[:-1]:
+                duplicated_code_logger.warning(f"Invalid unindent in line {i}: {line}")
+                return False
+        indent_levels.append(leading_ws)
+    return True
+
+def _normalize_block(text: str) -> str:
+    """
+    Normalize a block of text by stripping empty lines and normalizing indentation.
+
+    Args:
+        text (str): Block of text to normalize
+
+    Returns:
+        str: Normalized block
+    """
+    lines = text.splitlines()
+    norm_lines = [line for line in lines if line.strip()]  # Keep only non-empty lines
     return "\n".join(norm_lines)
 
-
 def _split_into_blocks(source_code: str) -> list:
-    """_summary_
+    """
+    Split source code into blocks based on control structures and indentation.
 
     Args:
         source_code (str): Source code to process
@@ -55,6 +106,13 @@ def _split_into_blocks(source_code: str) -> list:
     Returns:
         list: List of (code_block_text, starting_line_number) tuples
     """
+    # Normalize indentation before splitting
+    source_code = _normalize_indentation(source_code)
+
+    # Validate indentation
+    if not _validate_indentation(source_code):
+        duplicated_code_logger.warning("Invalid indentation in source code; attempting to process anyway")
+
     lines = source_code.splitlines()
     blocks = []
     func_map = defaultdict(list)
@@ -65,17 +123,17 @@ def _split_into_blocks(source_code: str) -> list:
 
     def flush_block():
         nonlocal current_block, start_line, current_func_name
-        non_empty = [l for l in current_block if l.strip()]
-        if len(non_empty) >= 2:
-            block_text = "\n".join(current_block).strip()
-            blocks.append((block_text, start_line))
+        if current_block:
+            non_empty = [l for l in current_block if l.strip()]
+            if len(non_empty) >= 2:  # Only include blocks with at least 2 non-empty lines
+                block_text = "\n".join(current_block).rstrip()
+                blocks.append((block_text, start_line))
+                if current_func_name:
+                    func_map[current_func_name].append((block_text, start_line))
+            current_block = []
+            current_func_name = None
 
-            if current_func_name:
-                func_map[current_func_name].append((block_text, start_line))
-        current_block = []
-        current_func_name = None
-
-    for i, line in enumerate(lines):
+    for i, line in enumerate(lines, 1):
         stripped = line.strip()
         if not stripped:
             if current_block:
@@ -105,9 +163,8 @@ def _split_into_blocks(source_code: str) -> list:
             flush_block()
 
         if not current_block:
-            start_line = i + 1
+            start_line = i
             current_indent = indent
-
             if stripped.startswith("def "):
                 match = re.match(r"def\s+([a-zA-Z_][a-zA-Z0-9_]*)", stripped)
                 if match:
@@ -117,31 +174,33 @@ def _split_into_blocks(source_code: str) -> list:
 
     flush_block()
 
+    # Check for duplicates within functions
     for name, entries in func_map.items():
         seen = set()
         for i in range(len(entries)):
             for j in range(i + 1, len(entries)):
                 block_i = _normalize_block(entries[i][0])
                 block_j = _normalize_block(entries[j][0])
-                if block_i == block_j:
+                if block_i == block_j and block_i and block_j:
                     if (block_i, block_j) not in seen:
                         seen.add((block_i, block_j))
-                        print(
+                        duplicated_code_logger.info(
                             f"[DUPLICATE FUNC] Function '{name}' duplicated at lines {entries[i][1]} and {entries[j][1]}"
                         )
 
     return blocks
 
-
 def _remove_comments(source_code: str) -> str:
-    """_summary_
+    """
+    Remove comments from source code.
 
     Args:
-        source_code (str): source code to be processed
+        source_code (str): Source code to process
 
     Returns:
-        str: source code without comments
+        str: Source code without comments
     """
+    # Remove multi-line strings/comments
     code = re.sub(r'(""".*?"""|\'\'\'.*?\'\'\')', "", source_code, flags=re.DOTALL)
     lines = code.splitlines()
     cleaned_lines = []
@@ -157,85 +216,190 @@ def _remove_comments(source_code: str) -> str:
             cleaned_lines.append(line)
     return "\n".join(cleaned_lines)
 
-
 def _tokenize_block(block: str) -> list:
-    """_summary_
-
-    Args:
-        block (str): code block to be tokenized
-
-    Returns:
-        list: list of tokens
     """
-    block = re.sub(r'(["\']).*?\1', "STR", block)
-    block = re.sub(r"\b\d+\.\d+\b", "NUM", block)
-    block = re.sub(r"\b\d+\b", "NUM", block)
-
-    block = re.sub(r"(?<!\w)(\d+\.\d+)(?!\w)", "FLOAT", block)
-    block = re.sub(r"(?<!\w)(\d+:\d+)(?!\w)", "TIME", block)
-    block = re.sub(r"(?<!\w)(\d+/\d+/\d+)(?!\w)", "DATE", block)
-    block = re.sub(r"(?<!\w)(\d+/\d+/\d+ \d+:\d+)(?!\w)", "DATETIME", block)
-
-    # raw_tokens = re.findall(r"\w+|[+\-*/=<>!&|%^~]+|[()\[\]{},;.:]", block)
-    # Updated:
-    raw_tokens = re.findall(r"\w+|[+\-*/=<>!&|%^~]+|[()\[\]{},;.:]|\n", block)
-
-    tokens = []
-    for tok in raw_tokens:
-        if keyword.iskeyword(tok) or tok in {"True", "False", "None"}:
-            tokens.append(tok)
-        elif re.fullmatch(r"[a-zA-Z_]\w*", tok):
-            tokens.append("VAR")
-        else:
-            tokens.append(tok)
-
-    return tokens  # return as set maybe??? to remove dups and sort?
-
-
-# Update: Changed 3 to 2 for better tokenization granularity
-def _generate_ngrams(tokens: list, n: int = 2) -> set:
-    """_summary_
+    Tokenize a block of Python code using both AST and tokenize.
 
     Args:
-        tokens (list): returned from @see _tokenize_block()
-        n (int, optional): size of the ngram, defaults to 3 (trigram).
+        block (str): Block of code to tokenize
 
     Returns:
-        set: set of ngrams to be used for comparison @ see _jaccard_similarity()
+        list: List of normalized tokens
+    """
+    tokens = []
+
+    # === Helper: Normalize indentation ===
+    def normalize_indentation(block: str) -> str:
+        block = block.replace("\t", "    ")
+        try:
+            block = textwrap.dedent(block)
+        except textwrap.TextWrapError as e:
+            duplicated_code_logger.warning(f"Failed to dedent block: {e}")
+            return block
+        return block
+
+    # === Helper: Validate indentation ===
+    def validate_indentation(block: str) -> bool:
+        lines = block.splitlines()
+        indent_levels = []
+        for i, line in enumerate(lines, 1):
+            if not line.strip():
+                continue
+            leading_ws = len(line) - len(line.lstrip())
+            if "\t" in line[:leading_ws] and " " in line[:leading_ws]:
+                duplicated_code_logger.warning(f"Mixed tabs and spaces in line {i}: {line}")
+                return False
+            if indent_levels and leading_ws < indent_levels[-1]:
+                if leading_ws not in indent_levels[:-1]:
+                    duplicated_code_logger.warning(f"Invalid unindent in line {i}: {line}")
+                    return False
+            indent_levels.append(leading_ws)
+        return True
+
+    # === Helper: AST-based tokens ===
+    def extract_ast_tokens(source: str) -> list:
+        try:
+            tree = ast.parse(source)
+        except SyntaxError:
+            duplicated_code_logger.warning(f"AST parsing failed for block: {source}")
+            return ["SYNTAX_ERROR"]
+
+        ast_tokens = []
+
+        def binop_token(op):
+            return {
+                ast.Add: "+", ast.Sub: "-", ast.Mult: "*", ast.Div: "/",
+                ast.Mod: "%", ast.Pow: "**", ast.FloorDiv: "//"
+            }.get(type(op), "BINOP")
+
+        def cmp_token(op):
+            return {
+                ast.Eq: "==", ast.NotEq: "!=", ast.Lt: "<", ast.LtE: "<=",
+                ast.Gt: ">", ast.GtE: ">=", ast.Is: "is", ast.IsNot: "is not",
+                ast.In: "in", ast.NotIn: "not in"
+            }.get(type(op), "CMP")
+
+        def unary_token(op):
+            return {
+                ast.UAdd: "+", ast.USub: "-", ast.Not: "not", ast.Invert: "~"
+            }.get(type(op), "UNARYOP")
+
+        for node in ast.walk(tree):
+            match type(node):
+                case ast.FunctionDef | ast.AsyncFunctionDef:
+                    ast_tokens.append("def")
+                    ast_tokens.append("VAR")
+                    ast_tokens.extend(["VAR"] * len(node.args.args))
+                case ast.Call:
+                    ast_tokens.append("call")
+                    ast_tokens.append("VAR")
+                case ast.Assign | ast.AnnAssign:
+                    ast_tokens.append("=")
+                case ast.BinOp:
+                    ast_tokens.append(binop_token(node.op))
+                case ast.UnaryOp:
+                    ast_tokens.append(unary_token(node.op))
+                case ast.Compare:
+                    for op in node.ops:
+                        ast_tokens.append(cmp_token(op))
+                case ast.Return:
+                    ast_tokens.append("return")
+                case ast.Constant:
+                    if isinstance(node.value, str):
+                        ast_tokens.append("STR")
+                    elif isinstance(node.value, (int, float)):
+                        ast_tokens.append("NUM")
+                    elif node.value is None:
+                        ast_tokens.append("None")
+                    elif isinstance(node.value, bool):
+                        ast_tokens.append(str(node.value))
+                case ast.Name:
+                    ast_tokens.append("VAR")
+                case ast.If | ast.For | ast.While | ast.With | ast.Try:
+                    ast_tokens.append(node.__class__.__name__.lower())
+                case _:
+                    pass
+
+        return ast_tokens
+
+    # === Helper: tokenize module tokens ===
+    def extract_tokenize_tokens(source: str) -> list:
+        tok_list = []
+        try:
+            token_stream = tokenize.generate_tokens(io.StringIO(source).readline)
+            for tok_type, tok_str, *_ in token_stream:
+                if tok_type == tokenize.NAME:
+                    if tok_str in {"True", "False", "None"}:
+                        tok_list.append(tok_str)
+                    elif tok_str in {"def", "return", "if", "else", "for", "while", "with", "try", "except", "finally"}:
+                        tok_list.append(tok_str)
+                    else:
+                        tok_list.append("VAR")
+                elif tok_type == tokenize.STRING:
+                    tok_list.append("STR")
+                elif tok_type == tokenize.NUMBER:
+                    tok_list.append("NUM")
+                elif tok_type == tokenize.OP:
+                    tok_list.append(tok_str)
+                elif tok_type == tokenize.NEWLINE:
+                    tok_list.append("NEWLINE")
+        except tokenize.TokenError as e:
+            duplicated_code_logger.warning(f"Tokenization failed for block: {e}\nBlock:\n{source}")
+            return ["TOKEN_ERROR"]
+        return tok_list
+
+    # Normalize and validate block
+    block = normalize_indentation(block)
+    if not validate_indentation(block):
+        duplicated_code_logger.warning(f"Skipping tokenization due to indentation issues in block:\n{block}")
+        return ["INDENTATION_ERROR"]
+
+    # Extract tokens
+    tokens.extend(extract_ast_tokens(block))
+    tokens.extend(extract_tokenize_tokens(block))
+
+    return tokens
+
+def _generate_ngrams(tokens: list, n: int = 3) -> set:
+    """
+    Generate n-grams from a list of tokens.
+
+    Args:
+        tokens (list): List of tokens
+        n (int, optional): Size of n-grams. Defaults to 3.
+
+    Returns:
+        set: Set of n-gram tuples
     """
     return set(tuple(tokens[i : i + n]) for i in range(len(tokens) - n + 1))
 
-
 def _jaccard_similarity(tokens1: list, tokens2: list, ngram_size: int = 3) -> float:
-    """_summary_
+    """
+    Calculate Jaccard similarity between two sets of tokens.
 
     Args:
-        set1 (set): set A
-        set2 (set): set B
+        tokens1 (list): First list of tokens
+        tokens2 (list): Second list of tokens
+        ngram_size (int, optional): Size of n-grams. Defaults to 3.
 
     Returns:
-        float: similarity score
+        float: Jaccard similarity score
     """
     ngrams1 = _generate_ngrams(tokens1, ngram_size)
     ngrams2 = _generate_ngrams(tokens2, ngram_size)
-
     intersection = ngrams1 & ngrams2
     union = ngrams1 | ngrams2
+    return len(intersection) / len(union) if union else 0.0
 
-    if not union:
-        return 0.0
-    return len(intersection) / len(union)
-
-
-# Catch error in main
 def _find_duplicated_code(source_code: str) -> list:
-    """_summary_
+    """
+    Find duplicated code blocks in the source code.
 
     Args:
-        source_code (str): code returned form "_read_file_contents()"
+        source_code (str): Source code to analyze
 
     Returns:
-        list: list of all instances where a method has more than <DUPS_THRESHOLD> parameters
+        list: List of dictionaries containing duplicate block pairs
     """
     duplicated_code_logger.info("[starting] _find_duplicated_code()")
 
@@ -245,7 +409,6 @@ def _find_duplicated_code(source_code: str) -> list:
     if not cleaned_code.strip():
         msg = "No valid code after removing comments"
         duplicated_code_logger.error("[error] " + msg)
-        # raise CodeProcessingError(msg, function="_remove_comments", source_code=source_code)
         return []
 
     blocks = _split_into_blocks(cleaned_code)
@@ -259,18 +422,21 @@ def _find_duplicated_code(source_code: str) -> list:
     if len(blocks) < 2:
         msg = "Not enough code blocks to compare for duplication"
         duplicated_code_logger.error("[error] " + msg)
-        # raise CodeProcessingError(msg, function="_split_into_blocks", source_code=source_code)
         return []
 
-    tokenized_blocks = [
-        (_tokenize_block(block), block, line_num) for block, line_num in blocks
-    ]
+    tokenized_blocks = []
+    for block, line_num in blocks:
+        tokens = _tokenize_block(block)
+        if tokens and tokens != ["INDENTATION_ERROR"] and tokens != ["TOKEN_ERROR"]:
+            tokenized_blocks.append((tokens, block, line_num))
+        else:
+            duplicated_code_logger.warning(f"Skipping block at line {line_num} due to tokenization failure")
+
     duplicated_code_logger.debug(
-        f"[info] tokenized all code blocks, {tokenized_blocks}"
+        f"[info] tokenized {len(tokenized_blocks)} of {len(blocks)} blocks"
     )
 
     duplicates = []
-
     for i in range(len(tokenized_blocks)):
         for j in range(i + 1, len(tokenized_blocks)):
             tokens_i, block_i, line_i = tokenized_blocks[i]
@@ -290,14 +456,14 @@ def _find_duplicated_code(source_code: str) -> list:
                         "block1": {
                             "index": i,
                             "text": block_i,
-                            "type": "code",  # formatting purposes TODO
+                            "type": "code",
                             "tokens": list(tokens_i),
                             "line_number": line_i,
                         },
                         "block2": {
                             "index": j,
                             "text": block_j,
-                            "type": "code",  # formatting purposes TODO
+                            "type": "code",
                             "tokens": list(tokens_j),
                             "line_number": line_j,
                         },

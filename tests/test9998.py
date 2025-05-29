@@ -1,22 +1,29 @@
 def _common_logic_41a098d5fa2354477cb3dba32c524f91(number):
     """Calculates the square of a number."""
     if not isinstance(number, (int, float)):
-        raise TypeError('Input must be a number.')
-    return number ** 2
+        raise TypeError("Input must be a number.")
+    return number**2
+
 
 def calculate_square_v1(number):
     return _common_logic_41a098d5fa2354477cb3dba32c524f91(number)
 
+
 def get_squared_value_v1(value):
     return _common_logic_41a098d5fa2354477cb3dba32c524f91(value)
+
 
 def check_if_positive_v1(num):
     return _common_logic_41a098d5fa2354477cb3dba32c524f91(num)
 
+
 def is_greater_than_zero_v1(number):
     return _common_logic_41a098d5fa2354477cb3dba32c524f91(number)
 
-def process_audio_segment(audio_data, start_time, end_time, fade_in=0, fade_out=0, apply_normalization=False):
+
+def process_audio_segment(
+    audio_data, start_time, end_time, fade_in=0, fade_out=0, apply_normalization=False
+):
     """
     Processes a segment of audio data.
 
@@ -37,7 +44,7 @@ def process_audio_segment(audio_data, start_time, end_time, fade_in=0, fade_out=
         - The actual processing of audio data (fading, normalization) is a placeholder here and would require specific audio processing libraries.
     """
     if start_time < 0 or end_time <= start_time:
-        return b''
+        return b""
     processed_segment = audio_data
     if fade_in > 0:
         pass
@@ -47,7 +54,10 @@ def process_audio_segment(audio_data, start_time, end_time, fade_in=0, fade_out=
         pass
     return processed_segment
 
-def process_data_range(data_list, start_index, end_index, default_value=None, error_on_out_of_bounds=False):
+
+def process_data_range(
+    data_list, start_index, end_index, default_value=None, error_on_out_of_bounds=False
+):
     """
     Processes a specific range of elements within a list.
 
@@ -75,10 +85,13 @@ def process_data_range(data_list, start_index, end_index, default_value=None, er
         if 0 <= i < len(data_list):
             results.append(data_list[i])
         elif error_on_out_of_bounds:
-            raise IndexError(f'Index {i} is out of bounds for list of length {len(data_list)}.')
+            raise IndexError(
+                f"Index {i} is out of bounds for list of length {len(data_list)}."
+            )
         else:
             results.append(default_value)
     return results
+
 
 def format_paragraph_with_indentation(paragraph, indent_level=4):
     """
@@ -86,11 +99,12 @@ def format_paragraph_with_indentation(paragraph, indent_level=4):
     indentation to each line. Handles empty paragraphs.
     """
     if not paragraph:
-        return ''
+        return ""
     lines = paragraph.splitlines()
-    indent = ' ' * indent_level
+    indent = " " * indent_level
     formatted_lines = [indent + line for line in lines]
-    return '\n'.join(formatted_lines)
+    return "\n".join(formatted_lines)
+
 
 def format_data_table(data, headers=None, padding=3):
     """
@@ -98,19 +112,23 @@ def format_data_table(data, headers=None, padding=3):
     Handles empty data and optional headers.
     """
     if not data:
-        return ''
+        return ""
     num_cols = len(data[0]) if data else 0
     if headers and len(headers) != num_cols:
-        raise ValueError('Number of headers must match the number of columns')
+        raise ValueError("Number of headers must match the number of columns")
     all_data = [headers] + data if headers else data
     col_widths = [max((len(str(item)) for item in col)) for col in zip(*all_data)]
-    separator = '--' * (sum(col_widths) + padding * num_cols) + '-'
-    formatted_table = separator + '\n'
+    separator = "--" * (sum(col_widths) + padding * num_cols) + "-"
+    formatted_table = separator + "\n"
     for row in all_data:
-        formatted_row = ' | '.join((str(item).ljust(col_widths[i]) for i, item in enumerate(row)))
-        formatted_table += formatted_row + ' |\n'
+        formatted_row = " | ".join(
+            (str(item).ljust(col_widths[i]) for i, item in enumerate(row))
+        )
+        formatted_table += formatted_row + " |\n"
     formatted_table += separator
     return formatted_table
+
+
 x = 5
 y = 10
 z = 15

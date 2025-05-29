@@ -39,10 +39,11 @@ from core.duplicated_finder import _find_duplicated_code
 
 from core.code_smells import find_code_smells
 
-from core.halstead import (_extract_operators_and_operands,
-                           fetch_halstead_metrics,
-                           _calculate_halstead_metrics
-                           )
+from core.halstead import (
+    _extract_operators_and_operands,
+    fetch_halstead_metrics,
+    _calculate_halstead_metrics,
+)
 
 from core.refactor import (
     _extract_functions,
@@ -790,26 +791,48 @@ def test_inline_comment_only():
 
 # =========================================== HALSTEAD METRICS ====================================================
 
-@pytest.mark.parametrize("code,expected_keys", [
-    ("a = b + c", {"unique_operators", "unique_operands", "total_operators", "total_operands"}),
-    ("if a == b:\n    pass", {"unique_operators", "unique_operands", "total_operators", "total_operands"}),
-])
+
+@pytest.mark.parametrize(
+    "code,expected_keys",
+    [
+        (
+            "a = b + c",
+            {
+                "unique_operators",
+                "unique_operands",
+                "total_operators",
+                "total_operands",
+            },
+        ),
+        (
+            "if a == b:\n    pass",
+            {
+                "unique_operators",
+                "unique_operands",
+                "total_operators",
+                "total_operands",
+            },
+        ),
+    ],
+)
 def test_extract_operators_and_operands_valid(code, expected_keys):
     result = _extract_operators_and_operands(code)
     assert isinstance(result, dict)
     assert set(result.keys()) == expected_keys
     assert all(isinstance(v, (set, list)) for v in result.values())
 
+
 def test_extract_operators_and_operands_empty_input():
     with pytest.raises(CodeProcessingError, match="No valid code content found"):
         _extract_operators_and_operands("   \n  ")
+
 
 def test_calculate_halstead_metrics_typical_case():
     info = {
         "unique_operators": {"+", "="},
         "unique_operands": {"a", "b", "c"},
         "total_operators": ["=", "+"],
-        "total_operands": ["a", "b", "c"]
+        "total_operands": ["a", "b", "c"],
     }
     metrics = _calculate_halstead_metrics(info)
 
@@ -831,28 +854,34 @@ def test_fetch_halstead_metrics(mock_read):
     assert isinstance(metrics, dict)
     assert all(key in metrics for key in ("V", "D", "E", "T", "B", "M"))
 
+
 # =============================================================================================================
 
 # =========================================== CODE SMELLS =====================================================
 
 FIND_SMELLS = [
-    (TEST_PATHS["9"],  True),
-    (TEST_PATHS["1"],  True),
+    (TEST_PATHS["9"], True),
+    (TEST_PATHS["1"], True),
     (TEST_PATHS["32"], True),
     (TEST_PATHS["22"], True),
     (TEST_PATHS["11"], True),
     (TEST_PATHS["17"], True),
-    (TEST_PATHS["5"],  True)
-    ]
+    (TEST_PATHS["5"], True),
+]
 
-@pytest.mark.parametrize("source_code, expected_non_empty", FIND_SMELLS,
-                         ids=generate_ids(FIND_SMELLS))
+
+@pytest.mark.parametrize(
+    "source_code, expected_non_empty", FIND_SMELLS, ids=generate_ids(FIND_SMELLS)
+)
 def test_find_code_smells_success(source_code, expected_non_empty):
     smells, path = find_code_smells(source_code)
 
     assert isinstance(smells, dict)
     assert (smells != {}) == expected_non_empty
 
-    assert re.search(r"report_report_\w+_\d{8}_\d{6}_readable\.md", path), f"Unexpected path: {path}"
+    assert re.search(
+        r"report_report_\w+_\d{8}_\d{6}_readable\.md", path
+    ), f"Unexpected path: {path}"
+
 
 # =============================================================================================================

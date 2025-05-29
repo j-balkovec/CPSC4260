@@ -2,6 +2,7 @@
 # ======================== REFACTORED FILE: test9998.p ==========================
 # ===============================================================================
 
+
 def calculate_square_v1(number):
     """Calculates the square of a number."""
     if not isinstance(number, (int, float)):

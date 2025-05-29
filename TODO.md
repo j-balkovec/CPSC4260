@@ -10,6 +10,11 @@
 # Current Bugs
 
 - GUI is **very slow and unresponsive** (probs due to synchronous blocking operations).
+- Strip empty lines from the body of the function, or don't count them
+- Fix duplicated code detection:
+  - [x] **Jaccard similarity** is too brittle for small snippets.
+  - [x] **Trigram-based** similarity is not robust enough.
+  - [x] **Context-free logical blocks** need to be validated for refactoring.
 
 ---
 

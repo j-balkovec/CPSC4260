@@ -1,0 +1,41 @@
+{
+    "long_parameter_list": [
+        {
+            "function": "format_data_table",
+            "position": 18,
+            "params_count": 5,
+            "threshold": 3
+        }
+    ],
+    "long_method": [
+        {
+            "function": "format_data_table",
+            "start_line": 5,
+            "end_line": 31,
+            "length": 27,
+            "threshold": 15
+        }
+    ],
+    "duplicated_code": [],
+    "code_metrics": {
+        "LOC": 17,
+        "SLOC": 30,
+        "Comment Density": 0.267,
+        "Blank Line Density": 0.167
+    },
+    "halstead_metrics": {
+        "n1": 6,
+        "n2": 31,
+        "N1": 27,
+        "N2": 65,
+        "N": 92,
+        "n": 37,
+        "V": 479.27,
+        "D": 6.29,
+        "HN": 169.09,
+        "E": 3014.761,
+        "T": 167.487,
+        "B": 1.005,
+        "M": 17.567
+    }
+}

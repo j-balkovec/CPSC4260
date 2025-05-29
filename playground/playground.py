@@ -41,4 +41,12 @@ from pathlib import Path
 
 rn = None
 
+test_file = TEST_PATHS["9997"]
 
+source_code = _read_file_contents(test_file)
+
+print("analysis: ")
+
+dict = find_code_smells(test_file)
+
+print(json.dumps(dict, indent=4))

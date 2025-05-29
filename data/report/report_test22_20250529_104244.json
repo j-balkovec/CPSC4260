@@ -1,0 +1,128 @@
+{
+    "long_parameter_list": [
+        {
+            "function": "process_data_v1",
+            "position": 19,
+            "params_count": 6,
+            "threshold": 3
+        },
+        {
+            "function": "process_info_v1",
+            "position": 74,
+            "params_count": 6,
+            "threshold": 3
+        }
+    ],
+    "long_method": [],
+    "duplicated_code": [
+        {
+            "block1": {
+                "index": 0,
+                "text": "if not isinstance(item_id, int) or not isinstance(value, (int, float)):\n        raise ValueError(\"item_id must be an integer and value must be numeric.\")\n    return (value * multiplier) + offset",
+                "type": "code",
+                "tokens": [
+                    "if",
+                    "not",
+                    "VAR",
+                    "(",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ")",
+                    "or",
+                    "not",
+                    "VAR",
+                    "(",
+                    "VAR",
+                    ",",
+                    "(",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ")",
+                    ")",
+                    ":",
+                    "raise",
+                    "VAR",
+                    "(",
+                    "VAR",
+                    ")",
+                    "return",
+                    "(",
+                    "VAR",
+                    "*",
+                    "VAR",
+                    ")",
+                    "+",
+                    "VAR"
+                ],
+                "line_number": 2
+            },
+            "block2": {
+                "index": 1,
+                "text": "if not isinstance(record_id, int) or not isinstance(amount, (int, float)):\n        raise ValueError(\"record_id must be an integer and amount must be numeric.\")\n    return (amount * factor) + shift",
+                "type": "code",
+                "tokens": [
+                    "if",
+                    "not",
+                    "VAR",
+                    "(",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ")",
+                    "or",
+                    "not",
+                    "VAR",
+                    "(",
+                    "VAR",
+                    ",",
+                    "(",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ")",
+                    ")",
+                    ":",
+                    "raise",
+                    "VAR",
+                    "(",
+                    "VAR",
+                    ")",
+                    "return",
+                    "(",
+                    "VAR",
+                    "*",
+                    "VAR",
+                    ")",
+                    "+",
+                    "VAR"
+                ],
+                "line_number": 6
+            },
+            "similarity": 1.0,
+            "threshold": 0.76
+        }
+    ],
+    "code_metrics": {
+        "LOC": 8,
+        "SLOC": 16,
+        "Comment Density": 0.375,
+        "Blank Line Density": 0.125
+    },
+    "halstead_metrics": {
+        "n1": 3,
+        "n2": 18,
+        "N1": 4,
+        "N2": 25,
+        "N": 29,
+        "n": 21,
+        "V": 127.377,
+        "D": 2.083,
+        "HN": 79.814,
+        "E": 265.369,
+        "T": 14.743,
+        "B": 0.088,
+        "M": 55.458
+    }
+}

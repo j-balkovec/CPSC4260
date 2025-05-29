@@ -1,29 +1,24 @@
-def calculate_square_v1(number):
+def _common_logic_41a098d5fa2354477cb3dba32c524f91(number):
     """Calculates the square of a number."""
     if not isinstance(number, (int, float)):
         raise TypeError("Input must be a number.")
     return number**2
 
 
+def calculate_square_v1(number):
+    return _common_logic_41a098d5fa2354477cb3dba32c524f91(number)
+
+
 def get_squared_value_v1(value):
-    """Gets the squared value of a value."""
-    if not isinstance(value, (int, float)):
-        raise TypeError("Input must be a number.")
-    return value**2
+    return _common_logic_41a098d5fa2354477cb3dba32c524f91(value)
 
 
 def check_if_positive_v1(num):
-    """Checks if a number is positive."""
-    if not isinstance(num, (int, float)):
-        raise TypeError("Input must be a number.")
-    return num > 0
+    return _common_logic_41a098d5fa2354477cb3dba32c524f91(num)
 
 
 def is_greater_than_zero_v1(number):
-    """Checks if a number is greater than zero."""
-    if not isinstance(number, (int, float)):
-        raise TypeError("Input must be a number.")
-    return number > 0
+    return _common_logic_41a098d5fa2354477cb3dba32c524f91(number)
 
 
 def process_audio_segment(
@@ -49,20 +44,14 @@ def process_audio_segment(
         - The actual processing of audio data (fading, normalization) is a placeholder here and would require specific audio processing libraries.
     """
     if start_time < 0 or end_time <= start_time:
-        return b""  # Or raise an error
-
-    processed_segment = audio_data  # Placeholder for actual segment extraction
-
+        return b""
+    processed_segment = audio_data
     if fade_in > 0:
-        # Apply fade-in logic (requires audio processing library)
         pass
     if fade_out > 0:
-        # Apply fade-out logic (requires audio processing library)
         pass
     if apply_normalization:
-        # Apply normalization logic (requires audio processing library)
         pass
-
     return processed_segment
 
 
@@ -91,7 +80,6 @@ def process_data_range(
         return []
     if start_index > end_index:
         return []
-
     results = []
     for i in range(start_index, end_index + 1):
         if 0 <= i < len(data_list):
@@ -112,11 +100,9 @@ def format_paragraph_with_indentation(paragraph, indent_level=4):
     """
     if not paragraph:
         return ""
-
     lines = paragraph.splitlines()
     indent = " " * indent_level
     formatted_lines = [indent + line for line in lines]
-
     return "\n".join(formatted_lines)
 
 
@@ -127,24 +113,19 @@ def format_data_table(data, headers=None, padding=3):
     """
     if not data:
         return ""
-
     num_cols = len(data[0]) if data else 0
     if headers and len(headers) != num_cols:
         raise ValueError("Number of headers must match the number of columns")
-
     all_data = [headers] + data if headers else data
-    col_widths = [max(len(str(item)) for item in col) for col in zip(*all_data)]
-
+    col_widths = [max((len(str(item)) for item in col)) for col in zip(*all_data)]
     separator = "--" * (sum(col_widths) + padding * num_cols) + "-"
-
     formatted_table = separator + "\n"
     for row in all_data:
         formatted_row = " | ".join(
-            str(item).ljust(col_widths[i]) for i, item in enumerate(row)
+            (str(item).ljust(col_widths[i]) for (i, item) in enumerate(row))
         )
         formatted_table += formatted_row + " |\n"
     formatted_table += separator
-
     return formatted_table
 
 
@@ -154,5 +135,4 @@ z = 15
 a = 20
 b = 25
 c = 30
-
 d = x + y + z + a + b + c

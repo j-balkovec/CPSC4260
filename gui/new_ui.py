@@ -223,7 +223,7 @@ class CodeSmellApp(App):
                 with Horizontal(id="buttons"):
                     yield Button("📂 Upload", id="upload")
                     yield Button("🧠 Analyze", id="analyze")
-                    yield Button("📈 Trends (Beta)", id="trends")
+                    yield Button("📈 Trends (β)", id="trends")
                     yield Button("🛠️  Refactor", id="refactor")
                     yield Button("💾 Save", id="save")
                     yield Button("🧹 Clear", id="clear")
@@ -259,7 +259,7 @@ class CodeSmellApp(App):
             "\t3. Use 'Refactor' to clean up duplicates.\n"
             "\t4. Save or clear your work as needed.\n"
         )
-        clean_dirs(are_you_sure=True)  # IMPORTANT: deletes recent logs, reports,...
+        # clean_dirs(are_you_sure=True)  # IMPORTANT: deletes recent logs, reports,...
         #     essentially starts from scratch
 
     async def on_button_pressed(self, event: Button.Pressed) -> None:
