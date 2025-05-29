@@ -216,6 +216,8 @@ def _remove_comments(source_code: str) -> str:
             cleaned_lines.append(line)
     return "\n".join(cleaned_lines)
 
+# ==================================================================================================================================
+
 def _tokenize_block(block: str) -> list:
     """
     Tokenize a block of Python code using both AST and tokenize.
@@ -230,6 +232,14 @@ def _tokenize_block(block: str) -> list:
 
     # === Helper: Normalize indentation ===
     def normalize_indentation(block: str) -> str:
+        """_summary_
+
+        Args:
+            block (str): block of code to normalize
+
+        Returns:
+            str: normalized block of code
+        """
         block = block.replace("\t", "    ")
         try:
             block = textwrap.dedent(block)
@@ -240,6 +250,14 @@ def _tokenize_block(block: str) -> list:
 
     # === Helper: Validate indentation ===
     def validate_indentation(block: str) -> bool:
+        """_summary_
+
+        Args:
+            block (str): block of code to validate
+
+        Returns:
+            bool: True if indentation is valid, False otherwise
+        """
         lines = block.splitlines()
         indent_levels = []
         for i, line in enumerate(lines, 1):
@@ -258,6 +276,14 @@ def _tokenize_block(block: str) -> list:
 
     # === Helper: AST-based tokens ===
     def extract_ast_tokens(source: str) -> list:
+        """_summary_
+
+        Args:
+            source (str): block of code to extract AST tokens from
+
+        Returns:
+            list: list of AST tokens
+        """
         try:
             tree = ast.parse(source)
         except SyntaxError:
@@ -267,12 +293,28 @@ def _tokenize_block(block: str) -> list:
         ast_tokens = []
 
         def binop_token(op):
+            """_summary_
+
+            Args:
+                op (_type_): binary operation node
+
+            Returns:
+                _type_: string representation of the binary operation
+            """
             return {
                 ast.Add: "+", ast.Sub: "-", ast.Mult: "*", ast.Div: "/",
                 ast.Mod: "%", ast.Pow: "**", ast.FloorDiv: "//"
             }.get(type(op), "BINOP")
 
         def cmp_token(op):
+            """_summary_
+
+            Args:
+                op (_type_): comparison operation node
+
+            Returns:
+                _type_: string representation of the comparison operation
+            """
             return {
                 ast.Eq: "==", ast.NotEq: "!=", ast.Lt: "<", ast.LtE: "<=",
                 ast.Gt: ">", ast.GtE: ">=", ast.Is: "is", ast.IsNot: "is not",
@@ -280,6 +322,14 @@ def _tokenize_block(block: str) -> list:
             }.get(type(op), "CMP")
 
         def unary_token(op):
+            """_summary_
+
+            Args:
+                op (_type_): unary operation node
+
+            Returns:
+                _type_: string representation of the unary operation
+            """
             return {
                 ast.UAdd: "+", ast.USub: "-", ast.Not: "not", ast.Invert: "~"
             }.get(type(op), "UNARYOP")
@@ -324,6 +374,14 @@ def _tokenize_block(block: str) -> list:
 
     # === Helper: tokenize module tokens ===
     def extract_tokenize_tokens(source: str) -> list:
+        """_summary_
+
+        Args:
+            source (str): block of code to tokenize
+
+        Returns:
+            list: list of tokens extracted using the tokenize module
+        """
         tok_list = []
         try:
             token_stream = tokenize.generate_tokens(io.StringIO(source).readline)
@@ -348,17 +406,18 @@ def _tokenize_block(block: str) -> list:
             return ["TOKEN_ERROR"]
         return tok_list
 
-    # Normalize and validate block
     block = normalize_indentation(block)
     if not validate_indentation(block):
         duplicated_code_logger.warning(f"Skipping tokenization due to indentation issues in block:\n{block}")
         return ["INDENTATION_ERROR"]
 
-    # Extract tokens
     tokens.extend(extract_ast_tokens(block))
     tokens.extend(extract_tokenize_tokens(block))
 
     return tokens
+
+# ==================================================================================================================================
+
 
 def _generate_ngrams(tokens: list, n: int = 3) -> set:
     """

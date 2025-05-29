@@ -43,16 +43,20 @@ class DuplicateRefactorer(ast.NodeTransformer):
         ast (_type_): Parent class
     """
 
-    def __init__(self, duplicates, functions_map):
+    def __init__(self, duplicates, functions_map, use_wrapper: bool = True):
         """_summary_
 
         Args:
-            duplicates (_type_): list of tuples containing function names and their Jaccard
+            duplicates (list): list of tuples containing function names and their Jaccard
                                  similarity
-            functions_map (_type_): dictionary mapping function names to their AST nodes
+            functions_map (dict): dictionary mapping function names to their AST nodes
+            use_wrapper (bool, optional): whether to use a wrapper function or not. Defaults to True.
         """
         super().__init__()
         self.dup_funcs = {f for f1, f2, _ in duplicates for f in (f1, f2)}
+
+        self.use_wrapper = use_wrapper
+        self.original_func = duplicates[0][0] if duplicates else None
 
         key = duplicates[0][0]
         if key not in functions_map:
@@ -63,8 +67,9 @@ class DuplicateRefactorer(ast.NodeTransformer):
         self.helper = _make_helper_node(
             func_name=key, args=[arg.arg for arg in func_node.args.args], body=sample
         )
-        refactor_logger.debug(f"Helper function created: {self.helper.name}")
-        refactor_logger.debug(f"dups: {self.dup_funcs}")
+        refactor_logger.info(f"Helper function created: {self.helper.name}")
+        refactor_logger.info(f"dups: {self.dup_funcs}")
+        refactor_logger.info(f"use_wrapper set to: {self.use_wrapper}")
 
     def visit_Module(self, node: ast.Module):
         """_summary_
@@ -73,10 +78,25 @@ class DuplicateRefactorer(ast.NodeTransformer):
             node (ast.Module): node to be transformed
 
         Returns:
-            _type_: transformed node
+            ast.Module: transformed node
         """
-        node.body.insert(0, self.helper)
+        if not self.use_wrapper:
+            # rm dups except the original
+            node.body = [
+                n
+                for n in node.body
+                if not (
+                    isinstance(n, ast.FunctionDef)
+                    and n.name in self.dup_funcs
+                    and n.name != self.original_func
+                )
+            ]
+
+        if self.use_wrapper and self.helper:
+            node.body.insert(0, self.helper)
+
         self.generic_visit(node)
+
         return node
 
     def visit_FunctionDef(self, node: ast.FunctionDef):
@@ -88,24 +108,83 @@ class DuplicateRefactorer(ast.NodeTransformer):
         Returns:
             _type_: transformed node
         """
-        if node.name in self.dup_funcs:
-            call = ast.Call(
-                func=ast.Name(self.helper.name, ast.Load()),
-                args=[ast.Name(arg.arg, ast.Load()) for arg in node.args.args],
-                keywords=[],
-            )
-            has_return_with_value = any(
-                isinstance(stmt, ast.Return) and stmt.value is not None
-                for stmt in node.body
-            )
-
-            if has_return_with_value:
-                new_body = [ast.Return(value=call)]
+        if not self.use_wrapper:
+            # if the function is not a duplicate, return it as is
+            if node.name in self.dup_funcs and node.name != self.original_func:
+                return None
             else:
-                new_body = [ast.Expr(value=call)]
+                return node
+        else:
+            # if the function is a duplicate, replace its body with a call to the helper
+            if node.name in self.dup_funcs:
+                call = ast.Call(
+                    func=ast.Name(self.helper.name, ast.Load()),
+                    args=[ast.Name(arg.arg, ast.Load()) for arg in node.args.args],
+                    keywords=[],
+                )
+                has_return_with_value = any(
+                    isinstance(stmt, ast.Return) and stmt.value is not None
+                    for stmt in node.body
+                )
 
-            node.body = new_body
-        return node
+                if has_return_with_value:
+                    new_body = [ast.Return(value=call)]
+                else:
+                    new_body = [ast.Expr(value=call)]
+
+                node.body = new_body
+            return node
+
+    def replace_calls_with_helper(self, node: ast.AST) -> ast.AST:
+        """_summary_
+
+        Args:
+            node (ast.AST): _description_
+
+        Returns:
+            ast.AST: _description_
+        """
+        class CallReplacer(ast.NodeTransformer):
+            """_summary_
+
+            Args:
+                ast (object): Parent class
+            """
+            def __init__(self, dup_funcs, helper_name, use_wrapper, original_func):
+                """_summary_
+
+                Args:
+                    dup_funcs (list): list of function names that are duplicates
+                    helper_name (str): name of the helper function
+                """
+                self.dup_funcs = dup_funcs
+                self.helper = helper_name
+                self.use_wrapper = use_wrapper
+                self.original_func = original_func
+
+            def visit_Call(self, call_node: ast.Call) -> ast.Call:
+                """_summary_
+
+                Args:
+                    call_node (ast.Call): node to be transformed
+
+                Returns:
+                    ast.Call: transformed node
+                """
+                self.generic_visit(call_node)
+                if (
+                    not self.use_wrapper
+                    and isinstance(call_node.func, ast.Name)
+                    and call_node.func.id in self.dup_funcs
+                    and call_node.func.id != self.original_func
+                ):
+                    call_node.func.id = self.original_func
+                return call_node
+
+        replacer = CallReplacer(
+                    self.dup_funcs, self.helper.name, self.use_wrapper, self.original_func
+                    )
+        return replacer.visit(node)
 
 
 def _make_helper_node(func_name: str, args: list, body: list) -> ast.FunctionDef:
@@ -137,25 +216,39 @@ def _make_helper_node(func_name: str, args: list, body: list) -> ast.FunctionDef
     )
 
 
-def _refactor_with_ast(source_code: str, duplicates: list) -> str:
-    """_summary_
+# def _refactor_with_ast(source_code: str, duplicates: list, use_wrapper: bool = True) -> str:
+#     """_summary_
 
-    Args:
-        source_code (str): source code to be refactored
-        duplicates (list): list of tuples containing function names and their Jaccard similarity
+#     Args:
+#         source_code (str): source code to be refactored
+#         duplicates (list): list of tuples containing function names and their Jaccard similarity
 
-    Returns:
-        str: refactored source code
-    """
+#     Returns:
+#         str: refactored source code
+#     """
+#     tree = ast.parse(source_code)
+
+#     func_map = {n.name: n for n in tree.body if isinstance(n, ast.FunctionDef)}
+#     transformer = DuplicateRefactorer(duplicates, func_map, use_wrapper)
+
+#     new_tree = transformer.visit(tree)
+#     ast.fix_missing_locations(new_tree)
+
+#     return ast.unparse(new_tree)
+
+def _refactor_with_ast(source_code: str, duplicates, use_wrapper: bool = True) -> str:
     tree = ast.parse(source_code)
 
     func_map = {n.name: n for n in tree.body if isinstance(n, ast.FunctionDef)}
-    transformer = DuplicateRefactorer(duplicates, func_map)
 
-    new_tree = transformer.visit(tree)
-    ast.fix_missing_locations(new_tree)
+    transformer = DuplicateRefactorer(duplicates, func_map, use_wrapper)
+    tree = transformer.visit(tree)
+    tree = ast.fix_missing_locations(tree)
 
-    return ast.unparse(new_tree)
+    if not use_wrapper:
+        tree = transformer.replace_calls_with_helper(tree)
+
+    return ast.unparse(tree)
 
 
 def _extract_functions(source_code: str) -> dict:
@@ -252,7 +345,7 @@ def _find_duplicates(func_map: dict) -> list:
 
 
 # ============================== CALLABLE ===========================
-def refactor_duplicates(filepath) -> Tuple[str, bool]:
+def refactor_duplicates(filepath, use_wrapper: bool = True) -> Tuple[str, bool]:
     """_summary_
 
     Args:
@@ -274,7 +367,7 @@ def refactor_duplicates(filepath) -> Tuple[str, bool]:
     if not duplicates:
         return "# No duplicates found, nothing to refactor.", False
 
-    return _refactor_with_ast(source_code, duplicates), True  # str, bool
+    return _refactor_with_ast(source_code, duplicates, use_wrapper), True  # str, bool
 
 
 # ===================================================================

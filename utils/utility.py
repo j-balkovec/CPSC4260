@@ -328,3 +328,39 @@ def _pretty_print_debug_dict(debug: dict) -> None:
 
     result += "}\n"
     print(result)
+
+
+def _pretty_print_raw_string_func(code: tuple) -> str:
+    """
+    YOINKED FROM SOME DUDE ON STACKOVERFLOW
+        Link: https://stackoverflow.com/questions/1024435/how-to-fix-python-indentation
+    """
+    code_str = code[0]
+    dedented_code = textwrap.dedent(code_str).strip()
+
+    lines = dedented_code.split('\n')
+    result = []
+    indent_level = 0
+    indent_size = 4
+
+    print(lines)
+
+    for i, line in enumerate(lines):
+        line_stripped = line.strip()
+
+        if not line_stripped:
+            result.append(line)
+            continue
+
+        if line_stripped.startswith(('elif ', 'else:', 'except ', 'finally:', 'return ', 'raise ', 'break', 'continue')):
+
+            if not (line_stripped == 'else:' and lines[i-1].strip().endswith(':')) :
+                indent_level = max(0, indent_level - 1)
+
+        current_indent = ' ' * (indent_level * indent_size)
+        result.append(current_indent + line_stripped)
+
+        if line_stripped.endswith(':'):
+            indent_level += 1
+
+    return '\n'.join(result)

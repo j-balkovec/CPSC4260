@@ -227,7 +227,7 @@ class CodeSmellApp(App):
                     yield Button("Refactor", id="refactor")
                     yield Button("Save", id="save")
                     yield Button("Clear", id="clear")
-                    yield Button("Theme", id="toggle_theme")
+                    # yield Button("Theme", id="toggle_theme") -> doesn't work great
                     yield Button("Exit", id="exit")
                 yield Label("", id="file_info")
             with Vertical(id="right-pane"):
@@ -292,7 +292,7 @@ class CodeSmellApp(App):
                 self.set_class(True, "light")
 
             self.query_one("#log", RichLog).write(
-                f"🌗 Switched to {'dark' if self.theme_dark else 'light'} theme."
+                f"Switched to {'dark' if self.theme_dark else 'light'} theme."
             )
 
         elif btn == "save":
@@ -301,14 +301,14 @@ class CodeSmellApp(App):
                     "Want to create a copy? (YES) for copy, (NO) for in-place save."
                 ),
                 callback=lambda result: (
-                    self.save(make_copy=True) if result else self.save(make_copy=False)
+                    self.save(make_copy=False) if result else self.save(make_copy=True)
                 ),
             )
 
         elif btn == "refactor":
             await self.push_screen(
                 ConfirmationDialog("Are you sure you want to refactor the file?"),
-                callback=lambda result: self.refactor() if result else None,
+                callback=self._on_confirm_refactor,
             )
 
         elif btn == "exit":
@@ -325,6 +325,19 @@ class CodeSmellApp(App):
             case "run_selected_analysis":
                 self.query_one("#analyze_modal").add_class("hidden")
                 self.analyze()
+
+    async def _on_confirm_refactor(self, confirmed: bool) -> None:
+        if confirmed:
+            await self.push_screen(
+                ConfirmationDialog("Yes = Use a wrapper, No = remove duplicate & replace call(s) in place"),
+                callback=self._on_choose_wrapper,
+            )
+
+    async def _on_choose_wrapper(self, choice_use_wrapper: bool) -> None:
+        if choice_use_wrapper is not None:
+            self.refactor(use_wrapper=choice_use_wrapper)
+
+        # self.refactor(use_wrapper=False) -> not needed due to default value
 
     async def on_key(self, event: events.Key) -> None:
         """_summary_
@@ -461,7 +474,7 @@ class CodeSmellApp(App):
             log.write(f" Analysis failed: {str(e)}")
             new_ui.error(f"Unexpected error during analysis: {e}", exc_info=True)
 
-    def refactor(self):
+    def refactor(self, use_wrapper: bool = True):
         """_summary_
 
         Brief:
@@ -477,7 +490,7 @@ class CodeSmellApp(App):
             log.write("No file selected.")
             return
         try:
-            refactored, did_work = refactor_duplicates(self.filename)
+            refactored, did_work = refactor_duplicates(self.filename, use_wrapper)
 
             if did_work:
                 code_editor.insert(
@@ -488,7 +501,7 @@ class CodeSmellApp(App):
                     "\n\n#=============== REFACTORED ===============\n\n"
                 )
                 self.query_one("#code_editor", TextArea).value = refactored
-                log.write("Refactor complete.")
+                log.write("Refactoring complete.")
 
             else:
                 code_editor.clear()

@@ -21,7 +21,10 @@ import json
 from core.refactor import _debug_dict
 
 from core.constants import TEST_PATHS
-from utils.utility import _read_file_contents, _pretty_print, _pretty_print_debug_dict
+from utils.utility import (_read_file_contents,
+                           _pretty_print,
+                           _pretty_print_debug_dict,
+                           _pretty_print_raw_string_func)
 
 from core.method_length import _find_long_method
 from core.param_length import _find_long_parameter_list
@@ -41,12 +44,29 @@ from pathlib import Path
 
 rn = None
 
-test_file = TEST_PATHS["9997"]
+test_file = TEST_PATHS["31"]
 
-source_code = _read_file_contents(test_file)
+print(" ===== ORIGINAL1 ===== \n")
+original = print(_read_file_contents(test_file))
+print("\n" * 2)
 
-print("analysis: ")
+# Refactored
 
-dict = find_code_smells(test_file)
+refactored_wrapper = refactor_duplicates(test_file, use_wrapper=True)
+refactored_no_wrapper = refactor_duplicates(test_file, use_wrapper=False)
 
-print(json.dumps(dict, indent=4))
+print("\n" * 2)
+
+# Print
+print("==========" * 5)
+print("\n" * 2)
+
+print(" ===== REFACTORED WITH WRAPPER ===== ")
+print(refactored_wrapper[0])
+
+print("\n" * 2)
+
+print(" ===== REFACTORED WITHOUT WRAPPER ===== ")
+print(refactored_no_wrapper[0])
+
+print("\n" * 2)
