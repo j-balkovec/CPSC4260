@@ -6,9 +6,9 @@
 #
 # __brief__: This file contains all the logic used for finding methods with long parameter lists in a given source file of code
 
+import os
 # =========
 import sys
-import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========
@@ -17,7 +17,6 @@ import re
 
 from core.constants import PARAMS_THRESHOLD
 from utils.logger import setup_logger
-
 
 # ==========
 long_param_list_logger = setup_logger(

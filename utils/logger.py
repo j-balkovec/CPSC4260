@@ -28,6 +28,7 @@ def setup_logger(
         name (str): Name of the logger.
         log_file (str, optional): Path to the log file. Defaults to None.
         level (int, optional): Logging level. Defaults to logging.DEBUG.
+        enable_console (bool, optional): Whether to enable console output. Defaults to False.
 
     Returns:
         logging.Logger: Configured logger instance.

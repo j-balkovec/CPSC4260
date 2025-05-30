@@ -6,9 +6,9 @@
 #
 # __brief__: This file holds all the constants used in the project in one place, avoiding shotgun surgery
 
+import os
 # =========
 import sys
-import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========

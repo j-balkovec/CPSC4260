@@ -1,0 +1,41 @@
+{
+    "long_parameter_list": [
+        {
+            "function": "calculate_compound_interest",
+            "position": 19,
+            "params_count": 6,
+            "threshold": 3
+        }
+    ],
+    "long_method": [
+        {
+            "function": "calculate_compound_interest",
+            "start_line": 5,
+            "end_line": 37,
+            "length": 33,
+            "threshold": 15
+        }
+    ],
+    "duplicated_code": [],
+    "code_metrics": {
+        "LOC": 13,
+        "SLOC": 36,
+        "Comment Density": 0.583,
+        "Blank Line Density": 0.056
+    },
+    "halstead_metrics": {
+        "n1": 6,
+        "n2": 20,
+        "N1": 19,
+        "N2": 39,
+        "N": 58,
+        "n": 26,
+        "V": 272.626,
+        "D": 5.85,
+        "HN": 101.948,
+        "E": 1594.859,
+        "T": 88.603,
+        "B": 0.532,
+        "M": 32.683
+    }
+}

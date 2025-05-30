@@ -7,9 +7,9 @@
 # __brief__:
 #     This file provides the functionality to plot trends in code metrics over time.
 
+import os
 # =========
 import sys
-import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========
@@ -22,6 +22,7 @@ from typing import List, Dict
 from datetime import datetime
 
 from core.trend_analysis import main
+
 
 def plot_dir_trends(test_paths: List[Path]) -> Dict[str, Dict[str, List[float]]]:
     """_summary_

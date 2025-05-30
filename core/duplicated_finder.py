@@ -6,16 +6,15 @@
 #
 # __brief__: This file contains the logic for finding duplicated code blocks in a given source code.
 
+import os
 # =========
 import sys
-import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========
 
 
 import re
-import keyword
 import ast
 import io
 import tokenize
@@ -45,14 +44,8 @@ def _normalize_indentation(text: str) -> str:
     Returns:
         str: Normalized text with consistent indentation
     """
-    # Replace tabs with 4 spaces
     text = text.replace("\t", "    ")
-    try:
-        # Dedent to remove common leading whitespace
-        text = textwrap.dedent(text)
-    except textwrap.TextWrapError as e:
-        duplicated_code_logger.warning(f"Failed to dedent text: {e}")
-    return text
+    return textwrap.dedent(text)
 
 def _validate_indentation(text: str) -> bool:
     """
@@ -67,14 +60,14 @@ def _validate_indentation(text: str) -> bool:
     lines = text.splitlines()
     indent_levels = []
     for i, line in enumerate(lines, 1):
-        if not line.strip():  # Skip empty lines
+        if not line.strip():
             continue
         leading_ws = len(line) - len(line.lstrip())
-        # Check for mixed tabs and spaces
+
         if "\t" in line[:leading_ws] and " " in line[:leading_ws]:
             duplicated_code_logger.warning(f"Mixed tabs and spaces in line {i}: {line}")
             return False
-        # Track indentation levels for non-empty lines
+
         if indent_levels and leading_ws < indent_levels[-1]:
             if leading_ws not in indent_levels[:-1]:
                 duplicated_code_logger.warning(f"Invalid unindent in line {i}: {line}")
@@ -106,7 +99,6 @@ def _split_into_blocks(source_code: str) -> list:
     Returns:
         list: List of (code_block_text, starting_line_number) tuples
     """
-    # Normalize indentation before splitting
     source_code = _normalize_indentation(source_code)
 
     # Validate indentation
@@ -125,9 +117,11 @@ def _split_into_blocks(source_code: str) -> list:
         nonlocal current_block, start_line, current_func_name
         if current_block:
             non_empty = [l for l in current_block if l.strip()]
-            if len(non_empty) >= 2:  # Only include blocks with at least 2 non-empty lines
+
+            if len(non_empty) >= 2:
                 block_text = "\n".join(current_block).rstrip()
                 blocks.append((block_text, start_line))
+
                 if current_func_name:
                     func_map[current_func_name].append((block_text, start_line))
             current_block = []
@@ -174,7 +168,6 @@ def _split_into_blocks(source_code: str) -> list:
 
     flush_block()
 
-    # Check for duplicates within functions
     for name, entries in func_map.items():
         seen = set()
         for i in range(len(entries)):
@@ -200,7 +193,6 @@ def _remove_comments(source_code: str) -> str:
     Returns:
         str: Source code without comments
     """
-    # Remove multi-line strings/comments
     code = re.sub(r'(""".*?"""|\'\'\'.*?\'\'\')', "", source_code, flags=re.DOTALL)
     lines = code.splitlines()
     cleaned_lines = []
@@ -229,50 +221,6 @@ def _tokenize_block(block: str) -> list:
         list: List of normalized tokens
     """
     tokens = []
-
-    # === Helper: Normalize indentation ===
-    def normalize_indentation(block: str) -> str:
-        """_summary_
-
-        Args:
-            block (str): block of code to normalize
-
-        Returns:
-            str: normalized block of code
-        """
-        block = block.replace("\t", "    ")
-        try:
-            block = textwrap.dedent(block)
-        except textwrap.TextWrapError as e:
-            duplicated_code_logger.warning(f"Failed to dedent block: {e}")
-            return block
-        return block
-
-    # === Helper: Validate indentation ===
-    def validate_indentation(block: str) -> bool:
-        """_summary_
-
-        Args:
-            block (str): block of code to validate
-
-        Returns:
-            bool: True if indentation is valid, False otherwise
-        """
-        lines = block.splitlines()
-        indent_levels = []
-        for i, line in enumerate(lines, 1):
-            if not line.strip():
-                continue
-            leading_ws = len(line) - len(line.lstrip())
-            if "\t" in line[:leading_ws] and " " in line[:leading_ws]:
-                duplicated_code_logger.warning(f"Mixed tabs and spaces in line {i}: {line}")
-                return False
-            if indent_levels and leading_ws < indent_levels[-1]:
-                if leading_ws not in indent_levels[:-1]:
-                    duplicated_code_logger.warning(f"Invalid unindent in line {i}: {line}")
-                    return False
-            indent_levels.append(leading_ws)
-        return True
 
     # === Helper: AST-based tokens ===
     def extract_ast_tokens(source: str) -> list:
@@ -406,8 +354,8 @@ def _tokenize_block(block: str) -> list:
             return ["TOKEN_ERROR"]
         return tok_list
 
-    block = normalize_indentation(block)
-    if not validate_indentation(block):
+    block = _normalize_indentation(block)
+    if not _validate_indentation(block):
         duplicated_code_logger.warning(f"Skipping tokenization due to indentation issues in block:\n{block}")
         return ["INDENTATION_ERROR"]
 

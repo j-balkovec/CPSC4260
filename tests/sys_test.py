@@ -6,9 +6,9 @@
 #
 # __brief__: This file contains the system tests for the new GUI application.
 
+import os
 # =========
 import sys
-import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========
@@ -50,7 +50,6 @@ async def test_upload_file_displays_content() -> None:
     app = CodeSmellApp()
 
     async with app.run_test() as pilot:
-
         app.post_message(UploadFileSelected(test_file))
 
         code_editor = app.query_one("#code_editor", TextArea)
@@ -65,7 +64,7 @@ async def test_upload_empty_file(mocker) -> None:
     """Verify that uploading an empty file displays a message (with mocking)."""
     empty_file_path = TEST_PATHS["44"]  # Doesn't need to be a real path
     mock_file_content = ""
-    expected_message = "# ❌ No code found in the file."
+    expected_message = "# No code found in the file."
 
     app = CodeSmellApp()
 
@@ -74,7 +73,6 @@ async def test_upload_empty_file(mocker) -> None:
     )
 
     async with app.run_test() as pilot:
-
         log = app.query_one("#log", RichLog)
         code_editor = app.query_one("#code_editor", TextArea)
         await pilot.wait_for_animation()
@@ -141,7 +139,7 @@ async def test_upload_button_opens_file_picker() -> None:
 
 #         lines = list(log.lines)
 #         print("Lines:", [repr(str(line)) for line in lines])
-#         assert any("⛔️ No file selected." in str(line) for line in log.lines)
+#         assert any("No file selected." in str(line) for line in log.lines)
 
 
 @pytest.mark.system
@@ -155,8 +153,8 @@ async def test_clear_button_opens_confirmation_dialog() -> None:
         async def wait_for_dialog():
             for _ in range(10):
                 if any(
-                    isinstance(screen, ConfirmationDialog)
-                    for screen in app.screen_stack
+                        isinstance(screen, ConfirmationDialog)
+                        for screen in app.screen_stack
                 ):
                     return False
                 await asyncio.sleep(0.1)

@@ -6,9 +6,9 @@
 #
 # __brief__: Terminal user interface for the Code Smell Detector
 
+import os
 # =========
 import sys
-import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========
@@ -78,15 +78,15 @@ class TerminalUI:
                 )
 
         except (
-            FileReadError,
-            CorruptFileError,
-            FileNotFoundError,
-            FileEmptyError,
-            FileTypeUnsupportedError,
-            FileDecodeError,
-            FileLockedError,
-            FileTooLargeError,
-            FileOpenError,
+                FileReadError,
+                CorruptFileError,
+                FileNotFoundError,
+                FileEmptyError,
+                FileTypeUnsupportedError,
+                FileDecodeError,
+                FileLockedError,
+                FileTooLargeError,
+                FileOpenError,
         ) as e:
             print(f"Error opening file: {e.what()}")
         except Exception as e:
@@ -130,8 +130,8 @@ class TerminalUI:
                                     print(f"\n    - {key}:")
                                     for sub_key, sub_val in val.items():
                                         if (
-                                            sub_key == "text"
-                                            and val.get("type") == "code"
+                                                sub_key == "text"
+                                                and val.get("type") == "code"
                                         ):
                                             print(
                                                 "\n        +---------------- CODE ----------------+"

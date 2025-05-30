@@ -6,9 +6,9 @@
 #
 # __brief__: This file contains the code metrics functionality
 
+import os
 # =========
 import sys
-import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========
@@ -17,7 +17,6 @@ import re
 
 from utils.logger import setup_logger
 from utils.utility import _read_file_contents
-
 
 # ==========
 code_metrics_logger = setup_logger(
@@ -123,7 +122,7 @@ def _calculate_code_metrics(info_dict: dict) -> dict:
     metrics = {"LOC": len(info_dict["code"]), "SLOC": 0, "Comment Density": 0, "Blank Line Density": 0}
 
     metrics["SLOC"] = (
-        len(info_dict["comments"]) + len(info_dict["blank_lines"]) + metrics["LOC"]
+            len(info_dict["comments"]) + len(info_dict["blank_lines"]) + metrics["LOC"]
     )
 
     if metrics["SLOC"] > 0:

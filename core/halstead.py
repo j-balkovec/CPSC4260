@@ -6,9 +6,9 @@
 #
 # __brief__: This file contains the logic used to calculate the Halstead metrics
 
+import os
 # =========
 import sys
-import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========
@@ -21,7 +21,6 @@ from core.constants import ALLOWED_OPERATORS
 from utils.exceptions import CodeProcessingError
 from utils.logger import setup_logger
 from utils.utility import _read_file_contents
-
 
 # ==========
 halstead_metrics_logger = setup_logger(

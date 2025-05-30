@@ -6,9 +6,9 @@
 #
 # __brief__: This file contains the configuration for pytest and the test suite.
 
+import os
 # =========
 import sys
-import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========

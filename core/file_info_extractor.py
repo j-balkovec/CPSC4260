@@ -6,9 +6,9 @@
 #
 # __brief__: This script extracts all the necessary file info
 
+import os
 # =========
 import sys
-import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========
@@ -229,6 +229,5 @@ def save_to_json(metadata: dict):
     get_file_info_logger.info(f"Saved metadata to JSON: {file_path}")
 
     return file_path
-
 
 # index out of range

@@ -8,9 +8,9 @@
 #     This file implements the trend analysis feature.
 #     This is done thought a lightweight regression model
 
+import os
 # =========
 import sys
-import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========
@@ -19,7 +19,6 @@ import sys
 import os
 import ast
 from pathlib import Path
-import json
 import numpy as np
 from typing import List, Tuple, Dict
 from datetime import datetime
@@ -30,8 +29,6 @@ from core.halstead import _calculate_halstead_metrics, _extract_operators_and_op
 from utils.logger import setup_logger
 from utils.utility import _save_to_json
 from utils.exceptions import CodeProcessingError
-
-from core.constants import TEST_PATHS
 
 trend_logger = setup_logger(
     name="trend_analysis.py_logger", log_file="trend_analysis.log"
@@ -124,7 +121,7 @@ def collect_metrics(file_paths: List[Path]) -> List[Dict[str, float]]:
 
 
 def train_model(
-    metrics: List[Dict[str, float]], target: str = "effort"
+        metrics: List[Dict[str, float]], target: str = "effort"
 ) -> Tuple[np.ndarray, float]:
     """_summary_
 

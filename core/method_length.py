@@ -6,9 +6,9 @@
 #
 # __brief__: This file contains all the logic used for finding long methods in a given source code file.
 
+import os
 # =========
 import sys
-import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========

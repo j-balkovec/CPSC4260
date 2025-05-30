@@ -7,9 +7,9 @@
 # STATUS: Stable
 # __brief__: This file defines and implements the new UI for the CodeSmellApp.
 
+import os
 # =========
 import sys
-import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========
@@ -19,13 +19,11 @@ import re
 
 from textual import events
 from textual.app import App, ComposeResult
-from textual.containers import Horizontal, Vertical, Container
+from textual.containers import Horizontal, Vertical
 from textual.widgets import (
     Header,
     Footer,
-    Button,
     Input,
-    Label,
     TextArea,
     RichLog,
     DirectoryTree,
@@ -45,7 +43,6 @@ from core.trend_analysis import markdown_fmt
 
 from utils.utility import _read_file_contents
 from utils.logger import setup_logger
-from utils.cleanup import clean_dirs
 
 from plot.plot_trends import plot_dir_trends
 
@@ -372,20 +369,20 @@ class CodeSmellApp(App):
             log.write(f"Loaded: {Path(self.filename).name} (empty file)")
         else:
             code_editor.text = (
-                "\n\n#=============== ORIGINAL ===============\n\n"
-                + content
-                + "\n\n#=============== ORIGINAL ===============\n\n"
+                    "\n\n#=============== ORIGINAL ===============\n\n"
+                    + content
+                    + "\n\n#=============== ORIGINAL ===============\n\n"
             )
             log.write(f"Loaded: {Path(self.filename).name}")
 
         self.query_one("#file_info", Label).update(f"{Path(self.filename).name}")
 
     def filter_report_sections(
-        self,
-        report: str,
-        include_methods: bool,
-        include_params: bool,
-        include_dupes: bool,
+            self,
+            report: str,
+            include_methods: bool,
+            include_params: bool,
+            include_dupes: bool,
     ) -> str:
         """Filter the full Markdown report based on selected smell types."""
 
@@ -419,9 +416,9 @@ class CodeSmellApp(App):
         header = header_match.group() if header_match else ""
 
         return (
-            f"{header}\n\n---\n"
-            + "\n\n---\n".join(selected_sections)
-            + "\n\n---\n# ===== END OF REPORT ====="
+                f"{header}\n\n---\n"
+                + "\n\n---\n".join(selected_sections)
+                + "\n\n---\n# ===== END OF REPORT ====="
         )
 
     def analyze(self):

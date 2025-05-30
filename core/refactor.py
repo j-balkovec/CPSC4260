@@ -350,6 +350,20 @@ def refactor_duplicates(filepath, use_wrapper: bool = True) -> Tuple[str, bool]:
 
     Args:
         filepath (_type_): filepath to be processed
+        use_wrapper (_type_): whether to extract the common logic/functionality and
+                              wrap it with the original function -> to preserve context
+
+        EXAMPLE:
+
+            def area(a, b):
+                return a*b
+
+            def force(m, a):
+                return a*m
+
+            Instead of one function getting deleted, and calls getting replaced
+            we create a separate function called _common_logic_<hash> (to avoid name clashes).
+            This allows us to preserve context.
 
     Raises:
         CodeProcessingError: if the file could not be read

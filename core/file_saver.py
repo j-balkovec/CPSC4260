@@ -6,9 +6,9 @@
 #
 # __brief__: This script is used for saving the refactored code to a new file
 
+import os
 # =========
 import sys
-import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # =========
@@ -28,7 +28,7 @@ save_refactored_logger.info("save_refactored_logger")
 
 
 def save_refactored_file(
-    file_content: str, original_filename: str, make_copy: bool = False
+        file_content: str, original_filename: str, make_copy: bool = False
 ) -> str:
     """_summary_
 
