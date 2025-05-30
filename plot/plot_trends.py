@@ -21,11 +21,7 @@ import pandas as pd
 from typing import List, Dict
 from datetime import datetime
 
-from core.trend_analysis import extract_metrics, main
-from utils.utility import _save_to_json
-from utils.logger import setup_logger
-from core.constants import TEST_PATHS
-
+from core.trend_analysis import main
 
 def plot_dir_trends(test_paths: List[Path]) -> Dict[str, Dict[str, List[float]]]:
     """_summary_
