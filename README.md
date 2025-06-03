@@ -102,7 +102,7 @@ The code editor displays the file's contents.
 - Errors (e.g., file not found) are logged:
 
 ```plaintext
-❌ File not found: example.py
+File not found: example.py
 ```
 
 ### Refactoring
@@ -284,15 +284,19 @@ def compute_product_of_two_values_b(val1, val2):
 
 ## Screenshots
 
-Explore **CodeSmellApp**’s key features through these screenshots. _Note_: Text in the images may appear small. Click the links to view full-resolution versions for better readability.
+Explore the app’s key features through these screenshots. _Note_: Text in the images may appear small. Click the links to view full-resolution versions for better readability.
+
+- **Main UI**: The main interface with a text area for code display, and a log area for output.
+  ![Main UI](img/mount_all.png)
+  [View Full Resolution](img/mount_all.png)
 
 - **File Picker**: Navigate and select `.py` files using a directory tree.
   ![File Picker](img/file_picker.png)
   [View Full Resolution](img/file_picker.png)
 
 - **Refactored Code**: View original and refactored code in the editor after removing duplicates.
-  ![Refactor](img/refactor.png)
-  [View Full Resolution](img/refactor.png)
+  ![Refactor](img/refactored.png)
+  [View Full Resolution](img/refactored.png)
 
 - **Code Smell Report**: See a Markdown report with Halstead metrics and code quality insights.
   ![Report](img/report.png)

@@ -42,31 +42,4 @@ from core.trend_analysis import markdown_fmt
 
 from pathlib import Path
 
-rn = None
-
-test_file = TEST_PATHS["31"]
-
-print(" ===== ORIGINAL1 ===== \n")
-original = print(_read_file_contents(test_file))
-print("\n" * 2)
-
-# Refactored
-
-refactored_wrapper = refactor_duplicates(test_file, use_wrapper=True)
-refactored_no_wrapper = refactor_duplicates(test_file, use_wrapper=False)
-
-print("\n" * 2)
-
-# Print
-print("==========" * 5)
-print("\n" * 2)
-
-print(" ===== REFACTORED WITH WRAPPER ===== ")
-print(refactored_wrapper[0])
-
-print("\n" * 2)
-
-print(" ===== REFACTORED WITHOUT WRAPPER ===== ")
-print(refactored_no_wrapper[0])
-
-print("\n" * 2)
+right_now = None

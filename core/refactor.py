@@ -215,25 +215,27 @@ def _make_helper_node(func_name: str, args: list, body: list) -> ast.FunctionDef
         name=helper_name, args=new_args, body=body, decorator_list=[], returns=None
     )
 
-
+# ============================================================================
+#               DEPRECATED BECAUSE THE ONE BELOW WORKS BETTER
+# ============================================================================
 # def _refactor_with_ast(source_code: str, duplicates: list, use_wrapper: bool = True) -> str:
 #     """_summary_
-
+#
 #     Args:
 #         source_code (str): source code to be refactored
 #         duplicates (list): list of tuples containing function names and their Jaccard similarity
-
+#
 #     Returns:
 #         str: refactored source code
 #     """
 #     tree = ast.parse(source_code)
-
+#
 #     func_map = {n.name: n for n in tree.body if isinstance(n, ast.FunctionDef)}
 #     transformer = DuplicateRefactorer(duplicates, func_map, use_wrapper)
-
+#
 #     new_tree = transformer.visit(tree)
 #     ast.fix_missing_locations(new_tree)
-
+#
 #     return ast.unparse(new_tree)
 
 def _refactor_with_ast(source_code: str, duplicates, use_wrapper: bool = True) -> str:
@@ -313,9 +315,6 @@ def _extract_functions(source_code: str) -> dict:
     refactor_logger.debug(f"Keys: {functions.keys()}")
     return functions
 
-
-
-# !!!!!!!!FIXME!!!!!!
 def _find_duplicates(func_map: dict) -> list:
     """_summary_
 
@@ -340,9 +339,6 @@ def _find_duplicates(func_map: dict) -> list:
 
     refactor_logger.debug(f"Found duplicates: {duplicates}")
     return duplicates
-# !!!!!!!!FIXME!!!!!!
-
-
 
 # ============================== CALLABLE ===========================
 def refactor_duplicates(filepath, use_wrapper: bool = True) -> Tuple[str, bool]:
@@ -381,14 +377,12 @@ def refactor_duplicates(filepath, use_wrapper: bool = True) -> Tuple[str, bool]:
     if not duplicates:
         return "# No duplicates found, nothing to refactor.", False
 
-    return _refactor_with_ast(source_code, duplicates, use_wrapper), True  # str, bool
+    return _refactor_with_ast(source_code, duplicates, use_wrapper), True  # tuple(str, bool)
 
 
 # ===================================================================
-# >
-# >
-# >
-# ============================== DEBUG ==============================
+# >                          DEBUG ONLY
+# ===================================================================
 def _debug_dict(source_code: str, threshold: float = 0.85) -> dict:
     debug = {}
 

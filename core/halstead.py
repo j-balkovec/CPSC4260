@@ -78,7 +78,6 @@ def _extract_operators_and_operands(source_code: str) -> dict:
             r'"""([^"]|"(?!""))+"""|\'\'\'([^\']|\'(?!\'\'))+\'\'\'', "", line
         )
 
-        # Remove comment part at the end of the line
         code_part = re.sub(r"\s*#.*$", "", line).strip()
 
         if code_part.strip():
