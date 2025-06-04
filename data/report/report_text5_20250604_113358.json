@@ -1,0 +1,123 @@
+{
+    "long_parameter_list": [
+        {
+            "function": "func1",
+            "position": 11,
+            "params_count": 4,
+            "threshold": 3
+        },
+        {
+            "function": "func2",
+            "position": 25,
+            "params_count": 7,
+            "threshold": 3
+        },
+        {
+            "function": "func3",
+            "position": 42,
+            "params_count": 6,
+            "threshold": 3
+        },
+        {
+            "function": "func4",
+            "position": 75,
+            "params_count": 8,
+            "threshold": 3
+        }
+    ],
+    "long_method": [],
+    "duplicated_code": [
+        {
+            "block1": {
+                "index": 3,
+                "text": "def func5(a, b):\n    return a + b",
+                "type": "code",
+                "tokens": [
+                    "def",
+                    "VAR",
+                    "VAR",
+                    "VAR",
+                    "return",
+                    "+",
+                    "VAR",
+                    "VAR",
+                    "def",
+                    "VAR",
+                    "(",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ")",
+                    ":",
+                    "NEWLINE",
+                    "return",
+                    "VAR",
+                    "+",
+                    "VAR",
+                    "NEWLINE"
+                ],
+                "line_number": 14
+            },
+            "block2": {
+                "index": 4,
+                "text": "def func5(a, b, c):\n    return a + b + c",
+                "type": "code",
+                "tokens": [
+                    "def",
+                    "VAR",
+                    "VAR",
+                    "VAR",
+                    "VAR",
+                    "return",
+                    "+",
+                    "+",
+                    "VAR",
+                    "VAR",
+                    "VAR",
+                    "def",
+                    "VAR",
+                    "(",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ",",
+                    "VAR",
+                    ")",
+                    ":",
+                    "NEWLINE",
+                    "return",
+                    "VAR",
+                    "+",
+                    "VAR",
+                    "+",
+                    "VAR",
+                    "NEWLINE"
+                ],
+                "line_number": 16
+            },
+            "similarity": 0.7916666666666666,
+            "threshold": 0.76
+        }
+    ],
+    "code_metrics": {
+        "LOC": 17,
+        "SLOC": 25,
+        "Comment Density": 0.0,
+        "Blank Line Density": 0.32
+    },
+    "halstead_metrics": {
+        "n1": 5,
+        "n2": 17,
+        "N1": 22,
+        "N2": 46,
+        "N": 68,
+        "n": 22,
+        "V": 303.241,
+        "D": 6.765,
+        "HN": 81.097,
+        "E": 2051.339,
+        "T": 113.963,
+        "B": 0.684,
+        "M": 27.957
+    }
+}

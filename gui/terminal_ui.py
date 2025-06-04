@@ -221,6 +221,7 @@ if __name__ == "__main__":
         ui.analyze_file()
 
     if args.refactor_duplicates:
+        # need to pass in the flag
         ui.refactor_code()
 
     if args.save:

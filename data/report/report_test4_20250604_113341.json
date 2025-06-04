@@ -1,0 +1,41 @@
+{
+    "long_parameter_list": [
+        {
+            "function": "func1",
+            "position": 7,
+            "params_count": 4,
+            "threshold": 3
+        }
+    ],
+    "long_method": [
+        {
+            "function": "func1",
+            "start_line": 1,
+            "end_line": 23,
+            "length": 18,
+            "threshold": 15
+        }
+    ],
+    "duplicated_code": [],
+    "code_metrics": {
+        "LOC": 22,
+        "SLOC": 31,
+        "Comment Density": 0.0,
+        "Blank Line Density": 0.29
+    },
+    "halstead_metrics": {
+        "n1": 4,
+        "n2": 8,
+        "N1": 39,
+        "N2": 44,
+        "N": 83,
+        "n": 12,
+        "V": 297.552,
+        "D": 11.0,
+        "HN": 32.0,
+        "E": 3273.071,
+        "T": 181.837,
+        "B": 1.091,
+        "M": 22.466
+    }
+}

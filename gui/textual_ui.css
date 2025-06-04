@@ -94,6 +94,7 @@
   min-width: 30;
   overlay: screen;
   background: transparent;
+  text-wrap: wrap;
 }
 
 #dialog-title {
@@ -137,6 +138,7 @@
 #button-container {
   width: 100%;
   align: center middle;
+
 }
 
 #button-container Horizontal {
@@ -275,13 +277,14 @@
 #analyze_modal {
   layer: overlay;
   padding: 2 4;
-  width: 50%;
+  width: auto;
   height: auto;
   align: center middle;
   margin-top: 20;
   margin-left: 35;
   border: tall $primary;
   layout: vertical;
+  text-wrap: wrap;
 }
 
 .dark #analyze_modal {
@@ -331,10 +334,11 @@
 }
 
 #analyze_modal Button {
-  width: 1fr;
+  width: auto;
   height: auto;
   margin: 1 1;
   text-align: center;
+  text-wrap: wrap;
   transition: background 0.2s, color 0.2s;
 }
 

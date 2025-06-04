@@ -1,0 +1,88 @@
+{
+    "long_parameter_list": [],
+    "long_method": [
+        {
+            "function": "func2",
+            "start_line": 8,
+            "end_line": 31,
+            "length": 18,
+            "threshold": 15
+        },
+        {
+            "function": "func3",
+            "start_line": 32,
+            "end_line": 48,
+            "length": 17,
+            "threshold": 15
+        }
+    ],
+    "duplicated_code": [
+        {
+            "block1": {
+                "index": 0,
+                "text": "    if not a:\n        return \"Error: Matrices cannot be multiplied. One of the matrices is empty.\"",
+                "type": "code",
+                "tokens": [
+                    "if",
+                    "not",
+                    "return",
+                    "VAR",
+                    "STR",
+                    "if",
+                    "VAR",
+                    "VAR",
+                    ":",
+                    "NEWLINE",
+                    "return",
+                    "STR",
+                    "NEWLINE"
+                ],
+                "line_number": 7
+            },
+            "block2": {
+                "index": 1,
+                "text": "    if not b:\n        return \"Error: Matrices cannot be multiplied. One of the matrices is empty.\"",
+                "type": "code",
+                "tokens": [
+                    "if",
+                    "not",
+                    "return",
+                    "VAR",
+                    "STR",
+                    "if",
+                    "VAR",
+                    "VAR",
+                    ":",
+                    "NEWLINE",
+                    "return",
+                    "STR",
+                    "NEWLINE"
+                ],
+                "line_number": 9
+            },
+            "similarity": 1.0,
+            "threshold": 0.76
+        }
+    ],
+    "code_metrics": {
+        "LOC": 25,
+        "SLOC": 48,
+        "Comment Density": 0.0,
+        "Blank Line Density": 0.479
+    },
+    "halstead_metrics": {
+        "n1": 4,
+        "n2": 28,
+        "N1": 10,
+        "N2": 99,
+        "N": 109,
+        "n": 32,
+        "V": 545.0,
+        "D": 7.071,
+        "HN": 142.606,
+        "E": 3853.929,
+        "T": 214.107,
+        "B": 1.285,
+        "M": 12.46
+    }
+}

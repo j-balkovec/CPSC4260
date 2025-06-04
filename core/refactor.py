@@ -355,7 +355,7 @@ def refactor_duplicates(filepath, use_wrapper: bool = True) -> Tuple[str, bool]:
                 return a*b
 
             def force(m, a):
-                return a*m
+                return m*a
 
             Instead of one function getting deleted, and calls getting replaced
             we create a separate function called _common_logic_<hash> (to avoid name clashes).

@@ -141,12 +141,14 @@ def train_model(
             for i, m in enumerate(metrics)
         ]
     )
+
     y = np.array([m[target] for m in metrics])
     X_mean = np.mean(X, axis=0)
     X_std = np.std(X, axis=0)
     X_std[X_std == 0] = 1
     X_normalized = (X - X_mean) / X_std
     X_normalized = np.c_[np.ones(X_normalized.shape[0]), X_normalized]
+
     weights = np.random.randn(X_normalized.shape[1])
     learning_rate = 0.01
     n_iterations = 1000

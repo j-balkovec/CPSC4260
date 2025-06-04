@@ -86,7 +86,7 @@ def _normalize_block(text: str) -> str:
         str: Normalized block
     """
     lines = text.splitlines()
-    norm_lines = [line for line in lines if line.strip()]  # Keep only non-empty lines
+    norm_lines = [line for line in lines if line.strip()]
     return "\n".join(norm_lines)
 
 def _split_into_blocks(source_code: str) -> list:
@@ -101,7 +101,6 @@ def _split_into_blocks(source_code: str) -> list:
     """
     source_code = _normalize_indentation(source_code)
 
-    # Validate indentation
     if not _validate_indentation(source_code):
         duplicated_code_logger.warning("Invalid indentation in source code; attempting to process anyway")
 
